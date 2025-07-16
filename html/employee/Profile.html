@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recruiter Profile | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    /* Global Variables for Theming */
+    :root {
+      --main-red: #dc3545; /* Recruiter's main red */
+      --main-red-light: #f8e3e3; /* Recruiter's light red */
+      --main-red-bg-hover: rgba(220, 53, 69, 0.07); /* Recruiter's red hover */
+      --main-red-border: #f3cccc;
+      --main-gold: #fbbf24; /* Added for potential accent */
+
+      /* Light Theme Defaults */
+      --body-bg: #f5f7fa; /* Recruiter's softer background */
+      --text-color: #212529;
+      --text-color-secondary: #6c757d; /* Recruiter's secondary text color */
+      --text-color-light: #888;
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #e5e5e5;
+      --shadow-color: rgba(0,0,0,0.07); /* General shadow for cards, sidebar etc. */
+      --card-shadow: rgba(0,0,0,0.08); /* More prominent card shadow */
+      --red-accent-shadow: rgba(220,53,69,0.12); /* Shadow with red tint */
+      --input-bg: #fff;
+      --input-border: #ced4da;
+      --placeholder-color: #6c757d;
+      --info-bg: #e0e7ed; /* Recruiter's softer info background */
+      --info-color: #343a40; /* Recruiter's darker text for info */
+      --success-alert-bg: #d4edda;
+      --success-alert-color: #155724;
+      --success-alert-border: #c3e6cb; /* New: Custom success message variables */
+      --success-message-bg: #198754;
+      --success-message-color: #fff;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-red: #ff6b6b; /* Recruiter's brighter red for dark mode contrast */
+      --main-red-light: #4a1a1a;
+      --main-red-bg-hover: rgba(255,107,107,0.15);
+      --main-red-border: #660000;
+      --body-bg: #1a1a1a;
+      --text-color: #f8f9fa;
+      --text-color-secondary: #adb5bd;
+      --text-color-light: #b0b0b0;
+      --card-bg: #2a2a2a;
+      --sidebar-bg: #1c1c1c;
+      --top-navbar-bg: #1c1c1c;
+      --border-color: #3a3a3a;
+      --shadow-color: rgba(0,0,0,0.3); /* Darker general shadow */
+      --card-shadow: rgba(0,0,0,0.4); /* Darker card shadow */
+      --red-accent-shadow: rgba(255,107,107,0.2); /* Retaining slight red tint */
+      --input-bg: #3a3a3a;
+      --input-border: #555;
+      --placeholder-color: #b0b0b0;
+      --info-bg: #343a40;
+      --info-color: #e0e0e0;
+      --success-alert-bg: #218838; /* Darker green */
+      --success-alert-color: #fff;
+      --success-alert-border: #1e7e34; /* New: Custom success message variables for dark mode */
+      --success-message-bg: #28a745;
+      --success-message-color: #fff;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Modern font stack */
+      font-size: 1rem; /* Revert to default or adjust as needed */
+    }
+
+    /* General Card Styling */
+    .dashboard-card {
+      background-color: var(--card-bg);
+      border: none;
+      border-radius: 1rem;
+      padding: 2.5rem; /* Increased padding for the main card */
+      box-shadow: 0 4px 16px var(--card-shadow);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      position: fixed;
+      height: 100vh;
+      padding: 1rem 1rem;
+      left: -260px;
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 8px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border: 3px solid transparent; /* Changed to transparent border */
+      box-shadow: 0 2px 12px var(--red-accent-shadow); /* Logo shadow */
+      border-radius: 50%; /* Ensure it's perfectly round */
+    }
+    .sidebar h4 {
+      color: var(--main-red);
+      transition: color 0.3s ease;
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Softer link color by default */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      transition: background 0.15s, color 0.15s;
+      font-weight: 500;
+      gap: 0.5rem;
+    }
+    .sidebar a:hover, .sidebar a.fw-bold, .sidebar a.active { /* Added .active for current page */
+      background-color: var(--main-red-bg-hover);
+      color: var(--main-red); /* Highlight active/hovered link with main red */
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-red);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      letter-spacing: 1px;
+      font-size: 0.95rem;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: rgba(0,0,0,0.18);
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 2rem;
+      display: flex; /* Always display */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      position: static; /* Ensure it stays in the flow of the flexbox */
+      margin-right: 0.5rem; /* Space between logo and toggle */
+      transition: color 0.3s ease;
+      padding: 0; /* Remove default button padding */
+    }
+    .sidebar-toggle i {
+      font-size: 1.5rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2.5rem 0 2rem 0;
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      max-width: 1200px; /* Aligned with recruiter */
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 250px;
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between; /* Space between left group and right group */
+      align-items: center;
+      position: relative;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 250px;
+    }
+    .top-navbar .bi {
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .top-navbar .ms-2 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-light);
+        transition: color 0.3s ease;
+    }
+
+    /* Navbar Logo */
+    .top-navbar .navbar-logo {
+      height: 40px; /* Adjust size as needed */
+      width: auto; /* Maintain aspect ratio */
+      margin-right: 0.5rem; /* Consistent space with sidebar toggle */
+      transition: height 0.3s ease;
+    }
+
+    /* Profile Specific Styles */
+    .profile-avatar {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border: 4px solid var(--card-bg); /* Border color adapts to card background */
+      box-shadow: 0 2px 12px var(--red-accent-shadow);
+      background: var(--info-bg); /* Use info-bg to match the info section background */
+      border-radius: 50%;
+      transition: box-shadow 0.2s, opacity 0.2s, border-color 0.3s ease, background-color 0.3s ease;
+    }
+    .profile-avatar:hover {
+      box-shadow: 0 4px 24px var(--red-accent-shadow);
+      opacity: 0.92;
+    }
+    .profile-actions .btn {
+      border-radius: 0.6rem; /* Slightly less rounded */
+      font-weight: 500;
+      padding: 0.5rem 1.2rem; /* Adjusted padding */
+    }
+
+    .profile-details-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .profile-details-list li {
+      margin-bottom: 1.1rem;
+      font-size: 1.05rem; /* Slightly refined font size */
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      transition: color 0.3s ease;
+    }
+    .profile-details-list li:last-child {
+      margin-bottom: 0; /* Remove margin from last item */
+    }
+    .profile-details-list li i {
+      color: var(--main-red);
+      font-size: 1.15rem;
+      transition: color 0.3s ease, filter 0.2s ease; /* Added filter for hover */
+    }
+    .profile-details-list li i:hover {
+        filter: brightness(1.2); /* Subtle icon hover effect */
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color-secondary); /* Softer label color */
+      transition: color 0.3s ease;
+    }
+    .form-section-title {
+      color: var(--main-red);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      font-size: 1.3rem; /* Larger title */
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+    .form-control {
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      border-color: var(--input-border);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .form-control::placeholder {
+        color: var(--placeholder-color);
+        opacity: 0.7;
+    }
+    .form-control:focus {
+        border-color: var(--main-red);
+        box-shadow: 0 0 0 0.25rem var(--main-red-light);
+    }
+    /* Removed alert-success styling as it's replaced */
+
+    .text-muted {
+        color: var(--text-color-light) !important;
+    }
+    .btn-outline-secondary {
+        color: var(--text-color-secondary); /* Use secondary text color for outline */
+        border-color: var(--text-color-secondary);
+        transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-outline-secondary:hover {
+        background-color: var(--main-red-light);
+        border-color: var(--main-red);
+        color: var(--main-red);
+    }
+    .btn-outline-danger {
+        color: var(--main-red);
+        border-color: var(--main-red);
+        transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-red);
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: var(--main-red);
+        border-color: var(--main-red);
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+    }
+    .btn-primary:hover {
+        background-color: #bd2130;
+        border-color: #bd2130;
+        transform: translateY(-1px); /* Slight lift on hover */
+    }
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    .info-box {
+        background: var(--info-bg);
+        color: var(--info-color);
+        padding: 1.25rem; /* Slightly more padding */
+        border-radius: 0.8rem; /* Consistent border radius */
+        font-size: 0.98rem; /* Slightly smaller font for info box */
+        transition: background 0.3s ease, color 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05); /* Subtle border for definition */
+    }
+    .info-box i {
+      color: var(--main-red); /* Info icon is main red */
+    }
+
+    h3.fw-bold {
+        color: var(--main-red);
+        transition: color 0.3s ease;
+    }
+    span.fw-semibold { /* For the labels like Full Name, Email etc. */
+        color: var(--text-color);
+        transition: color 0.3s ease;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem; /* Make it easier to click */
+      border-radius: 50%; /* Make it circular */
+    }
+    .dark-mode-toggle:hover {
+      background-color: rgba(220,53,69,0.05); /* Subtle hover effect */
+    }
+    .dark-mode-toggle i {
+      font-size: 1.2rem;
+    }
+
+    /* Privilege Level Specific Styles (Adjusted to match new design) */
+    .privilege-field {
+      background-color: var(--info-bg); /* Use info background from recruiter design */
+      font-weight: 600;
+      color: var(--info-color); /* Use info text color from recruiter design */
+      border-color: var(--input-border); /* Consistent with other inputs */
+      pointer-events: none; /* Make text unselectable */
+    }
+    body.dark-mode .privilege-field {
+        background-color: var(--info-bg); /* Use dark mode specific info bg */
+        border-color: var(--input-border);
+        color: var(--info-color);
+    }
+    .privilege-badge {
+      background-color: var(--main-red); /* Main red for the badge */
+      color: white;
+      border-color: var(--main-red); /* Main red border */
+      font-size: 1rem; /* Slightly smaller for alignment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.375rem 0.75rem; /* Match input height */
+      border-radius: 0 0.375rem 0.375rem 0; /* Only right side rounded */
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body.dark-mode .privilege-badge {
+        background-color: var(--main-red); /* Dark mode main red */
+        border-color: var(--main-red);
+    }
+
+    /* New: Custom Save Message */
+    .save-message {
+        background-color: var(--success-message-bg);
+        color: var(--success-message-color);
+        padding: 0.35rem 0.8rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .save-message.show {
+        opacity: 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+      }
+      .top-navbar .sidebar-toggle {
+        display: flex;
+      }
+      .dashboard-content,
+      .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+      .dashboard-content .container {
+        max-width: 100% !important;
+        padding: 0 1rem; /* Add some padding on smaller screens */
+      }
+      .dashboard-content .row > div {
+        max-width: 100%;
+        flex: 0 0 100%;
+      }
+      /* Adjust profile header for smaller screens */
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        gap: 1.5rem !important; /* Adjust gap for stacked layout */
+      }
+      .profile-avatar {
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: 0.5rem;
+      }
+      .profile-actions {
+        flex-direction: row; /* Keep buttons side-by-side or stack if needed */
+        width: 100%;
+        max-width: 250px; /* Limit width of buttons when stacked */
+        margin-top: 1rem !important;
+      }
+      .dashboard-card {
+        padding: 1.5rem !important; /* Smaller padding on small screens */
+      }
+    }
+
+    /* Custom scrollbar for better aesthetics */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--body-bg);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-color-light);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--main-red);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop" tabindex="-1"></div>
+
+  <div class="sidebar" id="sidebar" aria-label="Sidebar navigation">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="Logo" class="img-fluid">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center">
+      J. Alcabasa HR Management System
+    </h4>
+    <div class="active-label">RECRUITER</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="Candidates.html"><i class="bi bi-person-badge me-2"></i> Candidates</a>
+    <a href="JobPostings.html"><i class="bi bi-briefcase-fill me-2"></i> Job Postings</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+  <div class="top-navbar" id="topNavbar" role="banner">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo me-2">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="false">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="Notifications.html" aria-label="Notifications" title="Notifications" style="text-decoration:none;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="Profile.html" aria-label="User Profile" title="Profile" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2" aria-live="polite" aria-atomic="true">
+            Recruiter<br /><small style="font-weight:400;">Welcome!</small>
+        </span>
+    </div>
+  </div>
+
+  <main class="dashboard-content" id="mainContent" role="main">
+    <div class="container" style="max-width: 1200px;">
+      <a href="Dashboard.html" class="btn btn-outline-secondary mb-4" aria-label="Back to Dashboard">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+
+      <h2 class="form-section-title mb-4">My Profile</h2>
+
+      <div class="dashboard-card">
+        <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4 mb-5 pb-3 border-bottom">
+          <label for="profilePic" class="d-block cursor-pointer flex-shrink-0" aria-label="Upload profile picture">
+            <img id="profileImg" src="/assets/default-profile.png" alt="Profile Picture"
+              class="profile-avatar shadow">
+            <input type="file" id="profilePic" accept="image/*" style="display:none;">
+          </label>
+          <div class="text-center text-md-start flex-grow-1">
+            <h4 id="displayFullName" class="fw-bold mb-1" style="color:var(--main-red);">Alex Reyes</h4>
+            <div id="displayRecruiterId" class="text-muted mb-1" style="font-size:0.95rem;">Employee ID: HREMP-00123</div>
+            <div id="displayEmail" class="text-muted mb-2" style="font-size:1rem;">alex.reyes@email.com</div>
+            <div class="profile-actions d-flex gap-2 justify-content-center justify-content-md-start mt-3">
+              <button class="btn btn-outline-danger btn-sm" id="deletePic"><i class="bi bi-trash me-1"></i>Delete Pic</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="profileDisplaySection">
+          <h3 class="form-section-title mb-4">Personal Information</h3>
+          <div class="row mb-5">
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-person fs-5"></i>
+                <span class="fw-semibold">Full Name: </span> <span id="displayFullNameDetails">Alex Reyes</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-envelope fs-5"></i>
+                <span class="fw-semibold">Email: </span> <span id="displayEmailDetails">alex.reyes@email.com</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-telephone fs-5"></i>
+                <span class="fw-semibold">Phone: </span> <span id="displayPhone">0918-987-6543</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-geo-alt fs-5"></i>
+                <span class="fw-semibold">Address: </span> <span id="displayAddress">456 Oak Ave, Quezon City</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge fs-5"></i>
+                <span class="fw-semibold">Recruiter ID: </span> <span id="displayRecruiterIdDetails">RECHR-00123</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-briefcase fs-5"></i>
+                <span class="fw-semibold">Role: </span> <span id="displayPosition">Senior Recruiter</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-building fs-5"></i>
+                <span class="fw-semibold">Department: </span> <span id="displayDepartment">Talent Acquisition</span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-linkedin fs-5"></i>
+                <span class="fw-semibold">LinkedIn: </span> <span id="displayLinkedIn">N/A</span>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-primary btn-lg" id="editProfileBtn"><i class="bi bi-pencil me-2"></i>Edit Profile</button>
+          </div>
+        </div>
+
+        <form id="profileForm" style="display:none;" autocomplete="off">
+          <div class="form-section-title mb-3">
+            <i class="bi bi-pencil-square me-2"></i>Edit Profile
+          </div>
+          <div class="row">
+            <div class="mb-3 col-12 col-md-6">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="phone" class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="phone" placeholder="e.g., +639123456789" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="address" class="form-label">Address</label>
+              <input type="text" class="form-control" id="address" placeholder="e.g., Block 1 Lot 2, City, Province" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="recruiterId" class="form-label">Recruiter ID</label>
+              <input type="text" class="form-control" id="recruiterId" placeholder="e.g., RECHR-00123" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="position" class="form-label">Role</label>
+              <input type="text" class="form-control" id="position" placeholder="e.g., Senior Recruiter" required>
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="department" class="form-label">Department</label>
+              <input type="text" class="form-control" id="department" placeholder="e.g., Talent Acquisition" required>
+            </div>
+            <div class="mb-3 col-12">
+              <label for="linkedin" class="form-label">LinkedIn Profile URL</label>
+              <input type="url" class="form-control" id="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+            </div>
+            <div class="mb-4 col-12">
+              <label for="resume" class="form-label">Upload Resume (PDF)</label>
+              <input type="file" class="form-control" id="resume" accept=".pdf">
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword" placeholder="Current password">
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
+            </div>
+            <div class="mb-3 col-12 col-md-6">
+              <label for="confirmPassword" class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter new password">
+            </div>
+          </div>
+          <div class="d-flex gap-2 justify-content-end mt-3 align-items-center">
+            <div id="profileSavedMsg" class="save-message" style="display:none;">
+              <i class="bi bi-check-circle-fill"></i> Saved!
+            </div>
+            <button type="button" class="btn btn-outline-secondary" id="cancelEditBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+
+        <div class="info-box mt-4">
+          <i class="bi bi-info-circle me-2"></i>
+          For any profile concerns or corrections, please contact **hr@company.com** or visit the HR office.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Default profile picture if none is stored
+    const DEFAULT_PROFILE_PIC = "/assets/default-profile.png";
+    // Sidebar logic (Consistent with recruiter's pages)
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mainContent = document.getElementById('mainContent');
+    const topNavbar = document.getElementById('topNavbar');
+    function openSidebar() {
+      sidebar.classList.add('show');
+      sidebarBackdrop.classList.add('show');
+      document.body.classList.add('sidebar-visible');
+      mainContent.classList.add('sidebar-visible');
+      topNavbar.classList.add('sidebar-visible');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebarBackdrop.classList.remove('show');
+      document.body.classList.remove('sidebar-visible');
+      mainContent.classList.remove('sidebar-visible');
+      topNavbar.classList.remove('sidebar-visible');
+    }
+
+    sidebarToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (sidebar.classList.contains('show')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
+        closeSidebar();
+      }
+    });
+    // Dark Mode Toggle Logic (Consistent with recruiter's pages)
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+    function setTheme(isDarkMode) {
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeIcon.classList.remove('bi-moon-fill');
+        darkModeIcon.classList.add('bi-sun-fill');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeIcon.classList.remove('bi-sun-fill');
+        darkModeIcon.classList.add('bi-moon-fill');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        setTheme(true);
+      } else {
+        setTheme(false); // Default to light mode if no preference or 'light'
+      }
+
+      // Initialize profile data and display on load
+      loadProfileData();
+      updateProfileDisplay();
+    });
+    darkModeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark-mode'));
+    });
+    // Recruiter Profile edit and persistence logic
+    const profilePicInput = document.getElementById('profilePic');
+    const profileImgPreview = document.getElementById('profileImg');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const profileForm = document.getElementById('profileForm');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const profileSavedMsg = document.getElementById('profileSavedMsg');
+    const deletePicBtn = document.getElementById('deletePic');
+    const profileDisplaySection = document.getElementById('profileDisplaySection');
+
+    let recruiterProfileData = {}; // Will load from localStorage or use defaults
+
+    // Function to load profile data from localStorage
+    function loadProfileData() {
+      const storedData = localStorage.getItem('recruitEaseRecruiterProfile');
+      if (storedData) {
+        recruiterProfileData = JSON.parse(storedData);
+      } else {
+        // Default data: all fields set to N/A
+        recruiterProfileData = {
+          profilePicture: DEFAULT_PROFILE_PIC,
+          fullName: "N/A",
+          recruiterId: "N/A",
+          email: "N/A",
+          phone: "N/A",
+          address: "N/A",
+          position: "N/A",
+          department: "N/A",
+          linkedin: "N/A"
+        };
+      }
+    }
+
+    // Function to save profile data to localStorage
+    function saveProfileData() {
+      localStorage.setItem('recruitEaseRecruiterProfile', JSON.stringify(recruiterProfileData));
+    }
+
+    // Function to update all displayed profile elements
+    function updateProfileDisplay() {
+      profileImgPreview.src = recruiterProfileData.profilePicture || DEFAULT_PROFILE_PIC;
+      document.getElementById('displayFullName').textContent = 'N/A';
+      document.getElementById('displayRecruiterId').textContent = "Recruiter ID: N/A";
+      document.getElementById('displayEmail').textContent = 'N/A';
+      document.getElementById('displayFullNameDetails').textContent = 'N/A';
+      document.getElementById('displayEmailDetails').textContent = 'N/A';
+      document.getElementById('displayPhone').textContent = 'N/A';
+      document.getElementById('displayAddress').textContent = 'N/A';
+      document.getElementById('displayRecruiterIdDetails').textContent = 'N/A';
+      document.getElementById('displayPosition').textContent = 'N/A';
+      document.getElementById('displayDepartment').textContent = 'N/A';
+
+      const displayLinkedIn = document.getElementById('displayLinkedIn');
+      displayLinkedIn.textContent = 'N/A';
+    }
+
+    // Event listener for profile picture selection
+    profilePicInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          profileImgPreview.src = e.target.result; // Update preview immediately
+          recruiterProfileData.profilePicture = e.target.result; // Store the Data URL
+          saveProfileData(); // Save the change
+        };
+        reader.readAsDataURL(file);
+      } else {
+        profileImgPreview.src = recruiterProfileData.profilePicture || DEFAULT_PROFILE_PIC;
+      }
+    });
+    // Event listener for "Delete Picture" button
+    deletePicBtn.addEventListener('click', function() {
+      profileImgPreview.src = DEFAULT_PROFILE_PIC; // Reset to default
+      recruiterProfileData.profilePicture = DEFAULT_PROFILE_PIC; // Update data
+      profilePicInput.value = ''; // Clear file input
+      saveProfileData(); // Save the change
+    });
+    // Event listener for "Edit Profile" button
+    editProfileBtn.addEventListener('click', function() {
+      // Populate form fields with N/A
+      document.getElementById('firstName').value = '';
+      document.getElementById('lastName').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('address').value = '';
+      document.getElementById('recruiterId').value = '';
+      document.getElementById('position').value = '';
+      document.getElementById('department').value = '';
+      document.getElementById('linkedin').value = '';
+
+      profileDisplaySection.style.display = "none"; // Hide display section
+      profileForm.style.display = "block"; // Show edit form
+      profileSavedMsg.classList.remove('show'); // Hide any previous success message
+      profileForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Event listener for "Cancel" button
+    cancelEditBtn.addEventListener('click', function() {
+      profileForm.style.display = "none"; // Hide the edit form
+      profileDisplaySection.style.display = "block"; // Show display section
+    });
+    // Event listener for "Save Changes" form submission
+    profileForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Update recruiterProfileData with form values
+      recruiterProfileData.fullName = document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
+      recruiterProfileData.email = document.getElementById('email').value;
+      recruiterProfileData.phone = document.getElementById('phone').value;
+      recruiterProfileData.address = document.getElementById('address').value;
+      recruiterProfileData.recruiterId = document.getElementById('recruiterId').value;
+      recruiterProfileData.position = document.getElementById('position').value;
+      recruiterProfileData.department = document.getElementById('department').value;
+      recruiterProfileData.linkedin = document.getElementById('linkedin').value || 'N/A';
+
+      // Handle resume file upload (simplified, actual upload would require backend)
+      const resumeFile = document.getElementById('resume').files[0];
+      if (resumeFile) {
+        // In a real application, you'd upload this file and save its URL/path
+        // For demonstration, just save the name or a placeholder
+        // recruiterProfileData.resume = resumeFile.name;
+      }
+
+      // Password logic (simplified - in real app, send to backend for hashing)
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword && newPassword !== confirmPassword) {
+        alert("New password and confirm password do not match!");
+        return; // Stop form submission
+      }
+      // If passwords match and new password is provided, you'd send it to the server
+      // DO NOT SAVE PASSWORDS IN LOCAL STORAGE IN REAL APP
+
+      saveProfileData(); // Save updated data to local storage
+      updateProfileDisplay(); // Update displayed information
+
+      // Show custom "Saved!" message
+      profileSavedMsg.style.display = "flex";
+      setTimeout(() => {
+        profileSavedMsg.classList.add('show');
+      }, 10); // Small delay to allow display:flex to apply
+
+      setTimeout(() => {
+        profileSavedMsg.classList.remove('show');
+        setTimeout(() => {
+          profileSavedMsg.style.display = "none";
+        }, 300); // Wait for fade out transition
+      }, 2000); // Display for 2 seconds
+
+      // Show IT Admin Notification Modal
+      const itAdminModal = new bootstrap.Modal(document.getElementById('itAdminNotificationModal'));
+      itAdminModal.show();
+
+      // Hide edit card after saving and show display section
+      profileForm.style.display = "none";
+      profileDisplaySection.style.display = "block";
+
+      // Clear password fields after save for security
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    });
+  </script>
+</body>
+</html>

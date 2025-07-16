@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      color-scheme: dark; /* Helps with browser-native UI like scrollbars */
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #6cb6ff; /* BRIGHTER BLUE FOR DARK MODE */
+      --status-secondary: #95a5a6;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1201; /* INCREASED Z-INDEX TO BE ABOVE NAVBAR */
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1300;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200; /* KEPT AS IS, BUT NOW LOWER THAN SIDEBAR */
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease, left 0.3s ease, width 0.3s ease; /* Added left and width to transition */
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+      left: 0; /* Default position */
+      right: 0; /* Default width */
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+      left: 260px; /* Position next to sidebar */
+      width: calc(100% - 260px); /* Adjust width to fit remaining space */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 8px 25px var(--card-shadow);
+      padding: 3rem;
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+    }
+    .dashboard-container h4 {
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    .table-responsive {
+      margin-top: 2.5rem;
+    }
+    /* Table Styling */
+    .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle;
+        font-size: 0.9rem;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px var(--shadow-color);
+        border: 1px solid var(--border-color);
+    }
+    .table th,
+    .table td {
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+    .table thead th {
+        background-color: var(--body-bg);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .table thead th:last-child,
+    .table tbody td:last-child {
+        border-right: none;
+    }
+
+    /* Striped rows for better readability */
+    .table tbody tr:nth-of-type(even) {
+        background-color: var(--main-brand-color-bg-hover);
+    }
+    .table tbody tr:hover {
+        background-color: var(--main-brand-color-light);
+        cursor: pointer;
+    }
+    body.dark-mode .table tbody tr:nth-of-type(even) {
+        background-color: rgba(255,107,107,0.05);
+    }
+    body.dark-mode .table tbody tr:hover {
+        background-color: #1a2027; /* Darker background on hover */
+        color: #bdc3c7; /* Darker text color on hover for better contrast */
+    }
+
+    /* Remove default table borders */
+    .table-bordered {
+      border: none;
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+    }
+    .table-bordered tbody td {
+        border-color: var(--border-color);
+    }
+
+    .table .bg-white {
+        background-color: transparent !important;
+        color: var(--text-color);
+    }
+    /* Adjusted badge colors and styles */
+    .table .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em;
+        border-radius: 0.35rem;
+        text-transform: capitalize;
+        min-width: 80px;
+        display: inline-block;
+        text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+
+
+    /* Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 18px var(--card-shadow);
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+        height: 100%;
+    }
+    .summary-card .icon {
+        font-size: 2rem;
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem;
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.2rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.late .icon { color: var(--status-warning); }
+    .summary-card.on-time .icon { color: var(--status-success); }
+    .summary-card.absent .icon { color: var(--status-danger); }
+
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem;
+        border-radius: 0.8rem;
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: flex-start;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px;
+        border-color: var(--border-color);
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--text-color-light);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        box-shadow: 0 2px 5px var(--shadow-color);
+        border-width: 1px;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px var(--shadow-color);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color);
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024;
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info);
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+        box-shadow: none;
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem;
+        box-shadow: 0 6px 20px var(--shadow-color);
+        padding: 0.5rem 0;
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-day:hover,
+    body.dark-mode .flatpickr-day.inRange {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+    /* FIX: Style for the hovered number in Flatpickr time input */
+    body.dark-mode .flatpickr-time .numInput:hover {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem;
+        border-radius: 0.4rem;
+        margin: 0 0.2rem;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important;
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem;
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem;
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important;}
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 1.5rem; /* Adjusted padding */
+    }
+    .modal-header .modal-title {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.15rem; /* Adjusted font size */
+        display: flex; /* Enable flexbox for icon and text alignment */
+        align-items: center; /* Vertically align items */
+        gap: 0.75rem; /* Space between icon and text */
+    }
+
+    .modal-dialog-centered {
+      display: flex;
+      align-items: center;
+      min-height: calc(100vh - 4rem); /* leave space for navbar */
+    }
+
+    @media (min-width: 576px) {
+      .modal-dialog {
+        margin-top: 5rem !important; /* extra space from top */
+        margin-bottom: 2.5rem !important;
+      }
+    }
+
+    .modal-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      background: none !important;
+      box-shadow: none !important;
+    }
+    .modal-body {
+        padding: 1.5rem 2rem; /* Adjusted padding */
+    }
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 0.75rem 2rem; /* Adjusted padding */
+    }
+    .modal .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.85rem; /* Adjusted font size */
+        margin-bottom: 0.2rem; /* Adjusted margin */
+    }
+    /* IMPROVED: Specific modal input styling for dark mode */
+    .modal .form-control,
+    .modal .form-select,
+    .modal textarea.form-control {
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        border-color: var(--border-color);
+        padding: 0.6rem 0.9rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .modal .form-control:focus,
+    .modal .form-select:focus,
+    .modal textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+    /* ENSURE dark mode select arrow is visible */
+    body.dark-mode .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bdc3c7' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    }
+
+    /* New: Dark mode styling for file input button */
+    body.dark-mode .modal .form-control[type="file"]::-webkit-file-upload-button,
+    body.dark-mode .modal .form-control[type="file"]::file-selector-button {
+        background-color: var(--card-bg); /* Use a slightly different dark background for the button */
+        color: var(--text-color); /* Ensure text is visible */
+        border: 1px solid var(--border-color); /* Match input border */
+        padding: 0.6rem 0.9rem; /* Match input padding */
+        border-radius: 0.3rem; /* Slightly less rounded than input for distinction */
+        margin-inline-end: 1rem; /* Space between button and filename */
+        -webkit-appearance: none; /* Remove default button styles */
+        appearance: none;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body.dark-mode .modal .form-control[type="file"]::-webkit-file-upload-button:hover,
+    body.dark-mode .modal .form-control[type="file"]::file-selector-button:hover {
+        background-color: var(--body-bg); /* Darker on hover */
+        cursor: pointer;
+    }
+
+    /* Specific adjustments for Add Attendance Modal */
+    #addAttendanceModal .modal-dialog {
+        max-width: 800px; /* Wider */
+        margin: 1.75rem auto; /* Vertical centering and reduced top/bottom margin */
+    }
+
+    /* Employee Profile Header in Modal */
+    .employee-profile-header {
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color); /* Subtle separator */
+    }
+
+    .employee-profile-header .profile-picture {
+        width: 100px; /* Adjust size as needed */
+        height: 100px;
+        object-fit: cover;
+        /* border: 3px solid var(--main-brand-color); /* Highlight with brand color */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body.dark-mode .employee-profile-header .profile-picture {
+        /* border-color: var(--main-brand-color); /* Ensure brand color contrast in dark mode */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .employee-profile-header .employee-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-top: 1rem;
+    }
+
+    .employee-profile-header .employee-position {
+        font-size: 1rem;
+        color: var(--text-color-secondary);
+    }
+
+    /* Employee Details Grid */
+    .employee-details-grid {
+        padding-top: 1rem;
+    }
+
+    .info-item {
+        background-color: var(--body-bg); /* Slightly different background for info cards */
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        height: 100%; /* Ensures consistent height in grid */
+    }
+
+    body.dark-mode .info-item {
+        background-color: #262b32; /* Darker background for info items in dark mode */
+        border-color: #353d47;
+    }
+
+    .info-item .info-label {
+        font-size: 0.85rem;
+        color: var(--text-color-secondary);
+        margin-bottom: 0.1rem; /* Less space between label and value */
+        font-weight: 500;
+    }
+
+    .info-item .info-value {
+        font-size: 1rem;
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+        left: 0 !important; /* Override desktop styles for mobile */
+        width: 100% !important; /* Override desktop styles for mobile */
+      }
+      .top-navbar .sidebar-toggle {
+        display: flex;
+      }
+      .dashboard-content, .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+      .dashboard-container {
+        padding: 1.5rem 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .btn,
+      .filter-actions-bar .dropdown,
+      .filter-actions-bar .btn-group { /* Target btn-group for full width */
+        min-width: unset;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 {
+        flex-direction: column;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 button {
+        width: 100%;
+      }
+      /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+      .table-responsive .table thead th,
+      .table-responsive .table tbody td {
+        white-space: nowrap; /* Keep text on one line */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center"> RecruitEase Management System </h4>
+    <div class="active-label">HR PORTAL</div>
+    <a href="Dashboard.html" class="fw-bold active"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+    <a href="Payroll.html"><i class="bi bi-cash-stack me-2"></i> Payroll</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+  <div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+      <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <i class="bi bi-moon-fill"></i>
+      </button>
+      <a href="Notifications.html" style="text-decoration:none;">
+        <i class="bi bi-bell-fill"></i>
+      </a>
+      <a href="Profile.html" style="text-decoration:none;">
+        <i class="bi bi-person-circle"></i>
+      </a>
+      <span class="ms-2">HR<br><small>Welcome!</small></span>
+    </div>
+  </div>
+  <div class="dashboard-content" id="mainContent">
+    <div class="container dashboard-container">
+      <h4 class="mb-4">HR Dashboard Overview</h4>
+      <div class="row mb-5 justify-content-center g-4">
+        <div class="col-md-4 mb-3">
+          <div class="summary-card on-time">
+            <i class="bi bi-people-fill icon"></i>
+            <div class="value" id="totalEmployees">35</div>
+            <div class="label">Total Employees</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="summary-card absent">
+            <i class="bi bi-calendar-check-fill icon"></i>
+            <div class="value" id="pendingLeaves">3</div>
+            <div class="label">Pending Leave Requests</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="summary-card late">
+            <i class="bi bi-clock-history icon"></i>
+            <div class="value" id="attendanceToday">30</div>
+            <div class="label">Attendance Today</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-actions-bar mb-5">
+        <input type="text" id="employeeSearch" class="form-control" placeholder="Search by Employee Name/ID">
+        <select id="statusFilter" class="form-select">
+          <option value="">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="On Leave">On Leave</option>
+          <option value="Terminated">Terminated</option>
+        </select>
+        <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#addEmployeeModal"><i class="bi bi-plus-circle me-2"></i>Add Employee</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover" id="employeeTable">
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Position</th>
+              <th>Status</th>
+              <th>Employment Date</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Table rows will be rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addEmployeeModalLabel"><i class="bi bi-person-plus me-2"></i>Add New Employee</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addEmployeeForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="employeeName" class="form-label">Employee Name</label>
+                <input type="text" class="form-control" id="employeeName" required>
+              </div>
+              <div class="col-md-6">
+                <label for="employeeId" class="form-label">Employee ID</label>
+                <input type="text" class="form-control" id="employeeId" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="department" class="form-label">Department</label>
+                <input type="text" class="form-control" id="department" required>
+              </div>
+              <div class="col-md-6">
+                <label for="position" class="form-label">Position</label>
+                <input type="text" class="form-control" id="position" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" required>
+                  <option value="Active">Active</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Terminated">Terminated</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="employmentDate" class="form-label">Employment Date</label>
+                <input type="date" class="form-control" id="employmentDate" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email">
+              </div>
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="phone">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea class="form-control" id="address" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="salary" class="form-label">Salary</label>
+              <input type="number" class="form-control" id="salary" step="0.01">
+            </div>
+            <div class="mb-4">
+              <label for="resumeUpload" class="form-label">Resume Upload</label>
+              <div class="input-group">
+                <input type="file" class="form-control" id="resumeUpload" accept=".pdf,.doc,.docx" aria-describedby="uploadResumeHelp">
+                <button class="btn btn-primary" type="button" id="scanResumeBtn"><i class="bi bi-file-earmark-arrow-up me-2"></i>Scan Resume</button>
+              </div>
+              <div id="uploadResumeHelp" class="form-text text-muted mt-2">Upload PDF or Word documents (max 5MB).</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="addEmployeeForm" class="btn btn-primary">Add Employee</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="viewEmployeeModal" tabindex="-1" aria-labelledby="viewEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewEmployeeModalLabel"><i class="bi bi-person-lines-fill me-2"></i>Employee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="employee-profile-header text-center mb-4">
+                <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Employee Profile Picture" class="profile-picture rounded-circle mb-3">
+                <h5 id="viewEmployeeName" class="employee-name mb-1">John Doe</h5>
+                <p id="viewEmployeePosition" class="employee-position text-muted">Software Engineer</p>
+                <span id="viewEmployeeStatus" class="badge bg-success">Active</span>
+            </div>
+            <hr class="mb-4">
+            <div class="row employee-details-grid">
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Employee ID:</p>
+                        <p id="viewEmployeeId" class="info-value">EMP001</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Department:</p>
+                        <p id="viewEmployeeDepartment" class="info-value">IT</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Email:</p>
+                        <p id="viewEmployeeEmail" class="info-value">john.doe@example.com</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Phone:</p>
+                        <p id="viewEmployeePhone" class="info-value">+123 456 7890</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Employment Date:</p>
+                        <p id="viewEmployeeEmploymentDate" class="info-value">2022-01-15</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Salary:</p>
+                        <p id="viewEmployeeSalary" class="info-value">$75,000</p>
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="info-item">
+                        <p class="info-label">Address:</p>
+                        <p id="viewEmployeeAddress" class="info-value">123 Main St, Anytown, USA</p>
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editEmployeeModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit Employee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editEmployeeForm">
+            <input type="hidden" id="editEmployeeOriginalId">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editEmployeeName" class="form-label">Employee Name</label>
+                <input type="text" class="form-control" id="editEmployeeName" required>
+              </div>
+              <div class="col-md-6">
+                <label for="editEmployeeId" class="form-label">Employee ID</label>
+                <input type="text" class="form-control" id="editEmployeeId" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editDepartment" class="form-label">Department</label>
+                <input type="text" class="form-control" id="editDepartment" required>
+              </div>
+              <div class="col-md-6">
+                <label for="editPosition" class="form-label">Position</label>
+                <input type="text" class="form-control" id="editPosition" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editStatus" class="form-label">Status</label>
+                <select class="form-select" id="editStatus" required>
+                  <option value="Active">Active</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Terminated">Terminated</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="editEmploymentDate" class="form-label">Employment Date</label>
+                <input type="date" class="form-control" id="editEmploymentDate" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="editEmail">
+              </div>
+              <div class="col-md-6">
+                <label for="editPhone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="editPhone">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editAddress" class="form-label">Address</label>
+              <textarea class="form-control" id="editAddress" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editSalary" class="form-label">Salary</label>
+              <input type="number" class="form-control" id="editSalary" step="0.01">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="editEmployeeForm" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteConfirmationModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete employee ID: <strong id="deleteEmployeeIdDisplay"></strong>? This action cannot be undone.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Modal for Resume Scan -->
+  <div class="modal fade" id="resumeScanNotificationModal" tabindex="-1" aria-labelledby="resumeScanNotificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resumeScanNotificationModalLabel"><i class="bi bi-bell-fill me-2"></i>Resume Scan Notification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          The resume has been scanned. A notification has been sent to the recruiter and HR employees for review and further action.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Dark Mode Toggle Logic
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+      }
+
+      darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+          localStorage.setItem('theme', 'dark');
+          darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+        } else {
+          localStorage.setItem('theme', 'light');
+          darkModeToggle.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+        }
+      });
+
+      // Sidebar Toggle Logic
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      const mainContent = document.getElementById('mainContent');
+      const topNavbar = document.getElementById('topNavbar');
+
+      function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        sidebarBackdrop.classList.toggle('show');
+        mainContent.classList.toggle('sidebar-visible');
+        topNavbar.classList.toggle('sidebar-visible');
+      }
+
+      sidebarToggle.addEventListener('click', toggleSidebar);
+      sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+      // Initialize Flatpickr for date inputs
+      flatpickr("#employmentDate", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        allowInput: true,
+      });
+
+      flatpickr("#editEmploymentDate", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        allowInput: true,
+      });
+
+      // Dummy Data for Employees (replace with actual backend data)
+      let employees = [
+        { id: "EMP001", name: "John Doe", department: "IT", position: "Software Engineer", status: "Active", employmentDate: "2022-01-15", email: "john.doe@example.com", phone: "+1234567890", address: "123 Main St, Anytown, USA", salary: 75000 },
+        { id: "EMP002", name: "Jane Smith", department: "HR", position: "HR Specialist", status: "On Leave", employmentDate: "2021-03-01", email: "jane.smith@example.com", phone: "+1987654321", address: "456 Oak Ave, Anytown, USA", salary: 60000 },
+        { id: "EMP003", name: "Peter Jones", department: "Sales", position: "Sales Manager", status: "Terminated", employmentDate: "2020-07-20", email: "peter.jones@example.com", phone: "+1122334455", address: "789 Pine Ln, Anytown, USA", salary: 80000 }
+      ];
+
+      const employeeTableBody = document.querySelector('#employeeTable tbody');
+      const totalEmployeesCard = document.getElementById('totalEmployees');
+      const newApplicantsCard = document.getElementById('newApplicants');
+      const pendingLeavesCard = document.getElementById('pendingLeaves');
+
+      function renderEmployees() {
+        employeeTableBody.innerHTML = '';
+        const searchTerm = document.getElementById('employeeSearch').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        let filteredEmployees = employees.filter(employee => {
+          const matchesSearch = employee.name.toLowerCase().includes(searchTerm) || employee.id.toLowerCase().includes(searchTerm);
+          const matchesStatus = statusFilter === '' || employee.status === statusFilter;
+          return matchesSearch && matchesStatus;
+        });
+
+        filteredEmployees.forEach(employee => {
+          const row = document.createElement('tr');
+          row.setAttribute('data-employee-id', employee.id);
+          row.innerHTML = `
+            <td>${employee.id}</td>
+            <td>${employee.name}</td>
+            <td>${employee.department}</td>
+            <td>${employee.position}</td>
+            <td><span class="badge bg-${getBadgeClass(employee.status)}">${employee.status}</span></td>
+            <td>${employee.employmentDate}</td>
+            <td class="text-center">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Manage
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item view-employee" href="#" data-bs-toggle="modal" data-bs-target="#viewEmployeeModal"><i class="bi bi-eye me-2"></i>View Details</a></li>
+                  <li><a class="dropdown-item edit-employee" href="#" data-bs-toggle="modal" data-bs-target="#editEmployeeModal"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                  <li><a class="dropdown-item text-danger delete-employee" href="#" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-employee-id="EMP001"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                </ul>
+              </div>
+            </td>
+          `;
+          employeeTableBody.appendChild(row);
+        });
+
+        updateSummaryCards();
+        attachEventListenersToTableButtons();
+      }
+
+      function getBadgeClass(status) {
+        switch (status) {
+          case 'Active': return 'success';
+          case 'On Leave': return 'warning';
+          case 'Terminated': return 'danger';
+          default: return 'secondary';
+        }
+      }
+
+      function updateSummaryCards() {
+        totalEmployeesCard.textContent = employees.length;
+        // Dummy data for new applicants and pending leaves
+        newApplicantsCard.textContent = 12; // Example value
+        pendingLeavesCard.textContent = 3; // Example value
+      }
+
+      // Search and Filter Event Listeners
+      document.getElementById('employeeSearch').addEventListener('input', renderEmployees);
+      document.getElementById('statusFilter').addEventListener('change', renderEmployees);
+
+      // Add Employee Logic
+      const addEmployeeForm = document.getElementById('addEmployeeForm');
+      addEmployeeForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newEmployee = {
+          id: document.getElementById('employeeId').value,
+          name: document.getElementById('employeeName').value,
+          department: document.getElementById('department').value,
+          position: document.getElementById('position').value,
+          status: document.getElementById('status').value,
+          employmentDate: document.getElementById('employmentDate').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          address: document.getElementById('address').value,
+          salary: parseFloat(document.getElementById('salary').value) || 0
+        };
+        employees.push(newEmployee);
+        renderEmployees();
+        const addModal = bootstrap.Modal.getInstance(document.getElementById('addEmployeeModal'));
+        addModal.hide();
+        addEmployeeForm.reset(); // Clear form
+      });
+
+      // Edit Employee Logic
+      const editEmployeeModal = document.getElementById('editEmployeeModal');
+      editEmployeeModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const employeeId = button.closest('tr').dataset.employeeId;
+        const employee = employees.find(emp => emp.id === employeeId);
+
+        if (employee) {
+          document.getElementById('editEmployeeOriginalId').value = employee.id;
+          document.getElementById('editEmployeeId').value = employee.id;
+          document.getElementById('editEmployeeName').value = employee.name;
+          document.getElementById('editDepartment').value = employee.department;
+          document.getElementById('editPosition').value = employee.position;
+          document.getElementById('editStatus').value = employee.status;
+          document.getElementById('editEmploymentDate').value = employee.employmentDate;
+          document.getElementById('editEmail').value = employee.email;
+          document.getElementById('editPhone').value = employee.phone;
+          document.getElementById('editAddress').value = employee.address;
+          document.getElementById('editSalary').value = employee.salary;
+        }
+      });
+
+      const editEmployeeForm = document.getElementById('editEmployeeForm');
+      editEmployeeForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const originalId = document.getElementById('editEmployeeOriginalId').value;
+        const updatedEmployee = {
+          id: document.getElementById('editEmployeeId').value,
+          name: document.getElementById('editEmployeeName').value,
+          department: document.getElementById('editDepartment').value,
+          position: document.getElementById('editPosition').value,
+          status: document.getElementById('editStatus').value,
+          employmentDate: document.getElementById('editEmploymentDate').value,
+          email: document.getElementById('editEmail').value,
+          phone: document.getElementById('editPhone').value,
+          address: document.getElementById('editAddress').value,
+          salary: parseFloat(document.getElementById('editSalary').value) || 0
+        };
+
+        employees = employees.map(emp => emp.id === originalId ? updatedEmployee : emp);
+        renderEmployees();
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editEmployeeModal'));
+        editModal.hide();
+      });
+
+      // View Employee Details Logic
+      const viewEmployeeModal = document.getElementById('viewEmployeeModal');
+      viewEmployeeModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const employeeId = button.closest('tr').dataset.employeeId;
+        const employee = employees.find(emp => emp.id === employeeId);
+
+        if (employee) {
+          document.getElementById('viewEmployeeId').textContent = employee.id;
+          document.getElementById('viewEmployeeName').textContent = employee.name;
+          document.getElementById('viewEmployeePosition').textContent = employee.position;
+          document.getElementById('viewEmployeeDepartment').textContent = employee.department;
+          document.getElementById('viewEmployeeEmail').textContent = employee.email;
+          document.getElementById('viewEmployeePhone').textContent = employee.phone;
+          document.getElementById('viewEmployeeEmploymentDate').textContent = employee.employmentDate;
+          document.getElementById('viewEmployeeSalary').textContent = `$${employee.salary.toLocaleString()}`;
+          document.getElementById('viewEmployeeAddress').textContent = employee.address;
+
+          const viewEmployeeStatusSpan = document.getElementById('viewEmployeeStatus');
+          viewEmployeeStatusSpan.textContent = employee.status;
+          viewEmployeeStatusSpan.className = 'badge bg-' + getBadgeClass(employee.status);
+          // Optional: Update profile picture source if you have paths for each employee
+          // document.querySelector('#viewEmployeeModal .profile-picture').src = `/assets/profile_pics/${employee.id}.jpg`;
+        }
+      });
+
+      // Delete Employee Logic
+      let employeeToDeleteId = null;
+      const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+      function attachEventListenersToTableButtons() {
+        document.querySelectorAll('.delete-employee').forEach(button => {
+          button.removeEventListener('click', setEmployeeToDelete); // Prevent duplicate listeners
+          button.addEventListener('click', setEmployeeToDelete);
+        });
+      }
+
+      function setEmployeeToDelete(event) {
+          const button = event.relatedTarget || event.currentTarget; // event.currentTarget for direct clicks
+          employeeToDeleteId = button.dataset.employeeId;
+          document.getElementById('deleteEmployeeIdDisplay').textContent = employeeToDeleteId;
+      }
+
+      confirmDeleteBtn.addEventListener('click', function () {
+          if (employeeToDeleteId) {
+              employees = employees.filter(emp => emp.id !== employeeToDeleteId);
+              renderEmployees();
+              const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+              deleteModal.hide();
+              employeeToDeleteId = null; // Reset the stored ID
+          }
+      });
+
+      // Scan Resume Button Logic
+      const scanResumeBtn = document.getElementById('scanResumeBtn');
+      if (scanResumeBtn) {
+        scanResumeBtn.addEventListener('click', function() {
+          const notificationModal = new bootstrap.Modal(document.getElementById('resumeScanNotificationModal'));
+          notificationModal.show();
+        });
+      }
+
+      // Initial render of employees
+      renderEmployees();
+    });
+
+    // Enhance badge color in view modal dynamically (redundant after modal redesign, but kept for safety)
+    // document.addEventListener('DOMContentLoaded', function () {
+    //   function updateViewEmployeeStatusBadge() {
+    //     const statusSpan = document.getElementById('viewEmployeeStatus');
+    //     if (!statusSpan) return;
+    //     const status = statusSpan.textContent.trim();
+    //     statusSpan.className = 'badge ' +
+    //       (status === 'Active'
+    //         ? 'bg-success'
+    //         : status === 'On Leave'
+    //         ? 'bg-warning'
+    //         : status === 'Terminated'
+    //         ? 'bg-danger'
+    //         : 'bg-secondary');
+    //   }
+    //   // Hook into modal show event
+    //   const viewModal = document.getElementById('viewEmployeeModal');
+    //   if (viewModal) {
+    //     viewModal.addEventListener('show.bs.modal', updateViewEmployeeStatusBadge);
+    //   }
+    // });
+  </script>
+</body>
+</html>

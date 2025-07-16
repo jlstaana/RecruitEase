@@ -1,0 +1,1338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Support | J. Alcabasa HR Management System</title>
+    <link rel="icon" type="image/png" href="../assets/logo.jpg"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+    /* Dashboard Adaptive KPI Card Styles */
+    .kpi-card {
+      background: var(--kpi-bg) !important;
+      color: var(--kpi-text) !important;
+      border-radius: 1rem;
+      box-shadow: 0 8px 25px var(--card-shadow);
+      border: 1px solid var(--border-color);
+      transition: background 0.3s, color 0.3s;
+    }
+    .kpi-card .kpi-value {
+      color: var(--kpi-text) !important;
+      font-size: 2.2rem;
+      transition: color 0.3s;
+    }
+    .kpi-card .kpi-label {
+      color: var(--kpi-label) !important;
+      font-size: 1.05rem;
+      transition: color 0.3s;
+    }
+        /* Root variables for theming - Reused from other pages */
+        :root {
+            --main-brand-color: #c0392b;
+            --main-brand-color-light: #fbecec;
+            --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08);
+            --main-brand-color-border: #e6b0ad;
+
+            --body-bg: #f9fafb;
+            --text-color: #34495e;
+            --text-color-secondary: #7f8c8d;
+            --text-color-light: #bdc3c7;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --top-navbar-bg: white;
+            --border-color: #ecf0f1;
+            --shadow-color: rgba(0,0,0,0.06);
+            --card-shadow: rgba(0,0,0,0.08);
+            --red-accent-shadow: rgba(192,57,43,0.1);
+
+            --status-success: #27ae60;
+            --status-warning: #f39c12;
+            --status-danger: #e74c3c;
+            --status-info: #3498db;
+            --status-secondary: #95a5a6; /* For 'Closed' or general grey */
+            --status-purple: #8e44ad; /* For 'Urgent' priority */
+            --status-orange: #e67e22; /* For 'High' priority */
+
+            /* Pagination specific variables */
+            --bs-pagination-color: var(--text-color);
+            --bs-pagination-bg: var(--card-bg);
+            --bs-pagination-border-color: var(--border-color);
+            --bs-pagination-hover-color: var(--main-brand-color);
+            --bs-pagination-hover-bg: var(--main-brand-color-light);
+            --bs-pagination-hover-border-color: var(--main-brand-color);
+            --bs-pagination-active-color: #fff;
+            --bs-pagination-active-bg: var(--main-brand-color);
+            --bs-pagination-active-border-color: var(--main-brand-color);
+            --bs-pagination-disabled-color: var(--text-color-light);
+            --bs-pagination-disabled-bg: var(--body-bg);
+            --bs-pagination-disabled-border-color: var(--border-color);
+        }
+
+        /* Dark Mode Overrides - Reused */
+        body.dark-mode {
+            --main-brand-color: #ff6b6b;
+            --main-brand-color-light: #4a1a1a;
+            --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+            --main-brand-color-border: #5c2020;
+
+            --body-bg: #1f252d;
+            --text-color: #ecf0f1;
+            --text-color-secondary: #bdc3c7;
+            --text-color-light: #7f8c8d;
+            --card-bg: #2d343c;
+            --sidebar-bg: #2d343c;
+            --top-navbar-bg: #2d343c;
+            --border-color: #3a4756;
+            --shadow-color: rgba(0,0,0,0.25);
+            --card-shadow: rgba(0,0,0,0.35);
+            --red-accent-shadow: rgba(255,107,107,0.15);
+
+            --status-success: #2ecc71;
+            --status-warning: #f1c40f;
+            --status-danger: #e74c3c;
+            --status-info: #3498db;
+            --status-secondary: #95a5a6;
+            --status-purple: #9b59b6;
+            --status-orange: #f39c12;
+
+            /* Dark Mode Pagination specific variables */
+            --bs-pagination-color: var(--text-color-secondary);
+            --bs-pagination-bg: var(--card-bg);
+            --bs-pagination-border-color: var(--border-color);
+            --bs-pagination-hover-color: var(--text-color); /* Lighter on hover */
+            --bs-pagination-hover-bg: rgba(255, 255, 255, 0.1); /* Subtle lighter hover */
+            --bs-pagination-hover-border-color: var(--main-brand-color);
+            --bs-pagination-active-color: #fff;
+            --bs-pagination-active-bg: var(--main-brand-color);
+            --bs-pagination-active-border-color: var(--main-brand-color);
+            --bs-pagination-disabled-color: var(--text-color-light);
+            --bs-pagination-disabled-bg: var(--body-bg);
+            --bs-pagination-disabled-border-color: var(--border-color);
+        }
+
+        /* Base Body Styles - Reused */
+        body {
+            background-color: var(--body-bg);
+            overflow-x: hidden;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar Styling - Reused */
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: var(--body-bg); }
+        body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        body::-webkit-scrollbar-thumb:hover { background: var(--text-color-light); }
+
+        /* Sidebar Styles - Modified for Admin */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--main-brand-color);
+            position: fixed;
+            height: 100vh;
+            padding: 2rem 1.5rem;
+            left: -270px;
+            top: 0;
+            transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+            z-index: 1050;
+            box-shadow: 2px 0 10px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .sidebar.show { left: 0; }
+        .sidebar img {
+            width: 80px; height: 80px; object-fit: cover; margin-bottom: 1.5rem; display: block;
+            margin-left: auto; margin-right: auto; border-radius: 50%; border: 2px solid var(--main-brand-color-border);
+        }
+        .sidebar h4 {
+            color: var(--main-brand-color); transition: color 0.3s ease; font-weight: 600; font-size: 1.15rem;
+        }
+        .sidebar a {
+            color: var(--text-color-secondary); text-decoration: none; display: flex; align-items: center;
+            padding: 0.85rem 1.2rem; border-radius: 0.6rem; font-size: 0.95rem; width: 100%;
+            transition: background 0.2s ease-in-out, color 0.2s ease-in-out; font-weight: 500; gap: 0.75rem;
+        }
+        .sidebar a:hover, .sidebar a.fw-bold { background-color: var(--main-brand-color-bg-hover); color: var(--main-brand-color); }
+        .sidebar a.fw-bold { color: var(--main-brand-color); font-weight: 600; }
+        .sidebar .active-label {
+            text-align: center; background-color: var(--main-brand-color); color: #ffffff; font-weight: bold;
+            padding: 0.6rem 1rem; border-radius: 0.4rem; margin-bottom: 2rem; width: 100%;
+            letter-spacing: 0.8px; font-size: 0.85rem; text-transform: uppercase;
+        }
+        .sidebar-backdrop { display: none; }
+        .sidebar-backdrop.show {
+            display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.15); z-index: 1049;
+        }
+
+        /* Sidebar Toggle - Reused */
+        .sidebar-toggle {
+            background: none; border: none; color: var(--main-brand-color); font-size: 1.8rem;
+            display: flex; align-items: center; cursor: pointer; z-index: 1100; transition: color 0.3s ease; padding: 0.2rem;
+        }
+        .sidebar-toggle i { font-size: 1.8rem; }
+
+        /* Main Content Area - Reused */
+        .dashboard-content {
+            padding: 2rem; transition: margin-left 0.3s; margin-left: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+        body.sidebar-visible .dashboard-content {
+            margin-left: 260px; width: calc(100% - 260px);
+        }
+
+        /* Top Navbar - Reused */
+        .top-navbar {
+            background-color: var(--top-navbar-bg); padding: 0.8rem 2rem; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1200;
+            transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease; margin-left: 0;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        body.sidebar-visible .top-navbar { margin-left: 260px; }
+        .top-navbar .navbar-logo { height: 36px; width: auto; margin-right: 0.75rem; transition: height 0.3s ease; }
+        .top-navbar .bi { color: var(--main-brand-color); font-size: 1.15rem; margin-left: 1rem; transition: color 0.3s ease; }
+        .top-navbar .ms-2 { font-size: 0.95rem; font-weight: 500; color: var(--text-color); transition: color 0.3s ease; }
+        .top-navbar .ms-2 small { color: var(--text-color-secondary); font-weight: 400; display: block; font-size: 0.85rem; }
+
+        /* Dark Mode Toggle specific styles - Reused */
+        .dark-mode-toggle {
+            background: none; border: none; color: var(--text-color-secondary); font-size: 1.15rem;
+            margin-left: 1rem; cursor: pointer; transition: color 0.3s ease; display: flex; align-items: center; justify-content: center; padding: 0.25rem;
+        }
+        .dark-mode-toggle:hover { color: var(--main-brand-color); }
+        body.dark-mode .dark-mode-toggle { background: none; }
+        .dark-mode-toggle i { font-size: 1.15rem; }
+
+        /* Dashboard Container - Reused */
+        .dashboard-container {
+            max-width: 1500px; background: var(--card-bg); border-radius: 1rem;
+            box-shadow: 0 8px 25px var(--card-shadow); padding: 3rem; margin-top: 2.5rem; margin-bottom: 2.5rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; width: 100%;
+        }
+        .dashboard-container h4 {
+            color: var(--text-color); font-weight: 600; margin-bottom: 2rem; font-size: 1.8rem;
+            transition: color 0.3s ease; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;
+        }
+
+        /* Form Controls - Reused/General */
+        .form-control, .form-select, .input-group-text, .form-check-input {
+            border-color: var(--border-color); background-color: var(--body-bg); color: var(--text-color);
+            padding: 0.7rem 0.9rem; border-radius: 0.4rem; font-size: 0.9rem;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-control::placeholder, .form-select::placeholder { color: var(--text-color-light); }
+        .form-control:focus, .form-select:focus, .form-check-input:focus {
+            border-color: var(--main-brand-color); box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+            background-color: var(--card-bg);
+        }
+        .form-label {
+            font-weight: 500; color: var(--text-color-secondary); font-size: 0.9rem; margin-bottom: 0.4rem;
+        }
+        textarea.form-control { min-height: 120px; resize: vertical; }
+
+        /* Modern Button Styles - Reused */
+        .btn {
+            min-width: 140px; padding: 0.75rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.95rem;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+            box-shadow: 0 2px 5px var(--shadow-color); border-width: 1px;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px var(--shadow-color); }
+        .btn:active { transform: translateY(0); box-shadow: 0 1px 3px var(--shadow-color); }
+        .btn:focus { outline: none; box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); }
+
+        /* Specific Button Color Overrides - Reused */
+        .btn-danger { background-color: var(--main-brand-color); border-color: var(--main-brand-color); color: white; }
+        .btn-danger:hover { background-color: #a03024; border-color: #a03024; }
+        .btn-danger:focus { box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25); }
+        .btn-primary { background-color: var(--status-info); border-color: var(--status-info); color: white; }
+        .btn-primary:hover { background-color: #2a7cbd; border-color: #2a7cbd; }
+        .btn-primary:focus { box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); }
+        .btn-secondary { background-color: var(--status-secondary); border-color: var(--status-secondary); color: white; }
+        .btn-secondary:hover { background-color: #6c7a7b; border-color: #6c7a7b; }
+        .btn-secondary:focus { box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25); }
+        .btn-success { background-color: var(--status-success); border-color: var(--status-success); color: white; }
+        .btn-success:hover { background-color: #229954; border-color: #229954; }
+        .btn-success:focus { box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25); }
+        .btn-outline-secondary {
+            color: var(--text-color-secondary);
+            border-color: var(--border-color);
+            background-color: transparent;
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+        .btn-outline-secondary:focus {
+            box-shadow: 0 0 0 0.2rem var(--border-color);
+        }
+
+        /* Toast notification styling - Reused */
+        .toast-container { position: fixed; bottom: 1rem; right: 1rem; z-index: 9999; }
+        .toast {
+            background-color: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+        .toast.align-items-center.text-bg-success { background-color: var(--status-success) !important; color: white !important; }
+        .toast.align-items-center.text-bg-danger { background-color: var(--status-danger) !important; color: white !important; }
+        .toast.align-items-center.text-bg-info { background-color: var(--status-info) !important; color: white !important; }
+        .toast-body { font-size: 0.9rem; font-weight: 500; }
+        .toast-header { background-color: var(--card-bg); color: var(--text-color); border-bottom: 1px solid var(--border-color); }
+
+
+        /* Table Specific Styles - Reused/Adjusted */
+        .table-responsive { margin-top: 2.5rem; }
+        .table {
+            --bs-table-bg: var(--card-bg); /* Use card-bg for table background */
+            --bs-table-color: var(--text-color);
+            --bs-table-border-color: var(--border-color);
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .table-bordered { border-color: var(--border-color); }
+        .table-bordered thead th {
+            border-bottom-width: 2px; border-color: var(--border-color); font-weight: 600; font-size: 0.95rem;
+            padding: 1rem 0.8rem; color: var(--text-color-secondary); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .table-bordered tbody td { padding: 0.9rem 0.8rem; }
+        .table .badge {
+            font-weight: 600; padding: 0.45em 0.8em; border-radius: 0.35rem; text-transform: capitalize;
+            min-width: 80px; display: inline-block; text-align: center;
+        }
+        .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+        .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+        .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+        .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+        .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+        /* New priority badges */
+        .table .badge.priority-low { background-color: #8e44ad !important; color: white !important; } /* Purple */
+        .table .badge.priority-medium { background-color: #3498db !important; color: white !important; } /* Blue (info) */
+        .table .badge.priority-high { background-color: #e67e22 !important; color: white !important; } /* Orange */
+        .table .badge.priority-urgent { background-color: #e74c3c !important; color: white !important; } /* Red (danger) */
+
+        /* Responsive adjustments - Reused */
+        @media (max-width: 991.98px) {
+            .top-navbar { justify-content: space-between; }
+            .dashboard-content { margin-left: 0 !important; width: 100% !important; }
+            .dashboard-container { padding: 1.5rem 1rem; }
+        }
+        /* Specific styles for table action dropdowns - Reused */
+        .table .dropdown-toggle::after { vertical-align: middle; margin-left: 0.5rem; }
+        .table .dropdown-menu {
+            min-width: 13rem; background-color: var(--card-bg); border-color: var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-color); border-radius: 0.6rem; padding: 0.5rem 0;
+        }
+        .table .dropdown-item {
+            display: flex; align-items: center; gap: 0.6rem; color: var(--text-color);
+            padding: 0.65rem 1rem; font-size: 0.9rem;
+        }
+        .table .dropdown-item:hover { background-color: var(--main-brand-color-bg-hover); color: var(--main-brand-color); }
+        .table .dropdown-item.text-success { color: var(--status-success) !important;}
+        .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+        .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+        .table .dropdown-item.text-info { color: var(--status-info) !important;}
+        .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+        .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+        .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+        .table .dropdown-item.text-info:hover { background-color: rgba(52, 152, 219, 0.1) !important; }
+
+        /* Filter bar adjustments */
+        .filter-actions-bar {
+            background-color: var(--card-bg);
+            padding: 1.5rem 2rem; /* Slightly reduced padding for tighter form */
+            border-radius: 0.8rem;
+            box-shadow: 0 4px 18px var(--shadow-color);
+            margin-bottom: 2rem; /* Space below bar */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: flex-start;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        .filter-actions-bar .form-control,
+        .filter-actions-bar .form-select {
+            flex: 1; /* Allow them to grow */
+            min-width: 180px; /* Adjust min-width for filters */
+        }
+        /* Make filter dropdowns slightly smaller */
+        .filter-actions-bar .form-select,
+        .filter-actions-bar .form-control {
+            font-size: 0.875rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        /* --- MODAL STYLING FOR DARK MODE --- */
+        /* Apply modal background, text, and border using CSS variables and transitions */
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        .modal-header .modal-title {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .modal-body {
+            color: var(--text-color); /* Ensure body text adapts */
+            transition: color 0.3s ease;
+        }
+
+        .modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        /* Form controls within modals */
+        .modal .form-control,
+        .modal .form-select,
+        .modal textarea.form-control {
+            background-color: var(--body-bg); /* Use body-bg for input backgrounds */
+            color: var(--text-color);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        /* Ensure placeholders also adapt in dark mode */
+        .modal .form-control::placeholder,
+        .modal .form-select::placeholder {
+            color: var(--text-color-light);
+        }
+
+
+        /* Notes log background within modals */
+        .notes-log-bg { /* Custom class for the notes log background */
+            background-color: var(--body-bg); /* Default light background from theme */
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode .notes-log-bg {
+            background-color: rgba(255, 255, 255, 0.05); /* Slightly lighter dark background for notes */
+            border-color: var(--border-color); /* Ensure border adapts */
+        }
+
+           .kpi-card-new .kpi-value {
+      font-size: 2.2rem; /* Consistent value font size */
+      font-weight: 700;
+      color: var(--text-color); /* Use general text color */
+      margin-bottom: 0.2rem; /* Small margin */
+      transition: color 0.3s ease;
+    }
+
+    .kpi-card-new .kpi-label {
+      font-size: 0.9rem; /* Smaller label font size */
+      color: var(--text-color-secondary);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    /* Row for KPI cards to control spacing and responsiveness */
+    .kpi-cards-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem; /* Consistent gap between cards */
+      justify-content: center; /* Center cards horizontally */
+      margin-bottom: 2.5rem; /* Space below the KPI section */
+    }
+    .kpi-cards-col {
+        flex: 1 1 calc(25% - 1.5rem); /* Roughly 4 cards per row, adjusting for gap */
+        max-width: calc(25% - 1.5rem);
+    }
+
+        /* --- MODAL CENTERING FIX --- */
+        /* Apply a top margin to all modal dialogs when they are shown to clear the navbar */
+        @media (min-width: 576px) { /* Apply on larger screens where navbar is prominent */
+            .modal.show .modal-dialog {
+                margin-top: 4.5rem; /* Adjust this value based on your actual navbar height + desired clearance */
+            }
+        }
+        /* Remove explicit align-items from modal-dialog-centered to let Bootstrap's default centering
+           work within the space *after* the margin-top. This results in true centering below the navbar. */
+        .modal-dialog-centered {
+            /* Bootstrap's default `align-items: center` will now apply correctly within the reduced vertical space */
+        }
+
+        /* --- FIX FOR TABLE HOVER IN DARK MODE --- */
+        body.dark-mode .table-hover tbody tr:hover {
+            /* A slightly lighter background for hover effect in dark mode */
+            background-color: rgba(255, 255, 255, 0.15) !important; /* Increased opacity for a lighter hover */
+            color: #ffffff !important; /* Added: Lighter text color on hover */
+        }
+        /* Also ensure the default table background is set in dark mode */
+        body.dark-mode .table {
+            --bs-table-bg: var(--card-bg); /* Use dark card background for table */
+            --bs-table-color: var(--text-color); /* Use light text color */
+            --bs-table-border-color: var(--border-color); /* Use dark border color */
+        }
+        body.dark-mode .table-bordered thead th {
+            border-color: var(--border-color); /* Ensure header borders match */
+        }
+
+        /* Styles for Definition Lists in Modals */
+        .modal-body dl dt {
+            font-weight: 500;
+            color: var(--text-color-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 0.2rem; /* Small padding for separation */
+        }
+        .modal-body dl dd {
+            margin-bottom: 0.6rem; /* Space between rows */
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+     /* Pagination specific variables (updated for red theme) */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color); /* Initial text color */
+        padding: 0.7rem 1rem;
+        border-radius: 0.4rem;
+        margin: 0 0.2rem;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: #fff;
+        box-shadow: 0 2px 5px var(--shadow-color);
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover); /* Soft red hover */
+        color: var(--main-brand-color); /* Red text on hover */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--main-brand-color) !important; /* Ensure red text on hover in dark mode */
+    }
+    .pagination .page-item.disabled .page-link {
+        color: var(--text-color-light);
+        background-color: var(--body-bg);
+        border-color: var(--border-color);
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 0.4rem;
+    }
+    .pagination .page-item + .page-item {
+        margin-left: 0;
+    }
+    .pagination .page-item:not(:first-child) .page-link {
+        margin-left: 0.2rem;
+    }
+
+        /* Enhanced Responsive Design for All Devices */
+    @media (max-width: 1199.98px) {
+      .dashboard-container {
+        padding: 1.5rem !important;
+      }
+    }
+    @media (max-width: 991.98px) {
+      .dashboard-container {
+        padding: 1rem !important;
+      }
+      .row.g-3.mb-4#kpiCardsRow > [class^="col-"] {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+      .kpi-card-dashboard {
+        min-height: 110px;
+        margin-bottom: 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column !important;
+        padding: 1rem !important;
+        gap: 0.7rem !important;
+      }
+      .filter-actions-bar .d-flex {
+        flex-direction: column !important;
+        gap: 0.7rem !important;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .date-range-input-container,
+      .filter-actions-bar .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex: 1 1 100% !important;
+      }
+      .filter-actions-bar .d-flex.gap-2.ms-auto {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        gap: 0.7rem !important;
+      }
+      .table-responsive {
+        margin-top: 1.2rem !important;
+      }
+      .pagination {
+        flex-wrap: wrap;
+        justify-content: center !important;
+      }
+      .pagination .page-item {
+        margin-bottom: 0.25rem;
+      }
+    }
+    @media (max-width: 767.98px) {
+      .dashboard-container {
+        padding: 0.5rem !important;
+        border-radius: 0.5rem;
+      }
+      .row.g-3.mb-4#kpiCardsRow > [class^="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .kpi-card-dashboard {
+        min-height: 100px;
+        margin-bottom: 1rem;
+      }
+      .kpi-card-dashboard .card-body {
+        padding: 1rem 0.25rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column !important;
+        padding: 0.7rem !important;
+        gap: 0.5rem !important;
+      }
+      .filter-actions-bar .d-flex {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .date-range-input-container,
+      .filter-actions-bar .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        font-size: 1rem;
+      }
+      .filter-actions-bar .d-flex.gap-2.ms-auto {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+      }
+      .table-responsive {
+        margin-top: 1rem !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .table {
+        min-width: 600px;
+        font-size: 0.95rem;
+      }
+      .pagination {
+        flex-wrap: wrap;
+        justify-content: center !important;
+      }
+      .pagination .page-item {
+        margin-bottom: 0.25rem;
+      }
+      .btn, .form-control, .form-select {
+        font-size: 1rem;
+        min-height: 44px;
+      }
+    }
+    @media (min-width: 1400px) {
+      .dashboard-container {
+        max-width: 1600px;
+        font-size: 1.1rem;
+      }
+      .kpi-card-dashboard .kpi-value-dashboard {
+        font-size: 2.5rem;
+      }
+      .table {
+        font-size: 1.05rem;
+      }
+    }
+    </style>
+    <style>
+    /* Ensure modals are not covered by the navbar */
+    @media (min-width: 576px) {
+      .modal.show .modal-dialog {
+        margin-top: 5.5rem !important; /* Increase as needed to clear navbar */
+      }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+            <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+        </div>
+        <h4 class="mb-3 dashboard-section-title text-center">
+            RecruitEase HR Management System
+        </h4>
+        <div class="active-label">IT ADMIN PORTAL</div>
+        <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+        <a href="UserManagement.html"><i class="bi bi-people-fill me-2"></i> User Management</a>
+        <a href="SystemLogs.html"><i class="bi bi-file-earmark-text-fill me-2"></i> System Logs</a>
+        <a href="Configurations.html" ><i class="bi bi-gear-fill me-2"></i> Configurations</a>
+        <a href="SupportTickets.html"class="fw-bold active"><i class="bi bi-ticket-detailed-fill me-2"></i> Support Tickets</a>
+        <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    </div>
+
+    <div class="top-navbar" id="topNavbar">
+        <div class="d-flex align-items-center">
+            <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center ms-auto">
+            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <a href="Notifications.html" style="text-decoration:none;">
+                <i class="bi bi-bell-fill"></i>
+            </a>
+            <a href="Profile.html" style="text-decoration:none;">
+                <i class="bi bi-person-circle"></i>
+            </a>
+            <span class="ms-2">IT Admin<br><small>Welcome!</small></span>
+        </div>
+    </div>
+
+    <div class="dashboard-content" id="mainContent">
+        <div class="dashboard-container">
+            <a href="Dashboard.html" class="btn btn-outline-secondary mb-4" aria-label="Back to Dashboard"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Manage Support Tickets</h4>
+            </div>
+    <!-- Add Ticket Modal -->
+    <div class="modal fade" id="addTicketModal" tabindex="-1" aria-labelledby="addTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTicketModalLabel"><i class="bi bi-plus-circle me-2"></i>Add New Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addTicketForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="addTicketSubject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="addTicketSubject" required placeholder="Enter ticket subject">
+                        </div>
+                        <div class="mb-3">
+                            <label for="addTicketDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="addTicketDescription" rows="4" required placeholder="Describe the issue or request"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addTicketCategory" class="form-label">Category</label>
+                            <select class="form-select" id="addTicketCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="Technical Issue">Technical Issue</option>
+                                <option value="Account & Login">Account & Login</option>
+                                <option value="Billing & Payments">Billing & Payments</option>
+                                <option value="Feature Request">Feature Request</option>
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addTicketPriority" class="form-label">Priority</label>
+                            <select class="form-select" id="addTicketPriority" required>
+                                <option value="">Select Priority</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Ticket</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+
+            <!-- KPI Cards Row -->
+            <div class="row mb-4 g-3 justify-content-center text-center">
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="card kpi-card border-0 text-center py-2 px-1" style="min-width:140px;">
+                        <div class="card-body py-2 px-2">
+                            <div class="mb-1"><i class="bi bi-ticket-detailed-fill text-danger" style="font-size:2.4rem;"></i></div>
+                            <h2 class="fw-bold mb-1 kpi-value" id="kpiTotal">0</h2>
+                            <div class="kpi-label">Total Tickets</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-6">
+                    <div class="card kpi-card border-0 text-center py-2 px-1" style="min-width:120px;">
+                        <div class="card-body py-2 px-2">
+                            <div class="mb-1"><i class="bi bi-exclamation-circle-fill text-warning" style="font-size:2.4rem;"></i></div>
+                            <h2 class="fw-bold mb-1 kpi-value" id="kpiOpen">0</h2>
+                            <div class="kpi-label">Open</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-6">
+                    <div class="card kpi-card border-0 text-center py-2 px-1" style="min-width:120px;">
+                        <div class="card-body py-2 px-2">
+                            <div class="mb-1"><i class="bi bi-hourglass-split text-info" style="font-size:2.4rem;"></i></div>
+                            <h2 class="fw-bold mb-1 kpi-value" id="kpiInProgress">0</h2>
+                            <div class="kpi-label">In Progress</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-6">
+                    <div class="card kpi-card border-0 text-center py-2 px-1" style="min-width:120px;">
+                        <div class="card-body py-2 px-2">
+                            <div class="mb-1"><i class="bi bi-check-circle-fill text-success" style="font-size:2.4rem;"></i></div>
+                            <h2 class="fw-bold mb-1 kpi-value" id="kpiResolved">0</h2>
+                            <div class="kpi-label">Resolved</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-6">
+                    <div class="card kpi-card border-0 text-center py-2 px-1" style="min-width:120px;">
+                        <div class="card-body py-2 px-2">
+                            <div class="mb-1"><i class="bi bi-archive-fill text-secondary" style="font-size:2.4rem;"></i></div>
+                            <h2 class="fw-bold mb-1 kpi-value" id="kpiClosed">0</h2>
+                            <div class="kpi-label">Closed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-actions-bar align-items-center">
+                <input type="text" class="form-control" id="ticketSearchInput" placeholder="Search by ID, Subject, or Name..." aria-label="Search tickets">
+                <select class="form-select" id="ticketStatusFilter" aria-label="Filter by Status">
+                    <option value="All" selected>All Statuses</option>
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                </select>
+                <select class="form-select" id="ticketPriorityFilter" aria-label="Filter by Priority">
+                    <option value="All" selected>All Priorities</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+                <div class="d-flex gap-2 align-items-center" style="flex: 1 1 auto; min-width: 180px;">
+                    <select class="form-select me-2" id="ticketCategoryFilter" aria-label="Filter by Category">
+                        <option value="All" selected>All Categories</option>
+                        <option value="Technical Issue">Technical Issue</option>
+                        <option value="Account & Login">Account & Login</option>
+                        <option value="Billing & Payments">Billing & Payments</option>
+                        <option value="Feature Request">Feature Request</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTicketModal"><i class="bi bi-plus-circle me-2"></i>Add Ticket</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="supportTicketsTable">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Subject</th>
+                            <th>Submitted By</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Submission Date</th>
+                            <th>Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Tickets will be dynamically loaded here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Exact Dashboard Pagination Markup -->
+            </div>
+                  <!-- Pagination for Recent IT Activities (copied from reference and adapted) -->
+                  <nav aria-label="Page navigation" class="mt-4">
+                      <ul class="pagination justify-content-center">
+                          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                          <li class="page-item"><a class="page-link" href="#">2</a></li>
+                          <li class="page-item"><a class="page-link" href="#">3</a></li>
+                          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                      </ul>
+                  </nav>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modals for Admin Actions -->
+
+    <!-- View Ticket Details Modal -->
+    <div class="modal fade" id="viewTicketModal" tabindex="-1" aria-labelledby="viewTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewTicketModalLabel">Ticket Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="text-muted mb-2">Ticket Summary</h6>
+                    <dl class="row mb-3 g-0">
+                        <dt class="col-sm-3">Subject:</dt>
+                        <dd class="col-sm-9"><strong id="modalViewTicketSubject"></strong></dd>
+
+                        <dt class="col-sm-3">ID:</dt>
+                        <dd class="col-sm-9" id="modalViewTicketId"></dd>
+
+                        <dt class="col-sm-3">Submitted By:</dt>
+                        <dd class="col-sm-9" id="modalViewSubmittedBy"></dd>
+
+                        <dt class="col-sm-3">Email:</dt>
+                        <dd class="col-sm-9" id="modalViewSubmittedEmail"></dd>
+
+                        <dt class="col-sm-3">Submission Date:</dt>
+                        <dd class="col-sm-9" id="modalViewSubmissionDate"></dd>
+
+                        <dt class="col-sm-3">Category:</dt>
+                        <dd class="col-sm-9" id="modalViewCategory"></dd>
+
+                        <dt class="col-sm-3">Priority:</dt>
+                        <dd class="col-sm-9"><span id="modalViewPriority" class="badge"></span></dd>
+
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9"><span id="modalViewStatus" class="badge"></span></dd>
+
+                        <dt class="col-sm-3">Assigned To:</dt>
+                        <dd class="col-sm-9" id="modalViewAssignedTo"></dd>
+                    </dl>
+
+                    <h6 class="text-muted mb-2">Description</h6>
+                    <div class="border rounded p-3 mb-3 notes-log-bg">
+                        <p id="modalViewDescription" class="mb-0"></p>
+                    </div>
+
+                    <h6 class="text-muted mb-2">Attachments</h6>
+                    <div class="border rounded p-3 mb-3 notes-log-bg">
+                        <p id="modalViewAttachments" class="mb-0 text-muted fst-italic">No attachments.</p>
+                    </div>
+
+                    <h6 class="text-muted mb-2">Notes/Communication Log</h6>
+                    <div id="modalViewNotesLog" class="border rounded p-3 notes-log-bg" style="max-height: 200px; overflow-y: auto;">
+                        <!-- Notes will be loaded here -->
+                        <p class="text-muted fst-italic">No notes yet.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Ticket Modal -->
+    <div class="modal fade" id="assignTicketModal" tabindex="-1" aria-labelledby="assignTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignTicketModalLabel">Assign Ticket: <span id="modalAssignTicketId"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="modalAssignChangeStatus" class="form-label">Change Status</label>
+                        <select class="form-select" id="modalAssignChangeStatus">
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalAssignAssignTo" class="form-label">Assign To</label>
+                        <select class="form-select" id="modalAssignAssignTo">
+                            <option value="">Unassigned</option>
+                            <option value="IT Support Team A">IT Support Team A</option>
+                            <option value="IT Support Team B">IT Support Team B</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveAssignChangesBtn"><i class="bi bi-person-fill-add me-2"></i> Save Assignment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNoteModalLabel">Add Note to Ticket: <span id="modalAddNoteTicketId"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="modalAddNoteText" class="form-label">Note Content</label>
+                        <textarea class="form-control" id="modalAddNoteText" rows="4" placeholder="Enter your note here..."></textarea>
+                    </div>
+                     <div class="mb-3">
+                        <label for="noteType" class="form-label">Note Type</label>
+                        <select class="form-select" id="noteType">
+                            <option value="internal">Internal Note</option>
+                            <option value="public">Public Reply</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveNoteBtn"><i class="bi bi-chat-left-text-fill me-2"></i> Add Note</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Ticket Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>WARNING: This action cannot be undone.</p>
+                    <p>Are you sure you want to permanently delete Ticket ID: <span id="modalDeleteTicketId"></span> (<span id="modalDeleteTicketSubject"></span>)?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteTicketBtn"><i class="bi bi-trash-fill me-2"></i> Delete Permanently</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container for messages -->
+    <div class="toast-container"></div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+            const mainContent = document.getElementById('mainContent');
+            const topNavbar = document.getElementById('topNavbar');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+
+            // Sidebar Toggle
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarBackdrop.classList.toggle('show');
+                body.classList.toggle('sidebar-visible');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarBackdrop.addEventListener('click', toggleSidebar); // Close sidebar when clicking backdrop
+
+            // Dark Mode Toggle
+            darkModeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                // Store user preference in localStorage
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    darkModeToggle.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+                }
+            });
+
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+            } else {
+                darkModeToggle.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+            }
+
+            // Function to show custom toast notifications
+            function showToast(message, type = 'success') {
+                const toastContainer = document.querySelector('.toast-container');
+                let toast = document.createElement('div');
+                toast.className = "toast align-items-center border-0 show";
+                const bgColorClass = type === 'success' ? 'text-bg-success' : (type === 'danger' ? 'text-bg-danger' : 'text-bg-info');
+                const iconClass = type === 'success' ? 'bi-check-circle' : (type === 'danger' ? 'bi-x-circle' : 'bi-info-circle');
+
+                toast.innerHTML = `
+                    <div class="d-flex ${bgColorClass}">
+                        <div class="toast-body">
+                            <i class="bi ${iconClass} me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                `;
+                toastContainer.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+
+                // Remove toast after it's hidden
+                toast.addEventListener('hidden.bs.toast', function () {
+                    toast.remove();
+                });
+            }
+
+            // --- Support tickets will be loaded dynamically from user-based input (applicant, HR, recruiter pages) ---
+            let supportTickets = [];
+
+            const supportTicketsTableBody = document.querySelector('#supportTicketsTable tbody');
+            const ticketSearchInput = document.getElementById('ticketSearchInput');
+            const ticketStatusFilter = document.getElementById('ticketStatusFilter');
+            const ticketPriorityFilter = document.getElementById('ticketPriorityFilter');
+            const ticketCategoryFilter = document.getElementById('ticketCategoryFilter');
+
+            let currentTicketId = null; // To keep track of the ticket being viewed/edited
+
+            // Function to render tickets in the table (now empty, ready for user-based input)
+            function renderTickets() {
+                supportTicketsTableBody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No support tickets found. All tickets will be loaded from applicant, HR, or recruiter pages.</td></tr>';
+            }
+
+            // Function to update KPI cards (now all zero)
+            function updateKPICards() {
+                document.getElementById('kpiTotal').textContent = 0;
+                document.getElementById('kpiOpen').textContent = 0;
+                document.getElementById('kpiInProgress').textContent = 0;
+                document.getElementById('kpiResolved').textContent = 0;
+                document.getElementById('kpiClosed').textContent = 0;
+            }
+
+            // --- Filter and Search Event Listeners ---
+            ticketSearchInput.addEventListener('input', renderTickets);
+            ticketStatusFilter.addEventListener('change', renderTickets);
+            ticketPriorityFilter.addEventListener('change', renderTickets);
+            ticketCategoryFilter.addEventListener('change', renderTickets);
+
+            // --- Modals and their Logic ---
+
+            const viewTicketModal = document.getElementById('viewTicketModal');
+            const assignTicketModal = document.getElementById('assignTicketModal');
+            const addNoteModal = document.getElementById('addNoteModal');
+            const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+
+            const saveAssignChangesBtn = document.getElementById('saveAssignChangesBtn');
+            const saveNoteBtn = document.getElementById('saveNoteBtn');
+            const confirmDeleteTicketBtn = document.getElementById('confirmDeleteTicketBtn');
+
+            function attachTicketActionListeners() {
+                // View Details Button
+                document.querySelectorAll('.view-ticket-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const ticketId = event.currentTarget.dataset.ticketId;
+                        const ticket = supportTickets.find(t => t.id === ticketId);
+                        if (!ticket) {
+                            showToast('Ticket not found!', 'danger');
+                            return;
+                        }
+                        currentTicketId = ticketId;
+
+                        // Populate View Ticket Modal fields using the new DL structure
+                        document.getElementById('modalViewTicketSubject').textContent = ticket.subject;
+                        document.getElementById('modalViewTicketId').textContent = ticket.id;
+                        document.getElementById('modalViewSubmittedBy').textContent = ticket.submittedBy;
+                        document.getElementById('modalViewSubmittedEmail').textContent = ticket.submittedEmail;
+                        document.getElementById('modalViewSubmissionDate').textContent = ticket.submissionDate;
+                        document.getElementById('modalViewCategory').textContent = ticket.category;
+                        document.getElementById('modalViewDescription').textContent = ticket.description;
+
+                        const modalViewPriority = document.getElementById('modalViewPriority');
+                        modalViewPriority.textContent = ticket.priority;
+                        modalViewPriority.className = 'badge';
+                        switch (ticket.priority) {
+                            case 'Low': modalViewPriority.classList.add('priority-low'); break;
+                            case 'Medium': modalViewPriority.classList.add('priority-medium'); break;
+                            case 'High': modalViewPriority.classList.add('priority-high'); break;
+                            case 'Urgent': modalViewPriority.classList.add('priority-urgent'); break;
+                        }
+
+                        const modalViewStatus = document.getElementById('modalViewStatus');
+                        modalViewStatus.textContent = ticket.status;
+                        modalViewStatus.className = 'badge';
+                        switch (ticket.status) {
+                            case 'Open': modalViewStatus.classList.add('bg-warning'); break;
+                            case 'In Progress': modalViewStatus.classList.add('bg-info'); break;
+                            case 'Resolved': modalViewStatus.classList.add('bg-success'); break;
+                            case 'Closed': modalViewStatus.classList.add('bg-secondary'); break;
+                        }
+
+                        document.getElementById('modalViewAssignedTo').textContent = ticket.assignedTo || 'Unassigned';
+                        document.getElementById('modalViewAttachments').textContent = ticket.attachments || 'No attachments.'; // Changed to textContent
+
+                        // Render notes log
+                        const notesLog = document.getElementById('modalViewNotesLog');
+                        notesLog.innerHTML = '';
+                        if (ticket.notes && ticket.notes.length > 0) {
+                            ticket.notes.forEach(note => {
+                                const noteDiv = document.createElement('div');
+                                noteDiv.classList.add('mb-2', 'p-2', 'rounded', 'notes-log-bg');
+                                noteDiv.innerHTML = `
+                                    <small class="text-muted">${note.timestamp} - <strong>${note.author}</strong> (${note.type === 'internal' ? 'Internal' : 'Public'})</small><br>
+                                    ${note.content}
+                                `;
+                                notesLog.appendChild(noteDiv);
+                            });
+                        } else {
+                            notesLog.innerHTML = '<p class="text-muted fst-italic">No notes yet.</p>';
+                        }
+                    };
+                });
+            <!--Add Ticket Modal Logic-->
+                    const addTicketForm = document.getElementById('addTicketForm');
+                    if (addTicketForm) {
+                        addTicketForm.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            // In a real app, you would push to supportTickets and re-render
+                            // For now, just close the modal and show a toast
+                            bootstrap.Modal.getInstance(document.getElementById('addTicketModal')).hide();
+                            showToast('Ticket added (demo only, not saved).', 'success');
+                            addTicketForm.reset();
+                        });
+                    }
+                // Assign Ticket Button
+                document.querySelectorAll('.assign-ticket-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const ticketId = event.currentTarget.dataset.ticketId;
+                        const ticket = supportTickets.find(t => t.id === ticketId);
+                        if (!ticket) {
+                            showToast('Ticket not found!', 'danger');
+                            return;
+                        }
+                        currentTicketId = ticketId;
+
+                        document.getElementById('modalAssignTicketId').textContent = ticket.id;
+                        document.getElementById('modalAssignChangeStatus').value = ticket.status;
+                        document.getElementById('modalAssignAssignTo').value = ticket.assignedTo;
+                    };
+                });
+
+                // Add Note Button
+                document.querySelectorAll('.add-note-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const ticketId = event.currentTarget.dataset.ticketId;
+                        const ticket = supportTickets.find(t => t.id === ticketId);
+                        if (!ticket) {
+                            showToast('Ticket not found!', 'danger');
+                            return;
+                        }
+                        currentTicketId = ticketId;
+
+                        document.getElementById('modalAddNoteTicketId').textContent = ticket.id;
+                        document.getElementById('modalAddNoteText').value = ''; // Clear previous note content
+                        document.getElementById('noteType').value = 'internal'; // Default to internal
+                    };
+                });
+
+                // Delete Ticket Button
+                document.querySelectorAll('.delete-ticket-btn').forEach(button => {
+                    button.onclick = (event) => {
+                        const ticketId = event.currentTarget.dataset.ticketId;
+                        const ticket = supportTickets.find(t => t.id === ticketId);
+                        if (!ticket) {
+                            showToast('Ticket not found!', 'danger');
+                            return;
+                        }
+                        currentTicketId = ticketId;
+
+                        document.getElementById('modalDeleteTicketId').textContent = ticket.id;
+                        document.getElementById('modalDeleteTicketSubject').textContent = ticket.subject;
+                    };
+                });
+            }
+
+            // Save Assignment Changes Logic
+            saveAssignChangesBtn.addEventListener('click', function() {
+                const ticket = supportTickets.find(t => t.id === currentTicketId);
+                if (ticket) {
+                    const newStatus = document.getElementById('modalAssignChangeStatus').value;
+                    const newAssignee = document.getElementById('modalAssignAssignTo').value;
+
+                    ticket.status = newStatus;
+                    ticket.assignedTo = newAssignee;
+
+                    showToast(`Assignment and status updated for Ticket ${currentTicketId}.`, 'success');
+                    renderTickets();
+                    bootstrap.Modal.getInstance(assignTicketModal).hide();
+                } else {
+                    showToast('Error: Ticket not found for saving assignment.', 'danger');
+                }
+            });
+
+            // Save New Note Logic
+            saveNoteBtn.addEventListener('click', function() {
+                const ticket = supportTickets.find(t => t.id === currentTicketId);
+                const newNoteContent = document.getElementById('modalAddNoteText').value.trim();
+                const noteType = document.getElementById('noteType').value;
+
+                if (ticket && newNoteContent) {
+                    const now = new Date();
+                    const timestamp = now.getFullYear() + '-' +
+                                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                                    String(now.getDate()).padStart(2, '0') + ' ' +
+                                    String(now.getHours()).padStart(2, '0') + ':' +
+                                    String(now.getMinutes()).padStart(2, '0') + ' ' +
+                                    (now.getHours() >= 12 ? 'PM' : 'AM');
+                    
+                    ticket.notes.push({
+                        type: noteType,
+                        content: newNoteContent,
+                        timestamp: timestamp,
+                        author: 'Admin' // Or dynamically get logged-in admin's name
+                    });
+                    showToast('Note added successfully!', 'success');
+                    renderTickets(); // Re-render to ensure any status updates based on notes are reflected
+                    bootstrap.Modal.getInstance(addNoteModal).hide();
+                } else if (!newNoteContent) {
+                    showToast('Please enter a note to add.', 'danger');
+                }
+            });
+
+            // Confirm Delete Ticket Logic
+            confirmDeleteTicketBtn.addEventListener('click', function() {
+                supportTickets = supportTickets.filter(t => t.id !== currentTicketId);
+                showToast(`Ticket ${currentTicketId} deleted successfully.`, 'success');
+                renderTickets();
+                bootstrap.Modal.getInstance(deleteConfirmModal).hide();
+            });
+
+            // Initial render of tickets when page loads
+            renderTickets();
+        });
+    </script>
+</body>
+</html>

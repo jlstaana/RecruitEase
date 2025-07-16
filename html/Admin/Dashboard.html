@@ -1,0 +1,2473 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+      --status-primary: #0d6efd; /* For 'New' tickets, or general primary status */
+      --status-purple: #8e44ad; /* For 'Resolved' status as seen in image */
+
+
+      /* KPI icon colors for light mode, inspired by the image */
+      --kpi-icon-green: #2ecc71; /* A distinct green */
+      --kpi-icon-blue: #3498db;  /* A vibrant blue */
+      --kpi-icon-yellow: #f1c40f; /* A golden yellow */
+      --kpi-icon-red: #e74c3c;   /* A deep red */
+      --kpi-icon-grey: #7f8c8d;  /* Matches text-color-secondary */
+
+
+      /* New: Custom success message variables */
+      --success-message-bg: #198754;
+      --success-message-color: #fff;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+      --input-bg: #3a3a3a;
+      --input-border: #555;
+      --placeholder-color: #b0b0b0;
+      --info-bg: #343a40;
+      --info-color: #e0e0e0;
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+      --status-primary: #0a58ca;
+      --status-purple: #9b59b6;
+
+      /* KPI icon colors for dark mode */
+      --kpi-icon-green: #2ecc71;
+      --kpi-icon-blue: #3498db;
+      --kpi-icon-yellow: #f1c40f;
+      --kpi-icon-red: #e74c3c;
+      --kpi-icon-grey: #bdc3c7;
+
+      /* New: Custom success message variables for dark mode */
+      --success-message-bg: #28a745;
+      --success-message-color: #fff;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar - initially off-screen */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0; /* When 'show' class is present, sidebar is visible */
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem;
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem;
+      border-radius: 0.4rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      letter-spacing: 0.8px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15);
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem;
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem;
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    /* Content shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .dashboard-content {
+      margin-left: 260px;
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    /* Navbar shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .top-navbar {
+      margin-left: 260px;
+    }
+    .top-navbar .navbar-logo {
+        height: 36px;
+        width: auto;
+        margin-right: 0.75rem;
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400;
+        display: block;
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary);
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color);
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px;
+      background: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 8px 25px var(--card-shadow);
+      padding: 3rem;
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+    }
+    .dashboard-container h4 {
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    .table-responsive {
+      margin-top: 2.5rem;
+    }
+    .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    .table-bordered {
+      border-color: var(--border-color);
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem;
+      color: var(--text-color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .table-bordered tbody td {
+      padding: 0.9rem 0.8rem;
+    }
+    .table .bg-white {
+      background-color: var(--card-bg) !important;
+      color: var(--text-color);
+    }
+    /* Adjusted badge colors and styles */
+    .table .badge {
+      font-weight: 600;
+      padding: 0.45em 0.8em;
+      border-radius: 0.35rem;
+      text-transform: capitalize;
+      min-width: 80px;
+      display: inline-block;
+      text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+    .table .badge.bg-primary { /* Added primary badge style */
+        background-color: #0d6efd !important; /* Specific primary color from reference */
+        color: white !important;
+    }
+    /* Custom badge color for "Resolved" */
+    .table .badge.bg-purple { background-color: var(--status-purple) !important; color: white !important;}
+
+    /* Dashboard KPI Card Styles - Based on new image */
+    .kpi-card-new {
+      background-color: var(--card-bg);
+      border-radius: 0.8rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center horizontally */
+      justify-content: center; /* Center vertically */
+      text-align: center;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      height: 180px; /* Fixed height for consistent look */
+      width: 100%; /* Take full width of its column */
+    }
+
+    body.dark-mode .kpi-card-new {
+      background-color: #2d343c; /* Darker background for dark mode */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.35); /* Darker shadow */
+    }
+
+    .kpi-card-new .icon-wrapper {
+      font-size: 2.8rem; /* Larger icons */
+      margin-bottom: 0.5rem; /* Less space between icon and value */
+      transition: color 0.3s ease;
+    }
+
+    /* Specific KPI icon colors based on the image */
+    .kpi-card-new .icon-wrapper.icon-kpi-green { color: #2ecc71; } /* Bright green for Total Users */
+    .kpi-card-new .icon-wrapper.icon-kpi-blue { color: #3498db; } /* Bright blue for Active Sessions and Storage Used */
+    .kpi-card-new .icon-wrapper.icon-kpi-yellow { color: #f1c40f; } /* Golden yellow for Open Support Tickets */
+    .kpi-card-new .icon-wrapper.icon-kpi-red { color: #e74c3c; } /* Deep red for System Alerts */
+    .kpi-card-new .icon-wrapper.icon-kpi-grey { color: #bdc3c7; } /* Lighter grey for Upcoming Maintenance */
+
+    .kpi-card-new .kpi-value {
+      font-size: 2.2rem; /* Consistent value font size */
+      font-weight: 700;
+      color: var(--text-color); /* Use general text color */
+      margin-bottom: 0.2rem; /* Small margin */
+      transition: color 0.3s ease;
+    }
+
+    .kpi-card-new .kpi-label {
+      font-size: 0.9rem; /* Smaller label font size */
+      color: var(--text-color-secondary);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    /* Row for KPI cards to control spacing and responsiveness */
+    .kpi-cards-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem; /* Consistent gap between cards */
+      justify-content: center; /* Center cards horizontally */
+      margin-bottom: 2.5rem; /* Space below the KPI section */
+    }
+    .kpi-cards-col {
+        flex: 1 1 calc(25% - 1.5rem); /* Roughly 4 cards per row, adjusting for gap */
+        max-width: calc(25% - 1.5rem);
+    }
+
+    @media (max-width: 1200px) { /* Adjust for medium desktops/large tablets */
+        .kpi-cards-col {
+            flex: 1 1 calc(33.333% - 1.5rem); /* 3 cards per row */
+            max-width: calc(33.333% - 1.5rem);
+        }
+    }
+
+    @media (max-width: 992px) { /* Adjust for tablets */
+        .kpi-cards-col {
+            flex: 1 1 calc(50% - 1.5rem); /* 2 cards per row */
+            max-width: calc(50% - 1.5rem);
+        }
+    }
+
+    @media (max-width: 576px) { /* Adjust for mobile */
+        .kpi-cards-col {
+            flex: 1 1 100%; /* 1 card per row */
+            max-width: 100%;
+        }
+    }
+
+
+    /* Form Styles (from previous response, retained for consistency) */
+    .form-control {
+      border-color: var(--border-color);
+      background-color: var(--card-bg);
+      color: var(--text-color);
+    }
+    .form-control:focus {
+      border-color: var(--main-brand-color-light);
+      box-shadow: 0 0 0 0.25rem var(--main-brand-color-bg-hover);
+    }
+    body.dark-mode .form-control {
+      background-color: var(--input-bg);
+      border-color: var(--input-border);
+      color: var(--text-color);
+    }
+    body.dark-mode .form-control::placeholder {
+      color: var(--placeholder-color);
+    }
+    body.dark-mode .form-control:focus {
+      border-color: var(--main-brand-color);
+      box-shadow: 0 0 0 0.25rem var(--red-accent-shadow);
+    }
+
+    /* Dark mode for input fields in edit user modal */
+    .darkmode-user-input {
+        background-color: var(--input-bg) !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--input-border) !important;
+    }
+    .darkmode-user-input::placeholder {
+        color: var(--placeholder-color) !important;
+    /* Dark mode for select elements in Add/Edit User modal */
+    .edit-user-select {
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      border: 1px solid var(--input-border);
+      border-radius: 0.5rem;
+      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .edit-user-select:focus {
+      background-color: var(--input-bg);
+      color: var(--main-brand-color);
+      border-color: var(--main-brand-color);
+      box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+    }
+    body.dark-mode .edit-user-select {
+      background-color: #23242a !important;
+      color: #f4f4f4 !important;
+      border-color: #393a40 !important;
+    }
+    body.dark-mode .edit-user-select:focus {
+      background-color: #23242a !important;
+      color: #6c63ff !important;
+      border-color: #6c63ff !important;
+      box-shadow: 0 0 0 0.2rem rgba(108,99,255,0.25);
+    }
+    body.dark-mode .edit-user-select option {
+      background-color: #23242a !important;
+      color: #f4f4f4 !important;
+    }
+    }
+    
+
+    /* Dark mode for select elements in edit user modal */
+    .dark-mode-select {
+        background-color: #23242a !important;
+        color: #f4f4f4 !important;
+        border: 1px solid #393a40 !important;
+    }
+    .dark-mode-select option {
+        background-color: #23242a !important;
+        color: #f4f4f4 !important;
+    }
+    
+
+    /* Modal Styles (from previous response, retained for consistency) */
+  .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 1.2rem;
+      box-shadow: 0 16px 40px var(--shadow-color), 0 2px 8px var(--main-brand-color-bg-hover);
+      border: none;
+      padding-bottom: 0.5rem;
+    }
+    .modal-header {
+      background: linear-gradient(90deg, var(--main-brand-color-bg-hover), transparent 80%);
+      border-bottom: 1px solid var(--border-color);
+      align-items: center;
+      border-top-left-radius: 1.2rem;
+      border-top-right-radius: 1.2rem;
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+    }
+    .modal-header .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.01em;
+    }
+    .modal-header .modal-title i {
+      font-size: 1.5rem;
+      color: var(--main-brand-color);
+      opacity: 0.9;
+    }
+    .modal-body {
+      padding: 2rem 2rem 1.5rem 2rem;
+    }
+    .modal-body .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 1.08rem;
+      margin-bottom: 0.7rem;
+      color: var(--main-brand-color);
+    }
+    .modal-body .list-group-item {
+      font-size: 1rem;
+      padding: 0.85rem 1.2rem;
+      border-left: 4px solid var(--main-brand-color-bg-hover);
+      background: var(--main-brand-color-bg-hover);
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    /* Center the view ticket modal and limit its size */
+   #viewTicketModal .modal-dialog,
+   #addUserModal .modal-dialog,
+   #manageSystemsModal .modal-dialog,
+   #generateReportModal .modal-dialog,
+   #viewUserModal .modal-dialog,
+   #editUserModal .modal-dialog,
+   #viewActivityModal .modal-dialog,
+   #viewLogsModal .modal-dialog,
+   #releaseNotesModal .modal-dialog,
+   #investigateModal .modal-dialog,
+   #resolveModal .modal-dialog {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 auto;
+    max-width: 600px;
+    width: 90vw;
+    min-width: 320px;
+    min-height: 200px;
+    max-height: 80vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    top: 80px; /* Offset from top to avoid navbar (navbar is ~64px) */
+    }
+
+
+    #viewTicketModal .modal-content {
+    margin: 0 auto;
+    box-sizing: border-box;
+    }
+
+    /* Prevent modal from being too tall */
+    #viewTicketModal .modal-body,
+    #addUserModal .modal-body,
+    #manageSystemsModal .modal-body,
+    #generateReportModal .modal-body,
+    #viewUserModal .modal-body,
+    #editUserModal .modal-body,
+    #viewActivityModal .modal-body,
+    #viewLogsModal .modal-body,
+    #releaseNotesModal .modal-body,
+    #investigateModal .modal-body,
+    #resolveModal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--card-bg);
+    }
+
+    /* Adaptive modal scrollbar for Webkit browsers */
+    #viewTicketModal .modal-body::-webkit-scrollbar,
+    #addUserModal .modal-body::-webkit-scrollbar,
+    #manageSystemsModal .modal-body::-webkit-scrollbar,
+    #generateReportModal .modal-body::-webkit-scrollbar,
+    #viewUserModal .modal-body::-webkit-scrollbar,
+    #editUserModal .modal-body::-webkit-scrollbar,
+    #viewActivityModal .modal-body::-webkit-scrollbar,
+    #viewLogsModal .modal-body::-webkit-scrollbar,
+    #releaseNotesModal .modal-body::-webkit-scrollbar,
+    #investigateModal .modal-body::-webkit-scrollbar,
+    #resolveModal .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    #viewTicketModal .modal-body::-webkit-scrollbar-track,
+    #addUserModal .modal-body::-webkit-scrollbar-track,
+    #manageSystemsModal .modal-body::-webkit-scrollbar-track,
+    #generateReportModal .modal-body::-webkit-scrollbar-track,
+    #viewUserModal .modal-body::-webkit-scrollbar-track,
+    #editUserModal .modal-body::-webkit-scrollbar-track,
+    #viewActivityModal .modal-body::-webkit-scrollbar-track,
+    #viewLogsModal .modal-body::-webkit-scrollbar-track,
+    #releaseNotesModal .modal-body::-webkit-scrollbar-track,
+    #investigateModal .modal-body::-webkit-scrollbar-track,
+    #resolveModal .modal-body::-webkit-scrollbar-track {
+      background: var(--card-bg);
+    }
+    #viewTicketModal .modal-body::-webkit-scrollbar-thumb,
+    #addUserModal .modal-body::-webkit-scrollbar-thumb,
+    #manageSystemsModal .modal-body::-webkit-scrollbar-thumb,
+    #generateReportModal .modal-body::-webkit-scrollbar-thumb,
+    #viewUserModal .modal-body::-webkit-scrollbar-thumb,
+    #editUserModal .modal-body::-webkit-scrollbar-thumb,
+    #viewActivityModal .modal-body::-webkit-scrollbar-thumb,
+    #viewLogsModal .modal-body::-webkit-scrollbar-thumb,
+    #releaseNotesModal .modal-body::-webkit-scrollbar-thumb,
+    #investigateModal .modal-body::-webkit-scrollbar-thumb,
+    #resolveModal .modal-body::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    #viewTicketModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #addUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #manageSystemsModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #generateReportModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #viewUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #editUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #viewActivityModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #viewLogsModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #releaseNotesModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #investigateModal .modal-body::-webkit-scrollbar-thumb:hover,
+    #resolveModal .modal-body::-webkit-scrollbar-thumb:hover {
+      background: var(--text-color-light);
+    }
+
+    body.dark-mode #viewTicketModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #addUserModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #manageSystemsModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #generateReportModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #viewUserModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #editUserModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #viewActivityModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #viewLogsModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #releaseNotesModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #investigateModal .modal-body::-webkit-scrollbar-track,
+    body.dark-mode #resolveModal .modal-body::-webkit-scrollbar-track {
+      background: #23242a;
+    }
+    body.dark-mode #viewTicketModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #addUserModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #manageSystemsModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #generateReportModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #viewUserModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #editUserModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #viewActivityModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #viewLogsModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #releaseNotesModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #investigateModal .modal-body::-webkit-scrollbar-thumb,
+    body.dark-mode #resolveModal .modal-body::-webkit-scrollbar-thumb {
+      background: #393a40;
+    }
+    body.dark-mode #viewTicketModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #addUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #manageSystemsModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #generateReportModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #viewUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #editUserModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #viewActivityModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #viewLogsModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #releaseNotesModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #investigateModal .modal-body::-webkit-scrollbar-thumb:hover,
+    body.dark-mode #resolveModal .modal-body::-webkit-scrollbar-thumb:hover {
+      background: #6c63ff;
+    }
+
+    body.dark-mode .modal-content {
+    background-color: #23242a !important;
+    color: #f4f4f4 !important;
+    }
+
+    body.dark-mode .modal-header,
+    body.dark-mode .modal-footer {
+    background: none !important;
+    border-color: #393a40 !important;
+    }
+
+    body.dark-mode .modal-body .section-title {
+    color: #6c63ff !important;
+    }
+
+    body.dark-mode .modal-body .list-group-item {
+    background: #23242a !important;
+    color: #f4f4f4 !important;
+    border-left: 4px solid #6c63ff !important;
+    border-radius: 0.5rem;
+    border: 1px solid #393a40 !important;
+    }
+
+    body.dark-mode .ticket-resolution {
+    background: #23242a !important;
+    color: #f4f4f4 !important;
+    border: 1px solid #393a40 !important;
+    }
+
+    body.dark-mode .badge.bg-purple {
+    background: #6c63ff !important;
+    color: #fff !important;
+    }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+      border-radius: 0.4rem;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    body.dark-mode .modal-content pre.bg-light,
+    .modal-content pre.bg-light {
+      background-color: var(--card-bg) !important;
+      color: var(--text-color) !important;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 0.98rem;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      margin-bottom: 0;
+      padding: 1.2rem;
+      line-height: 1.5;
+    }
+    .modal-footer {
+      border-top: none;
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+      justify-content: center;
+      background: transparent;
+      border-bottom-left-radius: 1.2rem;
+      border-bottom-right-radius: 1.2rem;
+    }
+    .btn-close {
+      filter: invert(var(--bs-body-color-rgb));
+      width: 1.5em;
+      height: 1.5em;
+      opacity: 0.7;
+    }
+    body.dark-mode .btn-close {
+      filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    .modal-footer .btn, .modal-header .btn-close {
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    .modal-footer .btn:hover, .modal-header .btn-close:hover {
+      box-shadow: 0 2px 8px var(--main-brand-color-bg-hover);
+    }
+    .list-group-item .bi {
+      color: var(--main-brand-color);
+      font-size: 1.1em;
+      margin-right: 0.3em;
+      opacity: 0.85;
+    }
+    .ticket-resolution {
+      background: var(--main-brand-color-bg-hover);
+      border-radius: 0.5rem;
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 1.01rem;
+      color: var(--text-color);
+    }
+    
+
+    
+
+    /* Custom success message styling (from previous response, retained for consistency) */
+    .success-message {
+      background-color: var(--success-message-bg);
+      color: var(--success-message-color);
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      display: none; /* Hidden by default, shown by JavaScript */
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1060;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 300px;
+      text-align: center;
+    }
+    .success-message.show {
+      opacity: 1;
+    }
+
+    /* Pagination specific variables (updated for red theme) */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color); /* Initial text color */
+        padding: 0.7rem 1rem;
+        border-radius: 0.4rem;
+        margin: 0 0.2rem;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: #fff;
+        box-shadow: 0 2px 5px var(--shadow-color);
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover); /* Soft red hover */
+        color: var(--main-brand-color); /* Red text on hover */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--main-brand-color) !important; /* Ensure red text on hover in dark mode */
+    }
+    .pagination .page-item.disabled .page-link {
+        color: var(--text-color-light);
+        background-color: var(--body-bg);
+        border-color: var(--border-color);
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 0.4rem;
+    }
+    .pagination .page-item + .page-item {
+        margin-left: 0;
+    }
+    .pagination .page-item:not(:first-child) .page-link {
+        margin-left: 0.2rem;
+    }
+
+    /* Table Specific Styles */
+    .table-responsive {
+        margin-top: 2.5rem;
+        flex-grow: 1; /* Makes the table area expand to push pagination down */
+    }
+    .table {
+        --bs-table-bg: var(--card-bg); /* Use card background for table */
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    .table-bordered { border-color: var(--border-color); }
+    .table-bordered thead th {
+        border-bottom-width: 2px; border-color: var(--border-color); font-weight: 600; font-size: 0.95rem;
+        padding: 1rem 0.8rem; color: var(--text-color-secondary); text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .table-bordered tbody td {
+        padding: 0.9rem 0.8rem;
+    }
+    .table .badge {
+        font-weight: 600; padding: 0.45em 0.8em; border-radius: 0.35rem; text-transform: capitalize;
+        min-width: 80px; display: inline-block; text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+    .table .badge.bg-primary { /* Added primary badge style */
+        background-color: #0d6efd !important; /* Specific primary color from reference */
+        color: white !important;
+    }
+    /* Custom badge color for "Resolved" */
+    .table .badge.bg-purple { background-color: var(--status-purple) !important; color: white !important;}
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset; /* Remove min-width constraint for table buttons */
+        padding: 0.5rem 0.8rem; /* Smaller padding */
+        font-size: 0.85rem; /* Smaller font */
+        box-shadow: none; /* No shadow for table buttons */
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none; /* No lift on hover for table buttons */
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem; /* Ensure enough width for text and icons */
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem; /* Consistent rounding */
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-info { color: var(--status-info) !important;} /* Added info specific hover */
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+    .table .dropdown-item.text-info:hover { background-color: rgba(52, 152, 219, 0.1) !important; }
+
+    /* Section Card - General style for larger content cards */
+    .section-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px var(--shadow-color);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        height: 100%; /* Ensure these sections also take full height in their columns */
+        display: flex; /* Make it a flex container */
+        flex-direction: column; /* Stack content vertically */
+    }
+    .section-card h5 {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        transition: color 0.3s ease;
+    }
+
+    /* Activity Log specific styling */
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px dashed var(--border-color);
+        transition: border-color 0.3s ease;
+    }
+    .activity-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .activity-item .activity-icon {
+        font-size: 1.2rem;
+        color: var(--main-brand-color);
+        margin-right: 0.8rem;
+        padding-top: 0.2rem;
+        flex-shrink: 0;
+        transition: color 0.3s ease;
+    }
+    .activity-item .activity-text {
+        flex-grow: 1;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+    }
+    .activity-item .activity-text strong {
+        color: var(--main-brand-color);
+        transition: color 0.3s ease;
+    }
+    .activity-item .activity-timestamp {
+        font-size: 0.8rem;
+        color: var(--text-color-light);
+        text-align: right;
+        margin-left: 1rem;
+        flex-shrink: 0;
+        transition: color 0.3s ease;
+    }
+
+    /* Quick Actions specific styling - Updated to match image */
+    .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted min-width for the buttons */
+        gap: 1rem;
+        justify-content: start; /* Align to start as per image */
+    }
+    .quick-actions-grid .btn {
+        display: flex;
+        align-items: center; /* Align icon and text horizontally */
+        justify-content: center; /* Center content horizontally */
+        padding: 0.8rem 1.2rem; /* Adjusted padding */
+        font-size: 1rem; /* Slightly larger font */
+        font-weight: 500; /* Medium weight */
+        gap: 0.6rem; /* Space between icon and text */
+        border-radius: 0.6rem; /* More rounded corners */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow for buttons */
+        transition: all 0.2s ease-in-out;
+    }
+    .quick-actions-grid .btn:hover {
+        transform: translateY(-2px); /* Slight lift effect */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* More pronounced shadow on hover */
+    }
+    .quick-actions-grid .btn i {
+        font-size: 1.2rem; /* Icon size */
+        margin-bottom: 0; /* Remove bottom margin */
+    }
+
+    /* Specific button colors for Quick Actions */
+    .quick-actions-grid .btn-primary {
+        background-color: #4285F4; /* Google Blue */
+        border-color: #4285F4;
+        color: white;
+    }
+    .quick-actions-grid .btn-primary:hover {
+        background-color: #357ae8;
+        border-color: #357ae8;
+    }
+    .quick-actions-grid .btn-info-custom { /* Custom class for teal button */
+        background-color: #00bcd4; /* Teal */
+        border-color: #00bcd4;
+        color: white;
+    }
+    .quick-actions-grid .btn-info-custom:hover {
+        background-color: #00a0b2;
+        border-color: #00a0b2;
+    }
+    .quick-actions-grid .btn-success-custom { /* Custom class for green button */
+        background-color: #4CAF50; /* Green */
+        border-color: #4CAF50;
+        color: white;
+    }
+    .quick-actions-grid .btn-success-custom:hover {
+        background-color: #45a049;
+        border-color: #45a049;
+    }
+    .quick-actions-grid .btn-danger-outline { /* Custom class for red outline button */
+        background-color: transparent;
+        border-color: #F44336; /* Red */
+        color: #F44336;
+    }
+    .quick-actions-grid .btn-danger-outline:hover {
+        background-color: #F44336;
+        color: white;
+    }
+
+
+    /* Table styles for Recent IT Activities */
+    .recent-it-activity-table .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle;
+        font-size: 0.85rem; /* Slightly smaller font for more data */
+    }
+    .recent-it-activity-table .table thead th {
+        border-bottom-width: 2px;
+        border-color: var(--border-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.8rem 0.6rem;
+        color: var(--text-color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .recent-it-activity-table .table tbody td {
+        padding: 0.7rem 0.6rem;
+    }
+    body.dark-mode .recent-it-activity-table .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+    }
+
+      /* Enhanced Responsive Design for All Devices */
+    @media (max-width: 1199.98px) {
+      .dashboard-container {
+        padding: 1.5rem !important;
+      }
+      .kpi-card .card-body {
+        padding: 1.5rem 0.5rem;
+      }
+    }
+    @media (max-width: 991.98px) {
+      .dashboard-container {
+        padding: 1rem !important;
+      }
+      .row.g-3.mb-4#kpiCardsRow > [class^="col-"] {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+      .kpi-card {
+        min-height: 110px;
+        margin-bottom: 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column !important;
+        padding: 1rem !important;
+        gap: 0.7rem !important;
+      }
+      .filter-actions-bar .d-flex {
+        flex-direction: column !important;
+        gap: 0.7rem !important;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .date-range-input-container,
+      .filter-actions-bar .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex: 1 1 100% !important;
+      }
+      .filter-actions-bar .d-flex.gap-2.ms-auto {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        gap: 0.7rem !important;
+      }
+      .table-responsive {
+        margin-top: 1.2rem !important;
+      }
+      .pagination {
+        flex-wrap: wrap;
+        justify-content: center !important;
+      }
+      .pagination .page-item {
+        margin-bottom: 0.25rem;
+      }
+    }
+    @media (max-width: 767.98px) {
+      .dashboard-container {
+        padding: 0.5rem !important;
+        border-radius: 0.5rem;
+      }
+      .row.g-3.mb-4#kpiCardsRow > [class^="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .kpi-card {
+        min-height: 100px;
+        margin-bottom: 1rem;
+      }
+      .kpi-card .card-body {
+        padding: 1rem 0.25rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column !important;
+        padding: 0.7rem !important;
+        gap: 0.5rem !important;
+      }
+      .filter-actions-bar .d-flex {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .date-range-input-container,
+      .filter-actions-bar .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        font-size: 1rem;
+      }
+      .filter-actions-bar .d-flex.gap-2.ms-auto {
+        min-width: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        gap: 0.5rem !important;
+      }
+      .table-responsive {
+        margin-top: 1rem !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .table {
+        min-width: 600px;
+        font-size: 0.95rem;
+      }
+      .pagination {
+        flex-wrap: wrap;
+        justify-content: center !important;
+      }
+      .pagination .page-item {
+        margin-bottom: 0.25rem;
+      }
+      .btn, .form-control, .form-select {
+        font-size: 1rem;
+        min-height: 44px;
+      }
+    }
+    @media (min-width: 1400px) {
+      .dashboard-container {
+        max-width: 1600px;
+        font-size: 1.1rem;
+      }
+      .kpi-card .kpi-value {
+        font-size: 2.5rem;
+      }
+      .table {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+
+
+</head>
+<body>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+            <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+        </div>
+        <h4 class="mb-3 dashboard-section-title text-center">
+            RecruitEase HR Management System
+        </h4>
+        <div class="active-label">IT ADMIN PORTAL</div>
+        <a href="Dashboard.html"class="fw-bold active"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+        <a href="UserManagement.html"><i class="bi bi-people-fill me-2"></i> User Management</a>
+        <a href="SystemLogs.html"><i class="bi bi-file-earmark-text-fill me-2"></i> System Logs</a>
+        <a href="Configurations.html" ><i class="bi bi-gear-fill me-2"></i> Configurations</a>
+        <a href="SupportTickets.html"><i class="bi bi-ticket-detailed-fill me-2"></i> Support Tickets</a>
+        <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    </div>
+
+    <div class="top-navbar" id="topNavbar">
+        <div class="d-flex align-items-center">
+            <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center ms-auto">
+            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <a href="Notifications.html" style="text-decoration:none;">
+                <i class="bi bi-bell-fill"></i>
+            </a>
+            <a href="Profile.html" style="text-decoration:none;">
+                <i class="bi bi-person-circle"></i>
+            </a>
+            <span class="ms-2">IT Admin<br><small>Welcome!</small></span>
+        </div>
+    </div>
+
+  <div class="dashboard-content" id="dashboardContent">
+    <div class="dashboard-container">
+      <h4>IT Admin Dashboard</h4>
+
+      <!-- IT KPI Cards - Remade to new format and layout design -->
+      <div class="kpi-cards-row">
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-green"><i class="bi bi-people-fill"></i></div>
+                  <div class="kpi-value" id="totalUsersCount">250</div>
+                  <div class="kpi-label">Total Users</div>
+              </div>
+          </div>
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-blue"><i class="bi bi-broadcast"></i></div>
+                  <div class="kpi-value" id="activeSessionsCount">85</div>
+                  <div class="kpi-label">Active Sessions</div>
+              </div>
+          </div>
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-yellow"><i class="bi bi-ticket-detailed"></i></div>
+                  <div class="kpi-value" id="openSupportTicketsCount">15</div>
+                  <div class="kpi-label">Open Support Tickets</div>
+              </div>
+          </div>
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-red"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                  <div class="kpi-value text-danger" id="systemAlertsCount">3</div>
+                  <div class="kpi-label">System Alerts</div>
+              </div>
+          </div>
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-grey"><i class="bi bi-calendar-event"></i></div>
+                  <div class="kpi-value" id="upcomingMaintenanceCount">2</div>
+                  <div class="kpi-label">Upcoming Maintenance</div>
+              </div>
+          </div>
+          <div class="kpi-cards-col">
+              <div class="kpi-card-new">
+                  <div class="icon-wrapper icon-kpi-blue"><i class="bi bi-hdd-fill"></i></div>
+                  <div class="kpi-value" id="storageUsedPercentage">85%</div>
+                  <div class="kpi-label">Storage Used</div>
+              </div>
+          </div>
+      </div>
+
+
+      <!-- System Health Overview & User Login Activity -->
+      <div class="row g-4 mb-5">
+          <div class="col-lg-6">
+              <div class="section-card">
+                  <h5>System Health Overview</h5>
+                  <p class="text-muted text-center py-5">
+                      [ Placeholder for System Health Chart (e.g., CPU/Memory usage, Network Traffic) ]
+                  </p>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="section-card">
+                  <h5>User Login Activity</h5>
+                  <p class="text-muted text-center py-5">
+                      [ Placeholder for User Login Activity Chart (e.g., Daily Login Trends) ]
+                  </p>
+              </div>
+          </div>
+      </div>
+
+      <!-- Quick IT Actions - Remade to new format and layout design -->
+      <div class="row g-4 mb-5">
+          <div class="col-12">
+              <div class="section-card">
+                  <h5>Quick IT Actions</h5>
+                  <div class="quick-actions-grid">
+                      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                          <i class="bi bi-person-plus-fill"></i>
+                          Add New User
+                      </button>
+                      <button class="btn btn-info-custom" data-bs-toggle="modal" data-bs-target="#manageSystemsModal">
+                          <i class="bi bi-gear-fill"></i>
+                          Manage Systems
+                      </button>
+                      <button class="btn btn-success-custom" id="viewSystemLogsBtn">
+                          <i class="bi bi-journal-text"></i>
+                          View System Logs
+                      </button>
+                      <button class="btn btn-danger-outline" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+                          <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                          Generate Report
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Recent IT Activities Table - Updated to match image -->
+      <div class="row g-4 flex-grow-1 w-100">
+          <div class="col-lg-12">
+              <div class="section-card recent-it-activity-table h-100">
+                  <h5>Recent IT Activities</h5>
+                  <div class="table-responsive flex-grow-1">
+                      <table class="table table-bordered table-hover mb-0">
+                          <thead>
+                              <tr>
+                                  <th>DATE</th>
+                                  <th>ACTIVITY</th>
+                                  <th>DESCRIPTION</th>
+                                  <th>PERFORMED BY</th>
+                                  <th>STATUS</th>
+                                  <th>ACTIONS</th>
+                              </tr>
+                          </thead>
+                          <tbody id="itActivityTableBody">
+                              <tr>
+                                  <td>2024-06-15</td>
+                                  <td>User Created</td>
+                                  <td>New user account for John Doe</td>
+                                  <td>IT Admin</td>
+                                  <td><span class="badge bg-success">Completed</span></td>
+                                  <td class="text-center">
+                                      <div class="dropdown">
+                                          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownActivity1" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Options
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownActivity1">
+                                              <li>
+                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewUserModal">
+                                                      <i class="bi bi-eye me-2"></i>View User
+                                                  </a>
+                                              </li>
+                                              <li>
+                                                  <a class="dropdown-item text-secondary" href="#" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                                      <i class="bi bi-pencil-square me-2"></i>Edit User
+                                                  </a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>2024-06-14</td>
+                                  <td>Server Restart</td>
+                                  <td>Database Server scheduled restart</td>
+                                  <td>System</td>
+                                  <td><span class="badge bg-info">Completed</span></td>
+                                  <td class="text-center">
+                                      <div class="dropdown">
+                                          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownActivity2" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Options
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownActivity2">
+                                              <li>
+                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewLogsModal">
+                                                      <i class="bi bi-file-earmark-text me-2"></i>View Logs
+                                                  </a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>2024-06-13</td>
+                                  <td>Software Update</td>
+                                  <td>HR Application v2.1 deployment</td>
+                                  <td>IT Admin</td>
+                                  <td><span class="badge bg-success">Completed</span></td>
+                                  <td class="text-center">
+                                      <div class="dropdown">
+                                          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownActivity3" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Options
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownActivity3">
+                                              <li>
+                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#releaseNotesModal">
+                                                      <i class="bi bi-info-circle me-2"></i>Release Notes
+                                                  </a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>2024-06-13</td>
+                                  <td>Ticket Closed</td>
+                                  <td>Password reset request #123 (Sarah J.)</td>
+                                  <td>IT Admin</td>
+                                  <td><span class="badge bg-purple">Resolved</span></td>
+                                  <td class="text-center">
+                                      <div class="dropdown">
+                                          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownActivity4" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Options
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownActivity4">
+                                              <li>
+                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewTicketModal">
+                                                      <i class="bi bi-ticket-detailed me-2"></i>View Ticket
+                                                  </a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>2024-06-12</td>
+                                  <td>New Alert</td>
+                                  <td>Disk space low on File Server</td>
+                                  <td>System</td>
+                                  <td><span class="badge bg-danger">Open</span></td>
+                                  <td class="text-center">
+                                      <div class="dropdown">
+                                          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownActivity5" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Options
+                                          </button>
+                                          <ul class="dropdown-menu" aria-labelledby="dropdownActivity5">
+                                              <li>
+                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#investigateModal">
+                                                      <i class="bi bi-graph-up me-2"></i>Investigate
+                                                  </a>
+                                              </li>
+                                              <li>
+                                                  <a class="dropdown-item text-success" href="#" data-bs-toggle="modal" data-bs-target="#resolveModal">
+                                                      <i class="bi bi-check-circle me-2"></i>Resolve
+                                                  </a>
+                                              </li>
+                                          </ul>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <!-- Pagination moved outside container -->
+              </div>
+          </div>
+      </div>
+
+    </div>
+  </div>
+
+  <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">Next</a></li>
+      </ul>
+  </nav>
+
+  <!-- Toast Container for messages -->
+  <div class="toast-container"></div>
+
+  <!-- Modals (from previous response, retained for consistency) -->
+
+  <!-- Add New User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="addUserModalLabel"><i class="bi bi-person-plus-fill me-2"></i>Add New User</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="addUserForm"> <!-- Added ID to the form -->
+                      <div class="mb-3">
+                          <label for="userName" class="form-label">User Name</label>
+                          <input type="text" class="form-control darkmode-user-input" id="userName" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="userEmail" class="form-label">Email</label>
+                          <input type="email" class="form-control darkmode-user-input" id="userEmail" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="userRole" class="form-label">Role</label>
+                          <select class="form-select edit-user-select" id="userRole" required>
+                              <option selected disabled>Select Role</option>
+                              <option value="admin">Admin</option>
+                              <option value="employee">Employee</option>
+                              <option value="recruiter">Recruiter</option>
+                              <option value="applicant">Applicant</option>
+                          </select>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save User</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
+<!-- Manage Systems Modal -->
+<div class="modal fade" id="manageSystemsModal" tabindex="-1" aria-labelledby="manageSystemsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <h5 class="modal-title" id="manageSystemsModalLabel"><i class="bi bi-cpu-fill me-2"></i>Manage System Settings</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                                <form>
+                                        <div class="mb-4">
+                                                <label for="systemStatusToggle" class="form-label d-block">System Operational Status</label>
+                                                <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="systemStatusToggle" checked required>
+                                                        <label class="form-check-label" for="systemStatusToggle">System is Online</label>
+                                                </div>
+                                                <small class="text-muted">Toggle to put the system in maintenance mode or bring it online.</small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                                <label for="dataBackupFrequency" class="form-label">Data Backup Frequency</label>
+                                                <select class="form-select edit-user-select" id="dataBackupFrequency" required>
+                                                        <option value="daily">Daily</option>
+                                                        <option value="weekly" selected>Weekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                        <option value="manual">Manual</option>
+                                                </select>
+                                                <small class="text-muted">Set the automatic data backup schedule.</small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                                <label for="maxUsers" class="form-label">Maximum Concurrent Users</label>
+                                                <input type="number" class="form-control darkmode-user-input" id="maxUsers" value="500" min="1" required>
+                                                <small class="text-muted">Limit the number of users who can be logged in simultaneously.</small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                                <label for="sessionTimeout" class="form-label">Session Timeout (minutes)</label>
+                                                <input type="number" class="form-control darkmode-user-input" id="sessionTimeout" value="30" min="5" required>
+                                                <small class="text-muted">Set the duration after which inactive user sessions will expire.</small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                                <label for="logLevel" class="form-label">System Log Level</label>
+                                                <select class="form-select edit-user-select" id="logLevel" required>
+                                                        <option value="info" selected>Info</option>
+                                                        <option value="warning">Warning</option>
+                                                        <option value="error">Error</option>
+                                                        <option value="debug">Debug</option>
+                                                </select>
+                                                <small class="text-muted">Control the verbosity of system logs. Higher levels log more details.</small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                                <label for="systemEmail" class="form-label">System Notification Email</label>
+                                                <input type="email" class="form-control darkmode-user-input" id="systemEmail" value="noreply@recruitease.com" required>
+                                                <small class="text-muted">Email address for automated system notifications and alerts.</small>
+                                        </div>
+
+                                        <div class="mb-0">
+                                                <label for="announcementMessage" class="form-label">Global System Announcement</label>
+                                                <textarea class="form-control darkmode-user-input" id="announcementMessage" rows="3" placeholder="Enter a message to be displayed globally to all users." required></textarea>
+                                                <small class="text-muted">Displayed prominently on dashboards (e.g., for maintenance warnings).</small>
+                                        </div>
+
+                                </form>
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary"><i class="bi bi-save me-2"></i>Save System Settings</button>
+                        </div>
+                </div>
+        </div>
+</div>
+
+  <!-- Generate Report Modal -->
+  <div class="modal fade" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="generateReportModalLabel"><i class="bi bi-file-earmark-bar-graph-fill me-2"></i>Generate System Report</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p>Select the type of report you'd like to generate and customize its options below.</p>
+
+                  <div class="mb-3">
+                      <label for="reportType" class="form-label">Report Type:</label>
+                      <select class="form-select edit-user-select" id="reportType">
+                          <option selected disabled>Choose a report type...</option>
+                          <option value="userActivity">User Activity Log</option>
+                          <option value="systemPerformance">System Performance Metrics</option>
+                          <option value="errorLogs">Error Logs</option>
+                          <option value="dataUsage">Data Usage & Storage</option>
+                          <option value="securityAudit">Security Audit Trail</option>
+                          <option value="resourceUtilization">Resource Utilization</option>
+                      </select>
+                  </div>
+
+                  <div class="mb-3">
+                      <label for="dateRange" class="form-label">Date Range:</label>
+                      <select class="form-select edit-user-select" id="dateRange">
+                          <option selected value="last24hours">Last 24 Hours</option>
+                          <option value="last7days">Last 7 Days</option>
+                          <option value="last30days">Last 30 Days</option>
+                          <option value="customRange">Custom Range</option>
+                      </select>
+                  </div>
+
+                  <div id="customDateRangeFields" style="display: none;">
+                      <div class="mb-3">
+                          <label for="startDate" class="form-label">Start Date:</label>
+                          <input type="date" class="form-control" id="startDate">
+                      </div>
+                      <div class="mb-3">
+                          <label for="endDate" class="form-label">End Date:</label>
+                          <input type="date" class="form-control" id="endDate">
+                      </div>
+                  </div>
+
+                  <div class="mb-3">
+                      <label for="reportFormat" class="form-label">Output Format:</label>
+                      <select class="form-select edit-user-select" id="reportFormat">
+                          <option selected value="pdf">PDF</option>
+                          <option value="csv">CSV (Comma Separated Values)</option>
+                          <option value="json">JSON</option>
+                      </select>
+                  </div>
+
+                  <div id="additionalOptions" style="display: none;">
+                      <hr>
+                      <h6>Additional Report Options</h6>
+                      <div id="userActivityOptions" style="display: none;">
+                          <div class="form-check">
+                              <input class="form-check-input" type="checkbox" id="includeUserDetails">
+                              <label class="form-check-label" for="includeUserDetails">
+                                  Include User Details (Email, Role, Last Login)
+                              </label>
+                          </div>
+                          <div class="form-check">
+                              <input class="form-check-input" type="checkbox" id="filterByIp">
+                              <label class="form-check-label" for="filterByIp">
+                                  Filter by IP Address
+                              </label>
+                              <input type="text" class="form-control mt-2" id="ipAddressFilter" placeholder="e.g., 192.168.1.1" style="display: none;">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-outline-danger">Generate Report</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- View User Modal (centered, landscape layout) -->
+  <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="viewUserModalLabel"><i class="bi bi-person-fill me-2"></i>User Details</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <p><strong>Name:</strong> <span id="viewUserName"></span></p>
+                              <p><strong>Email:</strong> <span id="viewUserEmail"></span></p>
+                              <p><strong>Role:</strong> <span id="viewUserRole"></span></p>
+                          </div>
+                          <div class="col-md-6">
+                              <p><strong>Status:</strong> <span id="viewUserStatus"></span></p>
+                              <p><strong>Last Login:</strong> <span id="viewUserLastLogin"></span></p>
+                              <p><strong>Created:</strong> <span id="viewUserCreated"></span></p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer justify-content-between">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="editUserFromViewBtn"><i class="bi bi-pencil-square me-2"></i>Edit User</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+  <!-- Edit User Modal (centered, landscape layout) -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="editUserModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit User</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form id="editUserForm">
+                  <div class="modal-body">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="editName" class="form-label">Name</label>
+                                  <input type="text" class="form-control darkmode-user-input" id="editName" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="editUserEmail" class="form-label">Email</label>
+                                  <input type="email" class="form-control darkmode-user-input" id="editUserEmail" required>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="editUserRole" class="form-label">Role</label>
+                                  <select class="form-select edit-user-select" id="editUserRole" required>
+                                      <option value="admin">Admin</option>
+                                      <option value="employee">Employee</option>
+                                      <option value="recruiter">Recruiter</option>
+                                      <option value="applicant">Applicant</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="editUserStatus" class="form-label">Status</label>
+                                  <select class="form-select edit-user-select" id="editUserStatus" required>
+                                      <option value="Active">Active</option>
+                                      <option value="Inactive">Inactive</option>
+                                      <option value="Suspended">Suspended</option>
+                                  </select>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="editUserLastLogin" class="form-label">Last Login</label>
+                                  <input type="text" class="form-control darkmode-user-input" id="editUserLastLogin" readonly>
+                              </div>
+                              <div class="mb-3">
+                                  <label for="editUserCreated" class="form-label">Created</label>
+                                  <input type="text" class="form-control darkmode-user-input" id="editUserCreated" readonly>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer justify-content-between">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+
+
+  <!-- View Activity Details Modal -->
+  <div class="modal fade" id="viewActivityModal" tabindex="-1" aria-labelledby="viewActivityModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="viewActivityModalLabel"><i class="bi bi-info-circle me-2"></i>Activity Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="activityDetailsContent">
+                  <!-- Populated dynamically by JS -->
+              </div>
+              <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- View Logs Modal -->
+<div class="modal fade" id="viewLogsModal" tabindex="-1" aria-labelledby="viewLogsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewLogsModalLabel">
+          <i class="bi bi-file-earmark-text"></i> System Logs
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="section-title"><i class="bi bi-clock-history"></i> Recent Log Entries</div>
+        <pre class="bg-light p-3 rounded" style="max-height:350px; overflow:auto;">
+    2024-06-14 09:00:01 [INFO] Database server restarted by IT Admin.
+    2024-06-14 09:00:05 [INFO] All services running.
+    2024-06-14 09:01:12 [WARN] High memory usage detected.
+    2024-06-14 09:02:45 [INFO] Scheduled backup completed.
+    2024-06-14 09:05:00 [INFO] User login: john@example.com
+        </pre>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle me-1"></i>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Release Notes Modal -->
+  <div class="modal fade" id="releaseNotesModal" tabindex="-1" aria-labelledby="releaseNotesModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="releaseNotesModalLabel"><i class="bi bi-info-circle me-2"></i>Release Notes</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <h6>HR Application v2.1 - Release Notes</h6>
+                  <ul>
+                      <li>New dashboard analytics for HR managers</li>
+                      <li>Improved security for user authentication</li>
+                      <li>Bug fixes and performance improvements</li>
+                      <li>Updated UI for leave management</li>
+                  </ul>
+                  <p class="text-muted">Deployed: 2024-06-13</p>
+              </div>
+              <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- View Ticket Modal -->
+<div class="modal fade" id="viewTicketModal" tabindex="-1" aria-labelledby="viewTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewTicketModalLabel">
+          <i class="bi bi-ticket-detailed"></i> Support Ticket Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="section-title"><i class="bi bi-info-circle"></i> Ticket Information</div>
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item"><i class="bi bi-hash"></i><strong>Ticket #:</strong> 123</li>
+          <li class="list-group-item"><i class="bi bi-person"></i><strong>Requestor:</strong> Sarah J.</li>
+          <li class="list-group-item"><i class="bi bi-question-circle"></i><strong>Issue:</strong> Password reset request</li>
+          <li class="list-group-item"><i class="bi bi-check-circle"></i><strong>Status:</strong> <span class="badge bg-purple"><i class="bi bi-check-circle"></i> Resolved</span></li>
+          <li class="list-group-item"><i class="bi bi-calendar-event"></i><strong>Date Opened:</strong> 2024-06-13</li>
+          <li class="list-group-item"><i class="bi bi-calendar-check"></i><strong>Date Closed:</strong> 2024-06-13</li>
+        </ul>
+        <div class="section-title"><i class="bi bi-lightbulb"></i> Resolution</div>
+        <div class="ticket-resolution">
+          Password reset link sent to user. User confirmed successful login.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle me-1"></i>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Investigate Modal -->
+  <div class="modal fade" id="investigateModal" tabindex="-1" aria-labelledby="investigateModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="investigateModalLabel"><i class="bi bi-graph-up me-2"></i>Investigate Alert</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p><strong>Alert:</strong> Disk space low on File Server</p>
+                  <p><strong>Detected:</strong> 2024-06-12 08:45</p>
+                  <p><strong>Current Usage:</strong> 95% full</p>
+                  <hr>
+                  <p>Recommended Actions:</p>
+                  <ul>
+                      <li>Delete unnecessary files</li>
+                      <li>Archive old data</li>
+                      <li>Increase disk allocation</li>
+                  </ul>
+              </div>
+              <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-success">Mark as Investigated</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Resolve Modal -->
+  <div class="modal fade" id="resolveModal" tabindex="-1" aria-labelledby="resolveModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="resolveModalLabel"><i class="bi bi-check-circle me-2"></i>Resolve Alert</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p><strong>Are you sure you want to mark this alert as resolved?</strong></p>
+                  <p>Alert: <span class="fw-bold">Disk space low on File Server</span></p>
+                  <p>Detected: 2024-06-12 08:45</p>
+              </div>
+              <div class="modal-footer justify-content-center">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-success">Resolve</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+  <!-- Save User Notification Modal -->
+  <div class="modal fade" id="saveUserNotificationModal" tabindex="-1" aria-labelledby="saveUserNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="saveUserNotificationModalLabel"><i class="bi bi-check-circle-fill me-2 text-success"></i>User Saved</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">The new user has been added successfully.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Confirmation Modal for Quick IT Actions -->
+  <div class="modal fade" id="quickActionConfirmationModal" tabindex="-1" aria-labelledby="quickActionConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="quickActionConfirmationModalLabel"><i class="bi bi-check-circle-fill me-2 text-success"></i>Action Successful</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="quickActionConfirmationMessage">
+          <div class="text-center" id="quickActionConfirmationMessageInner"><!-- Message will be set dynamically --></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-message" id="successMessage">
+    Operation successful!
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <script>
+    // Automatically apply dark-mode-select class to all select elements in modals
+    function updateSelectTheme() {
+      const isDark = document.body.classList.contains('dark-mode');
+      document.querySelectorAll('.modal select').forEach(sel => {
+        if (isDark) {
+          sel.classList.add('dark-mode-select');
+        } else {
+          sel.classList.remove('dark-mode-select');
+        }
+      });
+    }
+    // Initial run
+    document.addEventListener('DOMContentLoaded', updateSelectTheme);
+    // Listen for dark mode toggle
+    document.getElementById('darkModeToggle')?.addEventListener('click', function() {
+      setTimeout(updateSelectTheme, 300); // Wait for theme to apply
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const topNavbar = document.getElementById('topNavbar');
+      const dashboardContent = document.getElementById('dashboardContent');
+
+      // Function to toggle sidebar
+      function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        sidebarBackdrop.classList.toggle('show');
+        document.body.classList.toggle('sidebar-visible');
+      }
+
+      // Event listeners for sidebar toggle
+      sidebarToggle.addEventListener('click', toggleSidebar);
+      sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+      // Dark Mode Toggle
+      darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        // Save user preference
+        if (document.body.classList.contains('dark-mode')) {
+          localStorage.setItem('theme', 'dark');
+          // Update select elements for dark mode
+          document.querySelectorAll('.edit-user-select').forEach(sel => sel.classList.add('dark-mode-select'));
+          // Update input fields for dark mode
+          document.querySelectorAll('.darkmode-user-input').forEach(inp => inp.classList.add('dark-mode-select'));
+          // Add dark mode class to Add User modal text fields
+          document.querySelectorAll('#addUserModal .form-control').forEach(inp => inp.classList.add('darkmode-user-input'));
+        } else {
+          localStorage.setItem('theme', 'light');
+          // Update select elements for light mode
+          document.querySelectorAll('.edit-user-select').forEach(sel => sel.classList.remove('dark-mode-select'));
+          // Update input fields for light mode
+          document.querySelectorAll('.darkmode-user-input').forEach(inp => inp.classList.remove('dark-mode-select'));
+          // Remove dark mode class from Add User modal text fields
+          document.querySelectorAll('#addUserModal .form-control').forEach(inp => inp.classList.remove('darkmode-user-input'));
+        }
+      });
+
+      // Apply saved theme on load
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        // Ensure select elements are styled for dark mode on load
+        document.querySelectorAll('.edit-user-select').forEach(sel => sel.classList.add('dark-mode-select'));
+        // Ensure input fields are styled for dark mode on load
+        document.querySelectorAll('.darkmode-user-input').forEach(inp => inp.classList.add('dark-mode-select'));
+        // Add dark mode class to Add User modal text fields on load
+        document.querySelectorAll('#addUserModal .form-control').forEach(inp => inp.classList.add('darkmode-user-input'));
+      }
+
+      // Flatpickr initialization for date inputs if any
+      flatpickr(".datepicker", {
+        dateFormat: "Y-m-d",
+      });
+
+      // Simulate form submission success (for demonstration)
+      const editUserForm = document.getElementById('editUserForm');
+      if (editUserForm) {
+        editUserForm.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent actual form submission
+          // Here you would typically send data to a server
+          showSuccessMessage('Employee details updated successfully!');
+          bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide(); // Hide modal after submission
+        });
+      }
+
+      // Helper to show confirmation modal
+      function showQuickActionConfirmation(message) {
+        const confirmationModal = document.getElementById('quickActionConfirmationModal');
+        const confirmationMessageInner = document.getElementById('quickActionConfirmationMessageInner');
+        if (confirmationMessageInner) confirmationMessageInner.textContent = message;
+        if (confirmationModal) {
+          const modalInstance = new bootstrap.Modal(confirmationModal);
+          modalInstance.show();
+        }
+      }
+
+      // Redirect to System Logs when View System Logs button is clicked in Quick IT Actions
+      function attachViewSystemLogsHandler() {
+        const viewLogsBtn = document.getElementById('viewSystemLogsBtn');
+        if (viewLogsBtn) {
+          viewLogsBtn.addEventListener('click', function() {
+            window.location.href = 'SystemLogs.html';
+          });
+        }
+      }
+      attachViewSystemLogsHandler();
+      // If the button is dynamically created, use a MutationObserver to attach handler
+      const observer = new MutationObserver(() => {
+        attachViewSystemLogsHandler();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // Function to show success message (for any general toast)
+      function showToast(message, type = 'success') {
+          const toastContainer = document.querySelector('.toast-container');
+          let toast = document.createElement('div');
+          toast.className = `toast align-items-center border-0 show text-bg-${type}`;
+
+          toast.innerHTML = `
+              <div class="d-flex">
+                  <div class="toast-body">
+                      ${message}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+          `;
+          toastContainer.appendChild(toast);
+          const bsToast = new bootstrap.Toast(toast);
+          bsToast.show();
+
+          // Remove toast after it's hidden
+          toast.addEventListener('hidden.bs.toast', function () {
+              toast.remove();
+          });
+      }
+
+      // Handle Edit button click to populate modal
+      document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const employeeId = this.dataset.id;
+          // In a real application, you'd fetch data by employeeId
+          // For this example, we'll use dummy data or data from table row
+          const row = this.closest('tr');
+          document.getElementById('editEmployeeId').value = employeeId;
+          document.getElementById('editName').value = row.children[1].textContent;
+          document.getElementById('editDepartment').value = row.children[2].textContent;
+          document.getElementById('editPosition').value = row.children[3].textContent;
+          document.getElementById('editStatus').value = row.children[4].querySelector('.badge').textContent.trim();
+          document.getElementById('editLastActivity').value = row.children[5].textContent;
+          const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+          editUserModal.show();
+        });
+      });
+
+    // Event listeners for modals within the IT Admin Dashboard
+    const reportTypeElement = document.getElementById('reportType');
+    if (reportTypeElement) {
+        reportTypeElement.addEventListener('change', function() {
+        const reportType = this.value;
+        const additionalOptions = document.getElementById('additionalOptions');
+        const userActivityOptions = document.getElementById('userActivityOptions');
+
+        if (userActivityOptions) userActivityOptions.style.display = 'none';
+        if (additionalOptions) additionalOptions.style.display = 'none';
+
+        if (reportType === 'userActivity') {
+            if (additionalOptions) additionalOptions.style.display = 'block';
+            if (userActivityOptions) userActivityOptions.style.display = 'block';
+        }
+        });
+    }
+
+    const dateRangeElement = document.getElementById('dateRange');
+    if (dateRangeElement) {
+        dateRangeElement.addEventListener('change', function() {
+        const customDateRangeFields = document.getElementById('customDateRangeFields');
+        if (customDateRangeFields) {
+            if (this.value === 'customRange') {
+            customDateRangeFields.style.display = 'block';
+            } else {
+            customDateRangeFields.style.display = 'none';
+            }
+        }
+        });
+    }
+
+    const filterByIpElement = document.getElementById('filterByIp');
+    if (filterByIpElement) {
+        filterByIpElement.addEventListener('change', function() {
+        const ipAddressFilter = document.getElementById('ipAddressFilter');
+        if (ipAddressFilter) {
+            if (this.checked) {
+            ipAddressFilter.style.display = 'block';
+            } else {
+            ipAddressFilter.style.display = 'none';
+            }
+        }
+        });
+    }
+
+    // Add New User Modal Logic (from original IT Admin Dashboard, added null checks)
+    const addUserForm = document.getElementById('addUserForm');
+    const addUserModalElement = document.getElementById('addUserModal');
+
+    if (addUserModalElement && addUserForm) {
+        addUserModalElement.addEventListener('show.bs.modal', function () {
+            addUserForm.reset();
+        });
+
+        addUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userName = document.getElementById('userName').value;
+            const userEmail = document.getElementById('userEmail').value;
+
+            console.log(`Simulating new user addition: ${userName}, ${userEmail}`);
+            showToast(`User "${userName}" added!`, 'success');
+
+            addUserForm.reset();
+            setTimeout(() => {
+                const modalInstance = bootstrap.Modal.getInstance(addUserModalElement);
+                if (modalInstance) modalInstance.hide();
+                  showQuickActionConfirmation('The new user has been added successfully.');
+            }, 1000);
+        });
+    }
+
+    // Manage Systems Modal Logic (from original IT Admin Dashboard, added null checks)
+    const manageSystemsModalElement = document.getElementById('manageSystemsModal');
+    const manageSystemsSaveBtn = manageSystemsModalElement ? manageSystemsModalElement.querySelector('.btn-primary') : null;
+
+    if (manageSystemsModalElement) {
+        manageSystemsModalElement.addEventListener('show.bs.modal', function() {
+            // No specific reset needed for this static demo
+        });
+
+        if (manageSystemsSaveBtn) {
+            manageSystemsSaveBtn.addEventListener('click', function() {
+                console.log('Simulating saving system settings...');
+                showToast('System settings saved!', 'success');
+
+                setTimeout(() => {
+                    const modalInstance = bootstrap.Modal.getInstance(manageSystemsModalElement);
+                    if (modalInstance) modalInstance.hide();
+                      showQuickActionConfirmation('System settings have been saved successfully.');
+                }, 1000);
+            });
+        }
+    }
+
+    // Generate Report Modal Logic (from original IT Admin Dashboard, added null checks)
+    const generateReportModalElement = document.getElementById('generateReportModal');
+    const generateReportBtn = generateReportModalElement ? generateReportModalElement.querySelector('.btn-outline-danger') : null;
+
+    if (generateReportModalElement) {
+        generateReportModalElement.addEventListener('show.bs.modal', function() {
+            if (reportTypeElement) reportTypeElement.value = 'userActivity';
+            if (dateRangeElement) dateRangeElement.value = 'last24hours';
+            const customDateRangeFieldsElement = document.getElementById('customDateRangeFields');
+            const additionalOptionsElement = document.getElementById('additionalOptions');
+            const userActivityOptionsElement = document.getElementById('userActivityOptions');
+
+            if (customDateRangeFieldsElement) customDateRangeFieldsElement.style.display = 'none';
+            if (additionalOptionsElement) additionalOptionsElement.style.display = 'none';
+            if (userActivityOptionsElement) userActivityOptionsElement.style.display = 'none';
+            if (filterByIpElement) filterByIpElement.checked = false;
+            const ipAddressFilterElement = document.getElementById('ipAddressFilter');
+            if (ipAddressFilterElement) ipAddressFilterElement.style.display = 'none';
+        });
+
+        if (generateReportBtn) {
+            generateReportBtn.addEventListener('click', function() {
+                const reportType = reportTypeElement ? reportTypeElement.value : 'N/A';
+                const dateRange = dateRangeElement ? dateRangeElement.value : 'N/A';
+
+                console.log(`Simulating report generation: ${reportType} for ${dateRange}`);
+                showToast(`Generating "${reportType}" report...`, 'info');
+
+                setTimeout(() => {
+                    showToast('Report generated and downloaded!', 'success');
+                    const modalInstance = bootstrap.Modal.getInstance(generateReportModalElement);
+                    if (modalInstance) modalInstance.hide();
+                      showQuickActionConfirmation('The report has been generated and downloaded successfully.');
+                }, 1500);
+            });
+        }
+    }
+
+    // View User Modal (for simulating 'View User' option from table)
+    const viewUserModalElement = document.getElementById('viewUserModal');
+    if (viewUserModalElement) {
+        viewUserModalElement.addEventListener('show.bs.modal', function (event) {
+            // In a real app, you would fetch user data based on the clicked row
+            // For this demo, we'll just populate with some dummy data or from the table row if available
+            document.getElementById('viewUserName').textContent = 'John Doe';
+            document.getElementById('viewUserEmail').textContent = 'john.doe@example.com';
+            document.getElementById('viewUserRole').textContent = 'Employee';
+            document.getElementById('viewUserStatus').textContent = 'Active';
+            document.getElementById('viewUserLastLogin').textContent = '2024-06-20 10:30 AM';
+            document.getElementById('viewUserCreated').textContent = '2023-01-15';
+        });
+    }
+
+    // Re-route from View User to Edit User
+    const editUserFromViewBtn = document.getElementById('editUserFromViewBtn');
+    if (editUserFromViewBtn) {
+        editUserFromViewBtn.addEventListener('click', function() {
+            const viewUserModalInstance = viewUserModalElement ? bootstrap.Modal.getInstance(viewUserModalElement) : null;
+            if (viewUserModalInstance) viewUserModalInstance.hide();
+
+            // Check if editUserModal exists before creating an instance
+            const editUserModalElement = document.getElementById('editUserModal');
+            if (editUserModalElement) {
+                const editUserModalInstance = new bootstrap.Modal(editUserModalElement);
+                editUserModalInstance.show();
+            }
+        });
+    }
+
+    // Handle Edit Employee Modal (from original code, with null checks)
+    const editEmployeeModal = document.getElementById('editUserModal');
+    if (editEmployeeModal) {
+        editEmployeeModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget; // Button that triggered the modal
+            // Ensure button exists and has data-id attribute before trying to access
+            const employeeId = button && button.dataset.id ? button.dataset.id : 'N/A';
+
+            // Fetch row data based on employeeId for the IT Admin Dashboard's table
+            const employeeRow = document.querySelector(`tbody tr[data-id="${employeeId}"]`);
+
+            if (employeeRow) {
+                // Safely assign values to input fields
+                const editEmployeeIdElement = document.getElementById('editEmployeeId');
+                if (editEmployeeIdElement) editEmployeeIdElement.value = employeeId;
+
+                const editNameElement = document.getElementById('editName');
+                if (editNameElement) editNameElement.value = employeeRow.cells[1].textContent;
+
+                const editDepartmentElement = document.getElementById('editDepartment');
+                if (editDepartmentElement) editDepartmentElement.value = employeeRow.cells[2].textContent;
+
+                const editPositionElement = document.getElementById('editPosition');
+                if (editPositionElement) editPositionElement.value = employeeRow.cells[3].textContent;
+
+                const editStatusElement = document.getElementById('editStatus');
+                const statusBadge = employeeRow.cells[4].querySelector('.badge');
+                if (editStatusElement && statusBadge) {
+                    editStatusElement.value = statusBadge.textContent.trim();
+                }
+
+                const editLastActivityElement = document.getElementById('editLastActivity');
+                if (editLastActivityElement) editLastActivityElement.value = employeeRow.cells[5].textContent;
+            }
+
+            // Save changes (client-side only for this demo)
+            const editForm = document.getElementById('editUserForm');
+            if (editForm) {
+                editForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    const updatedName = document.getElementById('editName').value;
+                    const updatedDepartment = document.getElementById('editDepartment').value;
+                    const updatedPosition = document.getElementById('editPosition').value;
+                    const updatedStatus = document.getElementById('editStatus').value;
+                    const updatedLastActivity = document.getElementById('editLastActivity').value;
+
+                    const targetRow = document.querySelector(`tr[data-id="${employeeId}"]`);
+                    if (targetRow) {
+                        targetRow.dataset.name = updatedName;
+                        targetRow.dataset.department = updatedDepartment;
+                        targetRow.dataset.position = updatedPosition;
+                        targetRow.dataset.status = updatedStatus;
+                        targetRow.dataset.lastActivity = updatedLastActivity;
+
+                        targetRow.children[1].textContent = updatedName;
+                        targetRow.children[2].textContent = updatedDepartment;
+                        targetRow.children[3].textContent = updatedPosition;
+
+                        const statusBadge = targetRow.children[4].querySelector('.badge');
+                        if (statusBadge) {
+                            statusBadge.textContent = updatedStatus;
+                            statusBadge.classList.remove('bg-success', 'bg-warning', 'bg-danger', 'bg-info', 'bg-primary', 'bg-purple'); // Remove all possible old status classes
+                            // Add new status class based on updatedStatus
+                            if (updatedStatus === 'Active' || updatedStatus === 'Completed') {
+                                statusBadge.classList.add('bg-success');
+                            } else if (updatedStatus === 'On Leave') {
+                                statusBadge.classList.add('bg-warning');
+                            } else if (updatedStatus === 'Terminated' || updatedStatus === 'Open') {
+                                statusBadge.classList.add('bg-danger');
+                            } else if (updatedStatus === 'Resolved') {
+                                statusBadge.classList.add('bg-purple'); // Custom purple for Resolved
+                            } else if (updatedStatus === 'In Progress') { // Example of another status
+                                statusBadge.classList.add('bg-info');
+                            }
+                        }
+                        targetRow.children[5].textContent = updatedLastActivity;
+                    }
+                    showToast('Employee details updated!', 'success');
+                    bootstrap.Modal.getInstance(editEmployeeModal).hide();
+                };
+            }
+        });
+    }
+
+}); // Closing brace for DOMContentLoaded
+</script>
+</body>
+</html>

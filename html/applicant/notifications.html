@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications | RecruitEase Applicant</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    /* Root variables for theming */
+    :root {
+      --main-red: #dc3545;
+      --main-red-light: #f8e3e3;
+      --main-red-bg-hover: rgba(220, 53, 69, 0.07);
+      --main-red-border: #f3cccc;
+      --main-gold: #fbbf24;
+
+      /* Light Theme Defaults */
+      --body-bg: #f1f1f1;
+      --text-color: #212529;
+      --text-color-secondary: #6c757d;
+      --text-color-light: #888;
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #e5e5e5;
+      --shadow-color: rgba(0,0,0,0.07); /* General shadow for cards, sidebar etc. */
+      --card-shadow: rgba(0,0,0,0.08); /* More prominent card shadow */
+      --stat-card-shadow: rgba(0,0,0,0.05); /* Lighter shadow for stat cards */
+      --red-accent-shadow: rgba(220,53,69,0.12); /* Shadow with red tint */
+      --success-color: #198754;
+      --success-bg: #d1e7dd;
+      --warning-color: #ffc107;
+      --warning-bg: #fff3cd;
+      --info-color: #0dcaf0;
+      --info-bg: #cff4fc;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-red: #ff6b6b; /* Slightly brighter red for dark mode contrast */
+      --main-red-light: #4a1a1a;
+      --main-red-bg-hover: rgba(255,107,107,0.15);
+
+      --body-bg: #1a1a1a;
+      --text-color: #f8f9fa;
+      --text-color-secondary: #adb5bd;
+      --text-color-light: #b0b0b0;
+      --card-bg: #2a2a2a;
+      --sidebar-bg: #1c1c1c;
+      --top-navbar-bg: #1c1c1c;
+      --border-color: #3a3a3a;
+      --shadow-color: rgba(0,0,0,0.3); /* Darker general shadow */
+      --card-shadow: rgba(0,0,0,0.4); /* Darker card shadow */
+      --stat-card-shadow: rgba(0,0,0,0.2); /* Darker stat card shadow */
+      --red-accent-shadow: rgba(255,107,107,0.2); /* Retaining slight red tint for specific elements if desired, otherwise neutral */
+      --success-color: #7bc47f;
+      --success-bg: #0f3d23;
+      --warning-color: #ffec8b;
+      --warning-bg: #5e4a00;
+      --info-color: #8bc6c6;
+      --info-bg: #1a4a4a;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: var(--main-red);
+      position: fixed;
+      height: 100vh;
+      padding: 1rem 1rem;
+      left: -260px;
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 8px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+
+    }
+    .sidebar h4 {
+      color: var(--main-red); /* Dashboard section title color */
+      transition: color 0.3s ease;
+    }
+    .sidebar a {
+      color: var(--main-red);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      transition: background 0.15s, color 0.15s;
+      font-weight: 500;
+      gap: 0.5rem;
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-red-bg-hover);
+      color: var(--text-color); /* Text color on hover */
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-red);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      letter-spacing: 1px;
+      font-size: 0.95rem;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.18);
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 2rem;
+      display: flex; /* Always display */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      position: static; /* Ensure it stays in the flow of the flexbox */
+      margin-right: 0.5rem; /* Space between logo and toggle */
+      transition: color 0.3s ease;
+      padding: 0; /* Remove default button padding */
+    }
+    .sidebar-toggle i {
+      font-size: 1.5rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2.5rem 0 2rem 0;
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 250px;
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between; /* Space between left group and right group */
+      align-items: center;
+      position: relative;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 250px;
+    }
+    .top-navbar .bi {
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    
+    .top-navbar .ms-2 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-light);
+        transition: color 0.3s ease;
+    }
+
+    /* Navbar Logo */
+    .top-navbar .navbar-logo {
+      height: 40px; /* Adjust size as needed */
+      width: auto; /* Maintain aspect ratio */
+      /* margin-right: 1rem; Space handled by me-2 on the img */
+      transition: height 0.3s ease;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.2rem;
+    }
+
+    /* Dashboard Card Styles (used for general content cards) */
+    .dashboard-card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 15px var(--card-shadow);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dashboard-card-title {
+      color: var(--main-red);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+    .dashboard-card-text {
+      color: var(--text-color-secondary);
+      margin-bottom: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    /* Stat Card Styles */
+    .stat-card {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 10px var(--stat-card-shadow);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .stat-icon.bg-success { background-color: var(--success-color) !important; }
+    .stat-icon.bg-warning { background-color: var(--warning-color) !important; }
+    .stat-icon.bg-info { background-color: var(--info-color) !important; }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-color-secondary);
+      transition: color 0.3s ease;
+    }
+
+    /* Recent Activity List / General List Group Styles */
+    .list-group-item {
+      background-color: var(--card-bg); /* Ensure list items match card background */
+      border-color: var(--border-color); /* Ensure list item borders match theme */
+      color: var(--text-color);
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+    .list-group-item strong {
+        color: var(--main-red);
+        transition: color 0.3s ease;
+    }
+    .list-group-item .badge {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body.dark-mode .list-group-item .badge.bg-warning {
+        background-color: var(--warning-color) !important; /* Brighter yellow in dark mode */
+        color: #1a1a1a !important; /* Dark text on bright yellow */
+    }
+
+    .section-title {
+      color: var(--main-red);
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    /* Specific styles for Notifications Page */
+    .notification-item {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        position: relative; /* For the unread indicator */
+    }
+    .notification-item.unread::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--main-red);
+        border-radius: 50%;
+    }
+    .notification-icon {
+        font-size: 1.8rem;
+        color: var(--main-red);
+        flex-shrink: 0;
+        line-height: 1; /* Align icon vertically */
+    }
+    .notification-content {
+        flex-grow: 1;
+        padding-left: 0.5rem; /* Space for the unread indicator */
+    }
+    .notification-content h6 {
+        margin-bottom: 0.25rem;
+        color: var(--text-color);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    .notification-content p {
+        margin-bottom: 0.5rem;
+        color: var(--text-color-secondary);
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta {
+        font-size: 0.8rem;
+        color: var(--text-color-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta i {
+        font-size: 0.9rem;
+    }
+    .notification-actions {
+        margin-top: 1rem;
+        text-align: right; /* Align buttons to the right */
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: flex-end;
+    }
+    .notification-actions .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    .notification-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align filters to the start */
+    }
+    .notification-filters .dropdown-toggle {
+        min-width: 150px; /* Ensure dropdowns have a consistent width */
+    }
+    .notification-filters .btn {
+        flex-grow: 1; /* Allow buttons to grow in size */
+        max-width: fit-content; /* Prevent button from taking full width unnecessarily */
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+      }
+      .dashboard-content,
+      .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+    }
+    @media (max-width: 767.98px) {
+      .stat-card {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+      }
+      .stat-icon {
+        margin-bottom: 0.5rem;
+      }
+      .notification-filters {
+        flex-direction: column;
+        align-items: stretch; /* Stack filters vertically */
+      }
+      .notification-filters .dropdown-toggle,
+      .notification-filters .btn {
+        width: 100%;
+        max-width: none;
+      }
+    }
+    @media (max-width: 575.98px) {
+      .dashboard-card, .notification-item {
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+      }
+      .stat-card {
+        border-radius: 0.75rem;
+      }
+      .notification-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .notification-content {
+        padding-left: 0; /* Remove padding if icon is centered above */
+      }
+      .notification-item.unread::before {
+        top: 5px; /* Adjust indicator position for stacked layout */
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .notification-actions {
+        text-align: center; /* Center buttons on small screens */
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center"
+        style="font-size:1.25rem; font-family:'Segoe UI',Arial,sans-serif; font-weight:700; line-height:1.3;">
+      Welcome to RecruitEase, Applicant!
+    </h4>
+    <div class="active-label">APPLICANT</div>
+    <a href="dashboard.html"><i class="bi bi-grid me-2"></i> Dashboard</a>
+    <a href="jobs.html"><i class="bi bi-briefcase me-2"></i> Job Openings</a>
+    <a href="applications.html"><i class="bi bi-file-earmark-text me-2"></i> My Applications</a>
+    <a href="onboarding.html"><i class="bi bi-calendar-check me-2"></i> Onboarding</a>
+    <a href="/RecruitEase/RecruitEase/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+  <div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo me-2">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="notifications.html" style="text-decoration:none;">
+            <i class="bi bi-bell-fill position-relative" id="notificationBell">
+              <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size:0.8rem;">0</span>
+            </i>
+        </a>
+        <a href="profile.html" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2 d-none d-sm-block">Applicant<br><small style="font-weight:400;">Welcome!</small></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content" id="mainContent">
+    <div class="container-fluid" style="max-width: 1200px;">
+      <h4 class="section-title mb-4">Notifications</h4>
+      <div class="d-flex justify-content-between align-items-center mb-4 notification-filters">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Status: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterStatusDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-status="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="unread">Unread</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="read">Read</a></li>
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Type: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterTypeDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-type="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="application">Application</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="system">System</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="onboarding">Onboarding</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="interview">Interview</a></li>
+          </ul>
+        </div>
+        
+        <button class="btn btn-danger" id="markAllAsReadBtn">Mark All as Read</button>
+      </div>
+
+      <div class="row">
+        <div class="col-12" id="notificationList">
+          <!-- Notification area is now empty by default. Notifications will be added dynamically. -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Sidebar logic (copied from dashboard.html, assuming it's consistent)
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mainContent = document.getElementById('mainContent');
+    const topNavbar = document.getElementById('topNavbar');
+
+    function openSidebar() {
+      sidebar.classList.add('show');
+      sidebarBackdrop.classList.add('show');
+      document.body.classList.add('sidebar-visible');
+      mainContent.classList.add('sidebar-visible');
+      topNavbar.classList.add('sidebar-visible');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebarBackdrop.classList.remove('show');
+      document.body.classList.remove('sidebar-visible');
+      mainContent.classList.remove('sidebar-visible');
+      topNavbar.classList.remove('sidebar-visible');
+    }
+
+    sidebarToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (sidebar.classList.contains('show')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
+        closeSidebar();
+      }
+    });
+
+    // Dark Mode Toggle Logic (copied from dashboard.html, assuming it's consistent)
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+
+    function setTheme(isDarkMode) {
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeIcon.classList.remove('bi-moon-fill');
+        darkModeIcon.classList.add('bi-sun-fill');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeIcon.classList.remove('bi-sun-fill');
+        darkModeIcon.classList.add('bi-moon-fill');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        setTheme(true);
+      } else {
+        setTheme(false); // Default to light mode if no preference or 'light'
+      }
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark-mode'));
+    });
+
+    // Notification Filtering and Status Logic
+    const notificationList = document.getElementById('notificationList');
+    const filterStatusDropdown = document.getElementById('filterStatusDropdown');
+    const filterTypeDropdown = document.getElementById('filterTypeDropdown');
+    const markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
+
+    let currentStatusFilter = 'all';
+    let currentTypeFilter = 'all';
+
+    function applyFilters() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        const status = item.dataset.status;
+        const type = item.dataset.type;
+
+        const statusMatch = currentStatusFilter === 'all' || status === currentStatusFilter;
+        const typeMatch = currentTypeFilter === 'all' || type === currentTypeFilter;
+
+        if (statusMatch && typeMatch) {
+          item.style.display = 'flex'; // Show
+        } else {
+          item.style.display = 'none'; // Hide
+        }
+      });
+    }
+
+    function updateStatusButton(item) {
+        const markReadBtn = item.querySelector('.mark-as-read-btn');
+        const markUnreadBtn = item.querySelector('.mark-as-unread-btn');
+
+        if (item.dataset.status === 'read') {
+            item.classList.remove('unread');
+            if (markReadBtn) markReadBtn.style.display = 'none';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'inline-block';
+        } else {
+            item.classList.add('unread');
+            if (markReadBtn) markReadBtn.style.display = 'inline-block';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'none';
+        }
+    }
+
+    // Event Listeners for Status Filter
+    filterStatusDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentStatusFilter = this.dataset.filterStatus;
+        filterStatusDropdown.textContent = `Filter by Status: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Event Listeners for Type Filter
+    filterTypeDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentTypeFilter = this.dataset.filterType;
+        filterTypeDropdown.textContent = `Filter by Type: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Mark All as Read Button
+    markAllAsReadBtn.addEventListener('click', function() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        item.dataset.status = 'read';
+        updateStatusButton(item);
+      });
+      applyFilters(); // Re-apply filters to update display if "Unread" was selected
+    });
+
+    // Individual Mark as Read/Unread Buttons
+    notificationList.addEventListener('click', function(e) {
+      if (e.target.classList.contains('mark-as-read-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'read';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      } else if (e.target.classList.contains('mark-as-unread-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'unread';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      }
+    });
+
+    // Dynamic notification badge logic
+    function updateNotificationBadge(count) {
+      const badge = document.getElementById('notificationBadge');
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Example: Listen for applicant actions and update notifications
+    // You should call updateNotificationBadge(newCount) when a notification is added
+    // For demo, initialize with 0
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNotificationBadge(0);
+    });
+
+    // Initialize button states and apply initial filters on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const notifications = notificationList.querySelectorAll('.notification-item');
+        notifications.forEach(item => {
+            updateStatusButton(item);
+        });
+        applyFilters(); // Initial filter application
+    });
+
+  </script>
+</body>
+</html>

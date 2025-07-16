@@ -1,0 +1,1079 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurations | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+      --input-bg: #fff;
+      --input-border: #ced4da;
+      --placeholder-color: #6c757d;
+      --info-bg: #e0e7ed; /* Softer info background */
+      --info-color: #343a40; /* Darker text for info */
+
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+
+      /* New: Custom success message variables */
+      --success-message-bg: #198754;
+      --success-message-color: #fff;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #6a2a2a; /* Slightly darker light for dark mode */
+      --main-brand-color-bg-hover: rgba(255,107,107,0.18); /* More pronounced hover */
+      --main-brand-color-border: #7c2e2e; /* Darker border for contrast */
+
+      --body-bg: #121212; /* Very dark background */
+      --text-color: #e0e0e0; /* Very light text for strong contrast */
+      --text-color-secondary: #a0a0a0;
+      --text-color-light: #606060;
+      --card-bg: #1e1e1e; /* Darker card background */
+      --sidebar-bg: #1e1e1e; /* Darker sidebar background */
+      --top-navbar-bg: #1e1e1e; /* Darker navbar background */
+      --border-color: #333333; /* Darker, more visible borders */
+      --shadow-color: rgba(0,0,0,0.5); /* Stronger shadows */
+      --card-shadow: rgba(0,0,0,0.6);
+      --red-accent-shadow: rgba(255,107,107,0.25);
+      --input-bg: #2b2b2b; /* Darker input background */
+      --input-border: #444444; /* Darker input border */
+      --placeholder-color: #888888;
+      --info-bg: #282828; /* Darker info background */
+      --info-color: #cccccc; /* Lighter info text */
+
+      /* Dark mode status colors (can be adjusted for better visibility on dark bg) */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+
+      /* Custom success message variables for dark mode */
+      --success-message-bg: #28a745;
+      --success-message-color: #fff;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      /* Professional font */
+      font-size: 0.95rem;
+      /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px;
+      /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px;
+      /* Adjusted for wider sidebar - initially off-screen */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color);
+      /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+      /* When 'show' class is present, sidebar is visible */
+    }
+    .sidebar img {
+      width: 80px;
+      /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%;
+      /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border);
+      /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem;
+      /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary);
+      /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem;
+      /* More padding */
+      border-radius: 0.6rem;
+      /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold, .sidebar a.active {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem;
+      /* More rounded */
+      margin-bottom: 2rem;
+      /* More space */
+      width: 100%;
+      letter-spacing: 0.8px;
+      /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex;
+      /* Ensure it's always flex */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem;
+      /* Consistent icon size */
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem;
+      /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    /* Content shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .dashboard-content {
+      margin-left: 260px;
+      /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      /* Subtle shadow */
+    }
+    /* Navbar shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .top-navbar {
+      margin-left: 260px;
+      /* Adjusted for wider sidebar */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px;
+        /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem;
+        /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem;
+      /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block;
+        /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color);
+        /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Container - used for main content wrapping */
+    .dashboard-container {
+      max-width: 1000px;
+      /* Adjusted width for configurations */
+      background: var(--card-bg);
+      border-radius: 1rem;
+      /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow);
+      /* More pronounced, soft shadow */
+      padding: 3rem;
+      /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color);
+      /* Use general text color for headings */
+      font-weight: 600;
+      /* Medium bold */
+      margin-bottom: 2rem;
+      /* More space below heading */
+      font-size: 1.8rem;
+      /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color);
+      /* Subtle line below heading */
+      padding-bottom: 1rem;
+      /* Space for the line */
+    }
+
+    /* Form specific styling for configuration page */
+    .form-section-title {
+        color: var(--main-brand-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        margin-top: 2.5rem; /* Space above new sections */
+        font-size: 1.4rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.8rem;
+        transition: color 0.3s ease;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+        transition: color 0.3s ease;
+    }
+    .form-control,
+    .form-select,
+    textarea.form-control {
+        border-color: var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-control::placeholder {
+        color: var(--placeholder-color);
+    }
+    .form-control:focus,
+    .form-select:focus,
+    textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg); /* Ensure consistent background on focus */
+    }
+
+    /* Custom Switch Toggle */
+    .form-check-input.form-switch {
+        width: 3.5rem;
+        /* Wider switch */
+        height: 1.75rem;
+        /* Taller switch */
+        cursor: pointer;
+        background-color: var(--border-color);
+        /* Off state color */
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        margin-top: 0.25rem; /* Align with label */
+    }
+    .form-check-input.form-switch:checked {
+        background-color: var(--main-brand-color);
+        /* On state color */
+        border-color: var(--main-brand-color);
+    }
+    .form-check-input.form-switch:focus {
+        box-shadow: 0 0 0 0.25rem var(--main-brand-color-light);
+        border-color: var(--main-brand-color);
+    }
+    .form-check-label {
+        font-size: 1rem;
+        /* Readable font size for toggle labels */
+        margin-left: 0.5rem;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+    }
+    .input-group-text {
+      background: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--input-border);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Buttons */
+    .btn {
+        min-width: 120px;
+        /* Adjusted for this page */
+        padding: 0.7rem 1.1rem;
+        /* Adjusted padding */
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 5px var(--shadow-color);
+        border-width: 1px;
+    }
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px var(--shadow-color);
+    }
+    .btn-primary {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #a03024;
+        border-color: #a03024;
+    }
+    .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .btn-outline-secondary:hover {
+        background-color: var(--main-brand-color-light);
+        border-color: var(--main-brand-color);
+        color: var(--main-brand-color);
+    }
+    .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+    }
+
+    /* Info box for messages/notes */
+    .info-box {
+        background: var(--info-bg);
+        color: var(--info-color);
+        padding: 1.25rem; /* Slightly more padding */
+        border-radius: 0.8rem;
+        /* Consistent border radius */
+        font-size: 0.98rem;
+        /* Slightly smaller font for info box */
+        transition: background 0.3s ease, color 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05); /* Subtle border for definition */
+    }
+    .info-box i {
+      color: var(--main-brand-color);
+      /* Info icon is main red */
+    }
+
+    /* Custom Save Message */
+    .save-message {
+        background-color: var(--success-message-bg);
+        color: var(--success-message-color);
+        padding: 0.35rem 0.8rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .save-message.show {
+        opacity: 1;
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .top-navbar {
+            justify-content: space-between;
+        }
+        /* No specific display rule for sidebar-toggle here, it will default to flex */
+        .dashboard-content,
+        .top-navbar {
+            margin-left: 0 !important;
+            /* On small screens, always reset margin */
+        }
+        .dashboard-container {
+            padding: 1.5rem 1rem;
+        }
+        .filter-actions-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .filter-actions-bar .form-control,
+        .filter-actions-bar .form-select,
+        .filter-actions-bar .btn,
+        .filter-actions-bar .dropdown,
+        .filter-actions-bar .btn-group { /* Target btn-group for full width */
+            min-width: unset;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 button {
+            width: 100%;
+        }
+        /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+        .table-responsive .table thead th,
+        .table-responsive .table tbody td {
+            white-space: nowrap;
+            /* Keep text on one line */
+        }
+    }
+
+    /* Custom scrollbar for better aesthetics */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--body-bg);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-color-light);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--main-brand-color);
+    }
+
+    /* Modal specific styles for MFA and Self-Registration */
+    .mfa-modal-content,
+    .selfreg-modal-content {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .mfa-modal-header,
+    .selfreg-modal-header {
+      border-bottom: 1px solid var(--border-color);
+    }
+    .mfa-modal-footer,
+    .selfreg-modal-footer {
+      border-top: 1px solid var(--border-color);
+    }
+    body.dark-mode .mfa-modal-content,
+    body.dark-mode .selfreg-modal-content {
+      background-color: #23242a !important;
+      color: #f4f4f4 !important;
+    }
+    body.dark-mode .mfa-modal-header,
+    body.dark-mode .selfreg-modal-header {
+      background: none !important;
+      border-color: #393a40 !important;
+    }
+    body.dark-mode .mfa-modal-body,
+    body.dark-mode .selfreg-modal-body {
+      color: #f4f4f4 !important;
+    }
+    body.dark-mode .mfa-modal-footer,
+    body.dark-mode .selfreg-modal-footer {
+      background: none !important;
+      border-color: #393a40 !important;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+            <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+        </div>
+        <h4 class="mb-3 dashboard-section-title text-center">
+            RecruitEase HR Management System
+        </h4>
+        <div class="active-label">IT ADMIN PORTAL</div>
+  
+        <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+        <a href="UserManagement.html"><i class="bi bi-people-fill me-2"></i> User Management</a>
+        <a href="SystemLogs.html"><i class="bi bi-file-earmark-text-fill me-2"></i> System Logs</a>
+        <a href="Configurations.html" class="fw-bold active"><i class="bi bi-gear-fill me-2"></i> Configurations</a>
+        <a href="SupportTickets.html"><i class="bi bi-ticket-detailed-fill me-2"></i> Support Tickets</a>
+        <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    </div>
+
+    <div class="top-navbar" id="topNavbar">
+        <div 
+class="d-flex align-items-center">
+            <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center ms-auto">
+            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark 
+mode">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <a href="Notifications.html" style="text-decoration:none;">
+                <i class="bi bi-bell-fill"></i>
+            </a>
+            <a href="Profile.html" style="text-decoration:none;">
+            
+            <i class="bi bi-person-circle"></i>
+            </a>
+            <span class="ms-2">IT Admin<br><small>Welcome!</small></span>
+        </div>
+    </div>
+
+    <div class="dashboard-content" id="mainContent">
+        <div class="container dashboard-container">
+            <a href="Dashboard.html" class="btn btn-outline-secondary mb-4" aria-label="Back to Dashboard">
+                <i class="bi bi-arrow-left"></i> Back to 
+Dashboard
+            </a>
+
+            <h4 class="mb-4">System Configurations</h4>
+
+            <form id="configForm">
+                <h5 class="form-section-title"><i class="bi bi-gear me-2"></i>General System Settings</h5>
+                <div class="row g-3 
+mb-4">
+                    <div class="col-md-6">
+                        <label for="systemName" class="form-label">System Name</label>
+                        <input type="text" class="form-control" id="systemName" value="J.
+Alcabasa HR Management System">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="defaultTimeZone" class="form-label">Default Time Zone</label>
+                        <select class="form-select" id="defaultTimeZone">
+  
+                            <option value="Asia/Manila">Asia/Manila (PHT)</option>
+                            <option value="America/New_York">America/New York (EST)</option>
+                            <option value="Europe/London">Europe/London (GMT)</option>
+           
+                            <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                
+                        <label for="maxFileSize" class="form-label">Max File Upload Size (MB)</label>
+                        <input type="number" class="form-control" id="maxFileSize" value="25" min="1" max="100">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+             
+                        <div class="form-check form-switch pt-4">
+                            <input class="form-check-input" type="checkbox" id="enableDarkMode" checked>
+                            <label class="form-check-label" for="enableDarkMode">Enable Dark Mode Toggle</label>
+                     
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="form-section-title mt-5"><i class="bi bi-person-lines-fill me-2"></i>User & Access Management</h5>
+                
+<div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="defaultUserRole" class="form-label">Default New User Role</label>
+                        <select class="form-select" id="defaultUserRole">
+                     
+                            <option value="employee">Employee</option>
+                            <option value="hr_employee">HR Employee</option>
+                            <option value="recruiter">Recruiter</option>
+                            <option value="admin">Admin</option>
+    
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="sessionTimeout" class="form-label">Session Timeout (minutes)</label>
+           
+                        <input type="number" class="form-control" id="sessionTimeout" value="60" min="5" max="180">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-check form-switch">
+              
+                            <input class="form-check-input" type="checkbox" id="enableMFA">
+                            <label class="form-check-label" for="enableMFA">Enable Multi-Factor Authentication (MFA)</label>
+                        </div>
+                        <div class="form-check 
+form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="allowSelfRegistration">
+                            <label class="form-check-label" for="allowSelfRegistration">Allow User Self-Registration</label>
+                        </div>
+            
+                    </div>
+                </div>
+
+                <h5 class="form-section-title mt-5"><i class="bi bi-puzzle-fill me-2"></i>Integrations</h5>
+                <div class="row g-3 mb-4">
+                  
+                    <div class="col-md-6">
+                        <label for="payrollSystem" class="form-label">Payroll System Integration</label>
+                        <select class="form-select" id="payrollSystem">
+                            <option value="disabled">Disabled</option>
+              
+                            <option value="system_a">External Payroll System A</option>
+                            <option value="system_b">External Payroll System B</option>
+                        </select>
+                    </div>
+      
+                    <div class="col-md-6">
+                        <label for="ssoProvider" class="form-label">SSO Provider</label>
+                        <input type="text" class="form-control" id="ssoProvider" placeholder="e.g., Okta, Azure AD">
+                    </div>
+       
+                </div>
+
+                <h5 class="form-section-title mt-5"><i class="bi bi-bell-fill me-2"></i>Notifications & Alerts</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-12">
+        
+                        <label for="adminNotificationEmail" class="form-label">Admin Notification Email</label>
+                        <input type="email" class="form-control" id="adminNotificationEmail" placeholder="admin@company.com">
+                    </div>
+                    <div class="col-md-12">
+           
+                        <label for="systemAlertThreshold" class="form-label">System Alert Threshold (%)</label>
+                        <input type="number" class="form-control" id="systemAlertThreshold" value="80" min="50" max="99">
+                    </div>
+                </div>
+
+                
+                <h5 class="form-section-title mt-5"><i class="bi bi-database-fill me-2"></i>Data & Storage</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="dataRetentionPeriod" class="form-label">Data Retention Period (days)</label>
+    
+                        <input type="number" class="form-control" id="dataRetentionPeriod" value="365" min="30">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="backupFrequency" class="form-label">Backup Frequency</label>
+       
+                        <select class="form-select" id="backupFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                       
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4 align-items-center">
+             
+                    <div id="configSavedMsg" class="save-message" style="display:none;">
+                      <i class="bi bi-check-circle-fill"></i> Settings Saved!
+</div>
+                    <button type="button" class="btn btn-outline-secondary" id="cancelConfigBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+
+            <div class="info-box mt-4">
+          
+                <i class="bi bi-info-circle me-2"></i>
+                Review these settings carefully.
+Changes made here can affect system behavior and user access.
+</div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="mfaModal" tabindex="-1" aria-labelledby="mfaModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content mfa-modal-content">
+          <div class="modal-header mfa-modal-header">
+            <h5 class="modal-title" id="mfaModalLabel">Multi-Factor Authentication Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center mfa-modal-body">
+            <i id="mfaModalIcon" class="bi display-4 mb-3"></i>
+            <p id="mfaModalMessage" class="lead"></p>
+          </div>
+          <div class="modal-footer justify-content-center mfa-modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="selfRegistrationModal" tabindex="-1" aria-labelledby="selfRegistrationModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content selfreg-modal-content">
+          <div class="modal-header selfreg-modal-header">
+            <h5 class="modal-title" id="selfRegistrationModalLabel">User Self-Registration Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center selfreg-modal-body">
+            <i id="selfRegistrationModalIcon" class="bi display-4 mb-3"></i>
+            <p id="selfRegistrationModalMessage" class="lead"></p>
+          </div>
+          <div class="modal-footer justify-content-center selfreg-modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="saveSuccessModal" tabindex="-1" aria-labelledby="saveSuccessModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="saveSuccessModalLabel">Configuration Saved</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
+            <p class="lead">All changes have been successfully saved!</p>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Sidebar logic
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const mainContent = document.getElementById('mainContent');
+        const topNavbar = document.getElementById('topNavbar');
+        function openSidebar() {
+            sidebar.classList.add('show');
+            sidebarBackdrop.classList.add('show');
+            document.body.classList.add('sidebar-visible');
+            mainContent.classList.add('sidebar-visible');
+            topNavbar.classList.add('sidebar-visible');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('show');
+            sidebarBackdrop.classList.remove('show');
+            document.body.classList.remove('sidebar-visible');
+            mainContent.classList.remove('sidebar-visible');
+            topNavbar.classList.remove('sidebar-visible');
+        }
+
+        sidebarToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (sidebar.classList.contains('show')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+  
+        });
+        sidebarBackdrop.addEventListener('click', closeSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
+                closeSidebar();
+            }
+        });
+        // Dark Mode Toggle Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = darkModeToggle.querySelector('i');
+        function setTheme(isDarkMode) {
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeIcon.classList.remove('bi-moon-fill');
+                darkModeIcon.classList.add('bi-sun-fill');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkModeIcon.classList.remove('bi-sun-fill');
+                darkModeIcon.classList.add('bi-moon-fill');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                setTheme(true);
+            } else {
+                
+                setTheme(false); // Default to light mode if no preference or 'light'
+            }
+            loadConfigurations(); // Load settings on page load
+        });
+        darkModeToggle.addEventListener('click', () => {
+            setTheme(!document.body.classList.contains('dark-mode'));
+        });
+        // Configuration Form Logic
+        const configForm = document.getElementById('configForm');
+        const configSavedMsg = document.getElementById('configSavedMsg');
+        const cancelConfigBtn = document.getElementById('cancelConfigBtn');
+        const enableMFA = document.getElementById('enableMFA');
+        const allowSelfRegistration = document.getElementById('allowSelfRegistration');
+        const saveSuccessModal = new bootstrap.Modal(document.getElementById('saveSuccessModal'));
+        const mfaModal = new bootstrap.Modal(document.getElementById('mfaModal'));
+        const selfRegistrationModal = new bootstrap.Modal(document.getElementById('selfRegistrationModal'));
+
+        let currentConfigurations = {}; // Object to hold configurations
+
+        // Function to load configurations from localStorage
+        function loadConfigurations() {
+            const storedConfig = localStorage.getItem('itAdminConfigurations');
+            if (storedConfig) {
+                currentConfigurations = JSON.parse(storedConfig);
+            } else {
+                // Default configurations
+                currentConfigurations = {
+                    systemName: "J. Alcabasa HR Management System",
+                    defaultTimeZone: "Asia/Manila",
+                
+                    maxFileSize: 25,
+                    enableDarkMode: true,
+                    defaultUserRole: "employee",
+                    sessionTimeout: 60,
+                    enableMFA: false,
+           
+                    allowSelfRegistration: false,
+                    payrollSystem: "disabled",
+                    ssoProvider: "",
+                    adminNotificationEmail: "admin@company.com",
+                    systemAlertThreshold: 80,
+      
+                    dataRetentionPeriod: 365,
+                    backupFrequency: "daily"
+                };
+            }
+            populateForm();
+        }
+
+        // Function to populate form fields with loaded configurations
+        function populateForm() {
+            document.getElementById('systemName').value = currentConfigurations.systemName;
+            document.getElementById('defaultTimeZone').value = currentConfigurations.defaultTimeZone;
+            document.getElementById('maxFileSize').value = currentConfigurations.maxFileSize;
+            document.getElementById('enableDarkMode').checked = currentConfigurations.enableDarkMode;
+            document.getElementById('defaultUserRole').value = currentConfigurations.defaultUserRole;
+            document.getElementById('sessionTimeout').value = currentConfigurations.sessionTimeout;
+            document.getElementById('enableMFA').checked = currentConfigurations.enableMFA;
+            document.getElementById('allowSelfRegistration').checked = currentConfigurations.allowSelfRegistration;
+            document.getElementById('payrollSystem').value = currentConfigurations.payrollSystem;
+            document.getElementById('ssoProvider').value = currentConfigurations.ssoProvider;
+            document.getElementById('adminNotificationEmail').value = currentConfigurations.adminNotificationEmail;
+            document.getElementById('systemAlertThreshold').value = currentConfigurations.systemAlertThreshold;
+            document.getElementById('dataRetentionPeriod').value = currentConfigurations.dataRetentionPeriod;
+            currentConfigurations.backupFrequency = document.getElementById('backupFrequency').value;
+
+            // Also set theme based on loaded configurations
+            setTheme(currentConfigurations.enableDarkMode);
+        }
+
+        // Function to save configurations to localStorage
+        function saveConfigurations() {
+            currentConfigurations.systemName = document.getElementById('systemName').value;
+            currentConfigurations.defaultTimeZone = document.getElementById('defaultTimeZone').value;
+            currentConfigurations.maxFileSize = parseInt(document.getElementById('maxFileSize').value);
+            currentConfigurations.enableDarkMode = document.getElementById('enableDarkMode').checked;
+            currentConfigurations.defaultUserRole = document.getElementById('defaultUserRole').value;
+            currentConfigurations.sessionTimeout = parseInt(document.getElementById('sessionTimeout').value);
+            currentConfigurations.enableMFA = document.getElementById('enableMFA').checked;
+            currentConfigurations.allowSelfRegistration = document.getElementById('allowSelfRegistration').checked;
+            currentConfigurations.payrollSystem = document.getElementById('payrollSystem').value;
+            currentConfigurations.ssoProvider = document.getElementById('ssoProvider').value;
+            currentConfigurations.adminNotificationEmail = document.getElementById('adminNotificationEmail').value;
+            currentConfigurations.systemAlertThreshold = parseInt(document.getElementById('systemAlertThreshold').value);
+            currentConfigurations.dataRetentionPeriod = parseInt(document.getElementById('dataRetentionPeriod').value);
+            currentConfigurations.backupFrequency = document.getElementById('backupFrequency').value;
+
+            localStorage.setItem('itAdminConfigurations', JSON.stringify(currentConfigurations));
+            saveSuccessModal.show(); // Show the success modal instead of the message
+
+            // Apply theme change immediately after saving if the setting was changed
+            setTheme(currentConfigurations.enableDarkMode);
+        }
+
+        // Handle form submission
+        configForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveConfigurations();
+        });
+        // Handle cancel button click
+        cancelConfigBtn.addEventListener('click', function() {
+            loadConfigurations(); // Reload original configurations to reset form
+            // Optionally add a "Changes cancelled" message if desired
+        });
+        function showSavedMessage() {
+            configSavedMsg.style.display = 'flex';
+            configSavedMsg.classList.add('show');
+            setTimeout(() => {
+                configSavedMsg.classList.remove('show');
+                setTimeout(() => {
+                    configSavedMsg.style.display = 'none';
+                }, 300); // Wait for transition to finish before hiding display
+            }, 2000);
+        }
+
+        // MFA Switch Event Listener
+        enableMFA.addEventListener('change', function() {
+            const mfaModalIcon = document.getElementById('mfaModalIcon');
+            const mfaModalMessage = document.getElementById('mfaModalMessage');
+            const mfaModalContent = document.querySelector('.mfa-modal-content');
+            mfaModalIcon.classList.remove('text-success', 'text-danger', 'bi-check-circle-fill', 'bi-x-circle-fill');
+
+            if (document.body.classList.contains('dark-mode')) {
+                mfaModalContent.classList.add('bg-dark', 'text-light');
+            } else {
+                mfaModalContent.classList.remove('bg-dark', 'text-light');
+            }
+
+            if (this.checked) {
+                mfaModalIcon.classList.add('bi-check-circle-fill', 'text-success');
+                mfaModalMessage.textContent = 'Multi-Factor Authentication has been activated.';
+            } else {
+                mfaModalIcon.classList.add('bi-x-circle-fill', 'text-danger');
+                mfaModalMessage.textContent = 'Multi-Factor Authentication has been deactivated.';
+            }
+            mfaModal.show();
+        });
+
+        // Self-Registration Switch Event Listener
+        allowSelfRegistration.addEventListener('change', function() {
+            const selfRegistrationModalIcon = document.getElementById('selfRegistrationModalIcon');
+            const selfRegistrationModalMessage = document.getElementById('selfRegistrationModalMessage');
+            const selfRegModalContent = document.querySelector('.selfreg-modal-content');
+            selfRegistrationModalIcon.classList.remove('text-success', 'text-danger', 'bi-check-circle-fill', 'bi-x-circle-fill');
+
+            if (document.body.classList.contains('dark-mode')) {
+                selfRegModalContent.classList.add('bg-dark', 'text-light');
+            } else {
+                selfRegModalContent.classList.remove('bg-dark', 'text-light');
+            }
+
+            if (this.checked) {
+                selfRegistrationModalIcon.classList.add('bi-check-circle-fill', 'text-success');
+                selfRegistrationModalMessage.textContent = 'User Self-Registration has been enabled.';
+            } else {
+                selfRegistrationModalIcon.classList.add('bi-x-circle-fill', 'text-danger');
+                selfRegistrationModalMessage.textContent = 'User Self-Registration has been disabled.';
+            }
+            selfRegistrationModal.show();
+        });
+        
+    </script>
+</body>
+</html>

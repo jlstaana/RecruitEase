@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Onboarding | RecruitEase Applicant</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    /* Root variables for theming */
+    :root {
+      --main-red: #dc3545;
+      --main-red-light: #f8e3e3;
+      --main-red-bg-hover: rgba(220, 53, 69, 0.07);
+      --main-red-border: #f3cccc;
+      --main-gold: #fbbf24;
+
+      /* Light Theme Defaults */
+      --body-bg: #f1f1f1;
+      --text-color: #212529;
+      --text-color-secondary: #6c757d;
+      --text-color-light: #888;
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #e5e5e5;
+      --shadow-color: rgba(0,0,0,0.07); /* General shadow for sidebar, navbar */
+      --card-shadow: rgba(0,0,0,0.08); /* Card shadow */
+      --red-accent-shadow: rgba(220,53,69,0.12); /* Specific elements like logo border */
+
+      /* Onboarding specific */
+      --progress-bg: #e9ecef;
+      --progress-bar-color: var(--main-red);
+      --progress-step-text-color: #6c757d;
+      --progress-step-active-text-color: var(--main-red);
+      --progress-step-dot-bg: #e9ecef;
+      --progress-step-dot-active-bg: var(--main-red);
+      --form-input-bg: #fff;
+      --form-input-border: #ced4da;
+      --form-input-color: #212529;
+      --form-input-placeholder-color: #6c757d;
+      --btn-primary-bg: var(--main-red);
+      --btn-primary-border: var(--main-red);
+      --btn-secondary-bg: #6c757d;
+      --btn-secondary-border: #6c757d;
+      --btn-secondary-color: #fff;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-red: #ff6b6b; /* Slightly brighter red for dark mode contrast */
+      --main-red-light: #4a1a1a;
+      --main-red-bg-hover: rgba(255,107,107,0.15);
+
+      --body-bg: #1a1a1a;
+      --text-color: #f8f9fa;
+      --text-color-secondary: #adb5bd;
+      --text-color-light: #b0b0b0;
+      --card-bg: #2a2a2a;
+      --sidebar-bg: #1c1c1c;
+      --top-navbar-bg: #1c1c1c;
+      --border-color: #3a3a3a;
+      --shadow-color: rgba(0,0,0,0.3); /* Darker general shadow */
+      --card-shadow: rgba(0,0,0,0.4); /* Darker card shadow, no red glow */
+      --red-accent-shadow: rgba(255,107,107,0.2); /* Retaining slight red tint for logo border */
+
+      /* Onboarding specific dark mode */
+      --progress-bg: #3a3a3a;
+      --progress-bar-color: var(--main-red);
+      --progress-step-text-color: #adb5bd;
+      --progress-step-active-text-color: var(--main-red);
+      --progress-step-dot-bg: #555;
+      --progress-step-dot-active-bg: var(--main-red);
+      --form-input-bg: #3a3a3a;
+      --form-input-border: #555;
+      --form-input-color: #f8f9fa;
+      --form-input-placeholder-color: #b0b0b0;
+      --btn-primary-bg: var(--main-red);
+      --btn-primary-border: var(--main-red);
+      --btn-secondary-bg: #4a4a4a;
+      --btn-secondary-border: #4a4a4a;
+      --btn-secondary-color: #f8f9fa;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: var(--main-red);
+      position: fixed;
+      height: 100vh;
+      padding: 1rem 1rem;
+      left: -260px;
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 8px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sidebar h4 {
+      color: var(--main-red);
+      transition: color 0.3s ease;
+    }
+    .sidebar a {
+      color: var(--main-red);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      transition: background 0.15s, color 0.15s;
+      font-weight: 500;
+      gap: 0.5rem;
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-red-bg-hover);
+      color: var(--text-color);
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-red);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      letter-spacing: 1px;
+      font-size: 0.95rem;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.18);
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 2rem;
+      display: flex !important; /* Always display */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      position: static; /* Ensure it stays in the flow of the flexbox */
+      margin-right: 0.5rem; /* Space between logo and toggle */
+      transition: color 0.3s ease;
+      padding: 0; /* Remove default button padding */
+    }
+    .sidebar-toggle i {
+      font-size: 1.5rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2.5rem 0 2rem 0;
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 250px;
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between; /* This is key! */
+      align-items: center;
+      position: relative;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color);
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 250px;
+    }
+    .top-navbar .bi {
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-light);
+        transition: color 0.3s ease;
+    }
+
+    /* Navbar Logo */
+    .top-navbar .navbar-logo {
+      height: 40px; /* Adjust size as needed */
+      width: auto; /* Maintain aspect ratio */
+      /* margin-right: 1rem; Space handled by me-2 on the img */
+      transition: height 0.3s ease;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--main-red);
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.2rem;
+    }
+
+    /* Onboarding Page Specific Styles */
+    .onboarding-container {
+      max-width: 900px;
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 32px var(--card-shadow);
+      padding: 2.5rem 2rem;
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .onboarding-container h4 {
+      color: var(--main-red);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      transition: color 0.3s ease;
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      position: relative;
+      padding: 0 1rem; /* Adjust padding if dots are too close to edge */
+    }
+    .progress-line {
+      position: absolute;
+      top: 15px; /* Half of dot size */
+      left: 1rem;
+      right: 1rem;
+      height: 3px;
+      background-color: var(--progress-bg);
+      z-index: 1;
+      transition: background-color 0.3s ease;
+    }
+    .progress-line-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--progress-bar-color);
+      transition: width 0.4s ease-in-out, background-color 0.3s ease;
+    }
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      z-index: 2;
+      position: relative;
+      flex: 1; /* Distribute space evenly */
+      margin: 0 -10px; /* Counteract padding and ensure dots are aligned */
+    }
+    .progress-dot {
+      width: 30px;
+      height: 30px;
+      background-color: var(--progress-step-dot-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white; /* Number color */
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin-bottom: 0.5rem;
+      border: 3px solid var(--progress-bg); /* Border to match line */
+      box-shadow: 0 0 0 2px var(--body-bg); /* Ring around dot, body-bg color */
+    }
+    body.dark-mode .progress-dot {
+      box-shadow: 0 0 0 2px var(--body-bg); /* Ensure ring is body-bg for dark mode */
+    }
+    .progress-step.active .progress-dot {
+      background-color: var(--progress-step-dot-active-bg);
+      color: white;
+      border-color: var(--progress-step-dot-active-bg);
+    }
+    .progress-step.completed .progress-dot {
+      background-color: var(--progress-step-dot-active-bg);
+      color: white;
+      border-color: var(--progress-step-dot-active-bg);
+    }
+    .progress-step.completed .progress-dot .bi-check-circle-fill {
+      font-size: 1.2rem;
+    }
+    .progress-step-text {
+      color: var(--progress-step-text-color);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      transition: color 0.3s ease;
+    }
+    .progress-step.active .progress-step-text,
+    .progress-step.completed .progress-step-text {
+      color: var(--progress-step-active-text-color);
+      font-weight: 600;
+    }
+
+    /* Form Card Styles */
+    .form-section {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 2px 10px var(--card-shadow);
+      display: none; /* Hidden by default */
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-section.active {
+      display: block; /* Show active form */
+    }
+    .form-section h5 {
+      color: var(--main-red);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .form-control, .form-select {
+      background-color: var(--form-input-bg);
+      border-color: var(--form-input-border);
+      color: var(--form-input-color);
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    }
+    .form-control.adaptive-disabled, .form-select.adaptive-disabled {
+      background-color: var(--form-input-bg) !important;
+      color: var(--form-input-color) !important;
+      border-color: var(--form-input-border) !important;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    body.dark-mode .form-control.adaptive-disabled, body.dark-mode .form-select.adaptive-disabled {
+      background-color: var(--form-input-bg) !important;
+      color: var(--form-input-color) !important;
+      border-color: var(--form-input-border) !important;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .form-control::placeholder {
+      color: var(--form-input-placeholder-color);
+      opacity: 0.7;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--main-red);
+      box-shadow: 0 0 0 0.25rem var(--main-red-light);
+      background-color: var(--form-input-bg);
+      color: var(--form-input-color);
+      /* Ensure adaptive focus for both light and dark mode */
+    }
+    .form-label {
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background-color: var(--btn-primary-bg);
+      border-color: var(--btn-primary-border);
+      color: white;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: #bd2130;
+      border-color: #bd2130;
+    }
+    .btn-secondary {
+      background-color: var(--btn-secondary-bg);
+      border-color: var(--btn-secondary-border);
+      color: var(--btn-secondary-color);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #5a6268;
+    }
+    .form-check-label a {
+        color: var(--main-red);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .form-check-label a:hover {
+        text-decoration: underline;
+    }
+
+    /* Validation Feedback */
+    .form-control.is-invalid, .form-select.is-invalid {
+        border-color: var(--main-red) !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    .form-control.is-valid, .form-select.is-valid {
+        border-color: #198754 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-.4-.1-1.1.3-1.5s1-.4 1.4 0l1.4 1.4 2.6-2.6c.4-.4 1.1-.1 1.5.3s.4 1.1 0 1.5L3.6 6.73c-.4.4-1.1.4-1.4 0z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    .invalid-feedback {
+        color: var(--main-red);
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      /* Ensure sidebar toggle always visible */
+      .top-navbar .sidebar-toggle {
+        display: flex !important; /* Force flex for toggle on small screens */
+        margin-right: 0.5rem; /* Re-adjust spacing */
+      }
+      .top-navbar {
+        justify-content: space-between; /* Space out logo/toggle and user info */
+      }
+      .dashboard-content,
+      .top-navbar {
+        margin-left: 0 !important;
+      }
+      .onboarding-container {
+        padding: 1.5rem 1rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .progress-bar-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+      .progress-line {
+        display: none; /* Hide line on smaller screens */
+      }
+      .progress-step {
+        flex: none; /* Remove flex on small screens */
+        width: 100px; /* Give a fixed width */
+      }
+    }
+    @media (max-width: 576px) {
+      .onboarding-container {
+        border-radius: 1rem;
+      }
+      .form-section {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center"
+        style="font-size:1.25rem; font-family:'Segoe UI',Arial,sans-serif; font-weight:700; line-height:1.3;">
+        Welcome to RecruitEase, Applicant!
+    </h4>
+    <div class="active-label">APPLICANT</div>
+    <a href="dashboard.html"><i class="bi bi-grid me-2"></i> Dashboard</a>
+    <a href="jobs.html"><i class="bi bi-briefcase me-2"></i> Job Openings</a>
+    <a href="applications.html"><i class="bi bi-file-earmark-text me-2"></i> My Applications</a>
+    <a href="onboarding.html" class="fw-bold"><i class="bi bi-calendar-check me-2"></i> Onboarding</a>
+    <a href="/RecruitEase/RecruitEase/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+ <div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo me-2">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="notifications.html" style="text-decoration:none;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="profile.html" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2 d-none d-sm-block">Applicant<br><small style="font-weight:400;">Welcome!</small></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content" id="mainContent">
+    <div class="container onboarding-container">
+      <h4 class="mb-4">Applicant Onboarding Process</h4>
+
+      <div class="progress-bar-container">
+        <div class="progress-line"><div class="progress-line-fill" id="progressFill"></div></div>
+        <div class="progress-step active" data-step="1">
+          <div class="progress-dot">1</div>
+          <div class="progress-step-text">Personal Info</div>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="progress-dot">2</div>
+          <div class="progress-step-text">Employment</div>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="progress-dot">3</div>
+          <div class="progress-step-text">Emergency Contact</div>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="progress-dot">4</div>
+          <div class="progress-step-text">Documents</div>
+        </div>
+        <div class="progress-step" data-step="5">
+          <div class="progress-dot">5</div>
+          <div class="progress-step-text">Confirmation</div>
+        </div>
+      </div>
+
+      <form id="onboardingForm" novalidate> <div class="form-section active" data-step="1">
+          <h5>Personal Information</h5>
+          <div class="mb-3">
+            <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="firstName" placeholder="John" required>
+            <div class="invalid-feedback">Please provide your first name.</div>
+          </div>
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="lastName" placeholder="Doe" required>
+            <div class="invalid-feedback">Please provide your last name.</div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+            <div class="invalid-feedback">Please provide a valid email address.</div>
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" class="form-control" id="phone" placeholder="09XX-XXX-XXXX" required pattern="^09[0-9]{9}$">
+            <div class="invalid-feedback">Please provide a valid 11-digit phone number (e.g., 09171234567).</div>
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="address" placeholder="123 Main St, City, Country" required>
+            <div class="invalid-feedback">Please provide your address.</div>
+          </div>
+          <div class="d-flex justify-content-end mt-4">
+            <button type="button" class="btn btn-primary next-step">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="2">
+          <h5>Employment Details</h5>
+          <div class="mb-3">
+            <label for="jobTitle" class="form-label">Job Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="jobTitle" placeholder="e.g., Software Engineer" required>
+            <div class="invalid-feedback">Please provide your job title.</div>
+          </div>
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+            <input type="date" class="form-control" id="startDate" required>
+            <div class="invalid-feedback">Please select your start date.</div>
+          </div>
+          <div class="mb-3">
+            <label for="department" class="form-label">Department <span class="text-danger">*</span></label>
+            <select class="form-select" id="department" required>
+              <option value="" selected disabled>Select Department</option>
+              <option value="HR">Human Resources</option>
+              <option value="IT">IT</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+            </select>
+            <div class="invalid-feedback">Please select a department.</div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i> Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="3">
+          <h5>Emergency Contact Information</h5>
+          <div class="mb-3">
+            <label for="ecName" class="form-label">Full Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="ecName" placeholder="Emergency Contact Name" required>
+            <div class="invalid-feedback">Please provide the emergency contact's full name.</div>
+          </div>
+          <div class="mb-3">
+            <label for="ecRelationship" class="form-label">Relationship <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="ecRelationship" placeholder="e.g., Mother, Spouse" required>
+            <div class="invalid-feedback">Please provide the relationship.</div>
+          </div>
+          <div class="mb-3">
+            <label for="ecPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" class="form-control" id="ecPhone" placeholder="09XX-XXX-XXXX" required pattern="^09[0-9]{9}$">
+            <div class="invalid-feedback">Please provide a valid 11-digit phone number (e.g., 09171234567).</div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i> Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="4">
+          <h5 style="color:var(--main-red);">Document Uploads</h5>
+          <p style="color:var(--text-color-secondary);">Please upload the following required documents:</p>
+          <div class="mb-3">
+            <label for="resumeUpload" class="form-label" style="color:var(--text-color);">Resume/CV <span style="color:var(--main-red);">*</span></label>
+            <input class="form-control" type="file" id="resumeUpload" required style="background-color:var(--form-input-bg); color:var(--form-input-color); border-color:var(--form-input-border);">
+            <div class="invalid-feedback" style="color:var(--main-red);">Please upload your Resume/CV.</div>
+          </div>
+          <div class="mb-3">
+            <label for="idUpload" class="form-label" style="color:var(--text-color);">Government ID (e.g., Passport, Driver's License) <span style="color:var(--main-red);">*</span></label>
+            <input class="form-control" type="file" id="idUpload" required style="background-color:var(--form-input-bg); color:var(--form-input-color); border-color:var(--form-input-border);">
+            <div class="invalid-feedback" style="color:var(--main-red);">Please upload your Government ID.</div>
+          </div>
+          <div class="mb-3">
+            <label for="certUpload" class="form-label" style="color:var(--text-color);">Educational Certificates <span style="color:var(--main-red);">*</span></label>
+            <input class="form-control" type="file" id="certUpload" required style="background-color:var(--form-input-bg); color:var(--form-input-color); border-color:var(--form-input-border);">
+            <div class="invalid-feedback" style="color:var(--main-red);">Please upload your Educational Certificates.</div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i> Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <div class="form-section" data-step="5">
+          <h5 style="color:var(--main-red);">Confirmation & Submission</h5>
+          <p style="color:var(--text-color-secondary);">Please review all your submitted information before final submission. Click "Submit" to complete your onboarding process.</p>
+          <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent" style="border-color:var(--border-color); color:var(--text-color);">
+              Personal Information <i class="bi bi-check-circle-fill" style="color:#198754;"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent" style="border-color:var(--border-color); color:var(--text-color);">
+              Employment Details <i class="bi bi-check-circle-fill" style="color:#198754;"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent" style="border-color:var(--border-color); color:var(--text-color);">
+              Emergency Contact <i class="bi bi-check-circle-fill" style="color:#198754;"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent" style="border-color:var(--border-color); color:var(--text-color);">
+              Document Uploads <i class="bi bi-check-circle-fill" style="color:#198754;"></i>
+            </li>
+          </ul>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="agreeTerms" required>
+            <label class="form-check-label" for="agreeTerms" style="color:var(--text-color);">
+              I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" style="color:var(--main-red);">Company Terms and Conditions</a>. <span style="color:var(--main-red);">*</span>
+            </label>
+            <div class="invalid-feedback" style="color:var(--main-red);">You must agree to the terms and conditions.</div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary prev-step"><i class="bi bi-arrow-left"></i> Previous</button>
+            <button type="submit" class="btn btn-success" id="submitOnboarding">Submit <i class="bi bi-check-circle-fill"></i></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="termsModalLabel">Company Terms and Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>1. Introduction</h6>
+          <p>Welcome to RecruitEase! These Terms and Conditions ("Terms") govern your use of the RecruitEase applicant onboarding portal. By accessing or using our portal, you agree to comply with and be bound by these Terms. If you do not agree to these Terms, please do not use the portal.</p>
+
+          <h6>2. Eligibility</h6>
+          <p>You must be at least 18 years old and legally capable of entering into binding contracts to use this portal. By proceeding with the onboarding process, you represent and warrant that you meet these eligibility requirements.</p>
+
+          <h6>3. Purpose of the Portal</h6>
+          <p>This portal is designed to facilitate the collection of necessary information and documents from prospective employees for onboarding purposes. This includes personal details, employment history, emergency contacts, and required document uploads.</p>
+
+          <h6>4. Accuracy of Information</h6>
+          <p>You agree to provide accurate, complete, and current information during the entire onboarding process. Providing false or misleading information may result in the termination of your application or employment. You are responsible for updating your information as necessary.</p>
+
+          <h6>5. Privacy Policy</h6>
+          <p>Your privacy is important to us. All personal information collected through this portal will be handled in accordance with our Privacy Policy. By agreeing to these Terms, you also acknowledge and consent to our Privacy Policy, which outlines how we collect, use, store, and protect your data.</p>
+          <p>Specifically, your data may be used for:</p>
+          <ul>
+            <li>Processing your application and employment.</li>
+            <li>Complying with legal and regulatory obligations.</li>
+            <li>Internal record keeping and administrative purposes.</li>
+            <li>Communicating with you regarding your application or employment.</li>
+          </ul>
+
+          <h6>6. Document Uploads</h6>
+          <p>You are responsible for uploading genuine and legally compliant documents as requested. RecruitEase reserves the right to verify the authenticity of all submitted documents. Any falsified documents will lead to immediate disqualification from the hiring process or termination of employment.</p>
+
+          <h6>7. Confidentiality</h6>
+          <p>During your onboarding process and potential employment, you may gain access to confidential and proprietary information of RecruitEase or its clients. You agree to maintain the strict confidentiality of such information and not to disclose it to any third party without explicit written consent.</p>
+
+          <h6>8. Intellectual Property</h6>
+          <p>All content, designs, text, graphics, and other materials on this portal are the intellectual property of RecruitEase or its licensors and are protected by applicable intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from any part of this portal without express written permission.</p>
+
+          <h6>9. Limitation of Liability</h6>
+          <p>RecruitEase shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to, loss of profits, data, or use, arising out of or in connection with your use of this portal or the inability to use it, even if RecruitEase has been advised of the possibility of such damages.</p>
+
+          <h6>10. Governing Law</h6>
+          <p>These Terms shall be governed by and construed in accordance with the laws of the Philippines, without regard to its conflict of law principles. Any legal action or proceeding arising under these Terms will be brought exclusively in the courts located in the Philippines.</p>
+
+          <h6>11. Changes to Terms</h6>
+          <p>RecruitEase reserves the right to modify these Terms at any time. Any changes will be effective immediately upon posting the revised Terms on the portal. Your continued use of the portal after any such changes constitutes your acceptance of the new Terms.</p>
+
+          <h6>12. Contact Information</h6>
+          <p>If you have any questions about these Terms, please contact us at hr@recruitease.com.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Sidebar logic (retained from previous pages)
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mainContent = document.getElementById('mainContent'); // Added for consistent class toggling
+    const topNavbar = document.getElementById('topNavbar');     // Added for consistent class toggling
+
+
+    function openSidebar() {
+      sidebar.classList.add('show');
+      sidebarBackdrop.classList.add('show');
+      document.body.classList.add('sidebar-visible');
+      mainContent.classList.add('sidebar-visible'); // Ensure content shifts
+      topNavbar.classList.add('sidebar-visible');   // Ensure navbar shifts
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebarBackdrop.classList.remove('show');
+      document.body.classList.remove('sidebar-visible');
+      mainContent.classList.remove('sidebar-visible'); // Ensure content reverts
+      topNavbar.classList.remove('sidebar-visible');   // Ensure navbar reverts
+    }
+    sidebarToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (sidebar.classList.contains('show')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar on resize if wider than mobile
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
+        closeSidebar();
+      }
+    });
+
+
+    // Dark Mode Toggle Logic (retained from previous pages)
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+
+    function setTheme(isDarkMode) {
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeIcon.classList.remove('bi-moon-fill');
+        darkModeIcon.classList.add('bi-sun-fill');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeIcon.classList.remove('bi-sun-fill');
+        darkModeIcon.classList.add('bi-moon-fill');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        setTheme(true);
+      } else {
+        setTheme(false);
+      }
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark-mode'));
+    });
+
+    // Onboarding Form Logic
+    let currentStep = 1;
+    const formSections = document.querySelectorAll('.form-section');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    const progressFill = document.getElementById('progressFill');
+    const totalSteps = formSections.length;
+    const onboardingForm = document.getElementById('onboardingForm');
+
+    // Restrict editing after submission unless allowed
+    let onboardingData = localStorage.getItem('recruitEaseApplicantApplication');
+    let editAllowed = false;
+    // Check for edit permission (e.g., query param or localStorage flag)
+    if (window.location.search.includes('edit=1') || localStorage.getItem('recruitEaseApplicantEditAllowed') === 'true') {
+      editAllowed = true;
+    }
+
+    // If onboarding data exists and not allowed to edit, disable all form fields
+    if (onboardingData && !editAllowed) {
+      onboardingData = JSON.parse(onboardingData);
+      // Fill form fields with existing data and disable them
+      document.addEventListener('DOMContentLoaded', () => {
+        // Personal Info
+        document.getElementById('firstName').value = onboardingData.firstName || '';
+        document.getElementById('lastName').value = onboardingData.lastName || '';
+        document.getElementById('email').value = onboardingData.email || '';
+        document.getElementById('phone').value = onboardingData.phone || '';
+        document.getElementById('address').value = onboardingData.address || '';
+        // Employment
+        document.getElementById('jobTitle').value = onboardingData.jobTitle || '';
+        document.getElementById('startDate').value = onboardingData.startDate || '';
+        document.getElementById('department').value = onboardingData.department || '';
+        // Emergency Contact
+        document.getElementById('ecName').value = onboardingData.ecName || '';
+        document.getElementById('ecRelationship').value = onboardingData.ecRelationship || '';
+        document.getElementById('ecPhone').value = onboardingData.ecPhone || '';
+        // Disable all inputs and selects, but keep adaptive styling
+        onboardingForm.querySelectorAll('input, select, textarea').forEach(el => {
+          el.disabled = true;
+          el.classList.add('adaptive-disabled');
+        });
+        onboardingForm.querySelectorAll('button.next-step, button.prev-step, button[type="submit"]').forEach(el => {
+          el.disabled = true;
+        });
+        // Show a message to the user
+        const msg = document.createElement('div');
+        msg.className = 'alert alert-info mt-3';
+        msg.innerHTML = 'Your onboarding details have been submitted. Editing is only allowed if requested by you or a higher position.';
+        onboardingForm.parentNode.insertBefore(msg, onboardingForm);
+      });
+    }
+
+    function showStep(step) {
+      formSections.forEach(section => {
+        section.classList.remove('active');
+        if (parseInt(section.dataset.step) === step) {
+          section.classList.add('active');
+        }
+      });
+
+      progressSteps.forEach((pStep, index) => {
+        const stepNum = parseInt(pStep.dataset.step);
+        pStep.classList.remove('active', 'completed');
+        const dot = pStep.querySelector('.progress-dot');
+        dot.innerHTML = stepNum; // Reset number
+        const checkIcon = dot.querySelector('.bi-check-circle-fill');
+        if (checkIcon) checkIcon.remove(); // Remove check icon if present
+
+        if (stepNum < step) {
+          pStep.classList.add('completed');
+          dot.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+        } else if (stepNum === step) {
+          pStep.classList.add('active');
+          dot.innerHTML = stepNum;
+        }
+      });
+
+      updateProgressBar(step);
+    }
+
+    function updateProgressBar(step) {
+      const percentage = ((step - 1) / (totalSteps - 1)) * 100;
+      progressFill.style.width = `${percentage}%`;
+    }
+
+    // Validation Function for current step
+    function validateCurrentStep() {
+      const currentFormSection = document.querySelector(`.form-section[data-step="${currentStep}"]`);
+      let isValid = true;
+
+      // Get all required inputs in the current section
+      const inputs = currentFormSection.querySelectorAll('input[required], select[required], textarea[required]');
+
+      inputs.forEach(input => {
+        if (input.type === 'file') {
+          if (input.files.length === 0) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            isValid = false;
+          } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+          }
+        } else if (input.tagName === 'SELECT') {
+            if (input.value === "" || input.value === null) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                isValid = false;
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            }
+        } else { // text, email, tel, date, etc.
+          if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            isValid = false;
+          } else if (input.type === 'email' && !/\S+@\S+\.\S+/.test(input.value)) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            isValid = false;
+          } else if (input.type === 'tel' && input.pattern && !new RegExp(input.pattern).test(input.value)) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            isValid = false;
+          } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+          }
+        }
+      });
+      return isValid;
+    }
+
+    document.querySelectorAll('.next-step').forEach(button => {
+      button.addEventListener('click', () => {
+        if (validateCurrentStep()) { // Validate current step before proceeding
+          if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.prev-step').forEach(button => {
+      button.addEventListener('click', () => {
+        // When going back, we can clear validation feedback for the current step
+        const currentFormSection = document.querySelector(`.form-section[data-step="${currentStep}"]`);
+        currentFormSection.querySelectorAll('.is-invalid, .is-valid').forEach(input => {
+            input.classList.remove('is-invalid', 'is-valid');
+        });
+
+        if (currentStep > 1) {
+          currentStep--;
+          showStep(currentStep);
+        }
+      });
+    });
+
+    // Event listener to clear validation feedback on input change
+    onboardingForm.addEventListener('input', (event) => {
+        const input = event.target;
+        if (input.closest('.form-section.active')) { // Only apply to inputs in the active step
+            if (input.hasAttribute('required')) {
+                if (input.type === 'file') {
+                    if (input.files.length > 0) {
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    }
+                } else if (input.tagName === 'SELECT') {
+                    if (input.value !== "") {
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    }
+                }
+                else {
+                    if (input.value.trim() !== '') {
+                        if (input.type === 'email' && !/\S+@\S+\.\S+/.test(input.value)) {
+                            // Still invalid if email format is wrong
+                            input.classList.add('is-invalid');
+                            input.classList.remove('is-valid');
+                        } else if (input.type === 'tel' && input.pattern && !new RegExp(input.pattern).test(input.value)) {
+                            // Still invalid if phone format is wrong
+                            input.classList.add('is-invalid');
+                            input.classList.remove('is-valid');
+                        }
+                        else {
+                            input.classList.remove('is-invalid');
+                            input.classList.add('is-valid');
+                        }
+                    } else {
+                        input.classList.remove('is-valid');
+                        input.classList.add('is-invalid'); // Re-add if empty
+                    }
+                }
+            }
+        }
+    });
+
+
+    // Initial load
+    showStep(currentStep);
+
+    // Handle form submission
+    onboardingForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      // Final validation for the last step
+      const agreeTermsCheckbox = document.getElementById('agreeTerms');
+      if (!agreeTermsCheckbox.checked) {
+        agreeTermsCheckbox.classList.add('is-invalid');
+        alert('Please agree to the Company Terms and Conditions to submit your onboarding.');
+        return; // Stop submission
+      } else {
+        agreeTermsCheckbox.classList.remove('is-invalid');
+      }
+
+      // Collect onboarding data
+      const onboardingData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        jobTitle: document.getElementById('jobTitle').value,
+        startDate: document.getElementById('startDate').value,
+        department: document.getElementById('department').value,
+        ecName: document.getElementById('ecName').value,
+        ecRelationship: document.getElementById('ecRelationship').value,
+        ecPhone: document.getElementById('ecPhone').value,
+        resumeFileName: document.getElementById('resumeUpload').files[0] ? document.getElementById('resumeUpload').files[0].name : '',
+        idFileName: document.getElementById('idUpload').files[0] ? document.getElementById('idUpload').files[0].name : '',
+        certFileName: document.getElementById('certUpload').files[0] ? document.getElementById('certUpload').files[0].name : '',
+        status: 'Submitted',
+        submittedAt: new Date().toISOString()
+      };
+
+      // Save to localStorage for applications page tracking
+      localStorage.setItem('recruitEaseApplicantApplication', JSON.stringify(onboardingData));
+      // Remove edit permission after submission
+      localStorage.removeItem('recruitEaseApplicantEditAllowed');
+
+      alert('Onboarding completed! Your data has been submitted and will be tracked in the Applications page.');
+      window.location.href = 'applications.html'; // Redirect to applications page
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RecruitEase Login</title>
+  <link rel="icon" type="image/png" href="../../assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    /* Root Variables for Theming */
+    :root {
+      --primary-red: #e74c3c; /* A professional, vibrant red */
+      --primary-red-light: #fbecec; /* Very light red for backgrounds/accents */
+      --primary-red-dark: #c0392b; /* Darker red for hover states */
+      --accent-yellow: #f39c12; /* A warm orange/gold accent */
+
+      --background-light: #f2f4f6; /* Soft, light background */
+      --card-bg: #ffffff;
+      --text-color-dark: #34495e; /* Darker text for readability */
+      --text-color-muted: #7f8c8d; /* Muted text for secondary info */
+      --border-light: #e0e0e0; /* Light border color */
+      --shadow-light: rgba(0, 0, 0, 0.08); /* Soft general shadow */
+      --shadow-medium: rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: var(--background-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      /* Main Background Image for the whole page */
+      /* Updated path for background image */
+      background-image: url('../../assets/login-background.jpg'); /* !!! Ensure this path is correct !!! */
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    /* Overlay for the main background image to improve card readability */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(242, 244, 246, 0.85); /* Adjust opacity for desired effect */
+      backdrop-filter: blur(5px); /* Subtle blur effect */
+      z-index: -1; /* Place behind content */
+    }
+
+    .login-card.landscape {
+      box-shadow: 0 8px 30px var(--shadow-medium);
+      background: var(--card-bg);
+      border-radius: 1.5rem;
+      overflow: hidden;
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .login-side {
+      width: 45%;
+      min-height: 500px;
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+    /* Background Image for the left side of the login card */
+      /* This path seems incomplete, make sure to add an image name here if intended */
+      background-image: url('../../assets/login-side-image.jpg'); /* Example: make sure this image exists */
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Overlay for the left side background image to improve text readability */
+    .login-side::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* Subtle gradient overlay */
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(251, 191, 36, 0.3) 100%); /* Adjust colors and opacity */
+      z-index: 1; /* Ensure overlay is above the image */
+    }
+
+    /* Bring content of login-side above the overlay */
+    .login-logo, .login-title, .login-subtitle {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Keyframe for fade-in animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .login-logo {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 4px solid var(--card-bg);
+      margin-bottom: 1.5rem;
+    }
+
+    .login-title {
+      color: var(--primary-red-dark);
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 1.5px;
+    }
+
+    .login-subtitle {
+      color: var(--text-color-muted);
+      font-size: 1.1rem;
+      line-height: 1.5;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+
+    .login-form-side {
+      flex-grow: 1;
+      background: var(--card-bg);
+      padding: 3rem 2.5rem;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text-color-dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border-light);
+      color: var(--text-color-dark);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-control::placeholder {
+      color: var(--text-color-muted);
+      opacity: 0.7;
+    }
+    .form-control:focus {
+      border-color: var(--primary-red);
+      box-shadow: 0 0 0 0.2rem var(--primary-red-light);
+    }
+
+    /* Style for the password toggle button */
+    #togglePassword {
+      background-color: var(--card-bg); /* Match input background */
+      border: 1px solid var(--border-light);
+      border-left: none; /* No left border to blend with input */
+      color: var(--text-color-muted); /* Muted color for the icon */
+      padding: 0.85rem 1rem; /* Match input padding */
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+      border-top-right-radius: 0.75rem; /* Apply radius to right corners */
+      border-bottom-right-radius: 0.75rem; /* Apply radius to right corners */
+    }
+
+    #togglePassword:hover,
+    #togglePassword:focus {
+      background-color: var(--background-light); /* Slight change on hover */
+      color: var(--primary-red); /* Highlight icon on hover/focus */
+      border-color: var(--primary-red);
+      box-shadow: none; /* Remove default bootstrap shadow */
+      outline: none; /* Remove outline */
+    }
+
+    .btn-danger {
+      background-color: var(--primary-red);
+      border-color: var(--primary-red);
+      border-radius: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      padding: 0.85rem 1.5rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    }
+    .btn-danger:hover {
+      background-color: var(--primary-red-dark);
+      border-color: var(--primary-red-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px var(--shadow-light);
+    }
+    .btn-danger:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 3px var(--shadow-light);
+    }
+    .btn-danger:focus {
+      box-shadow: 0 0 0 0.25rem var(--primary-red-light), 0 2px 8px var(--shadow-light);
+    }
+
+    .login-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .login-links a {
+      color: var(--primary-red);
+      font-size: 0.9rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s, text-decoration 0.15s;
+    }
+    .login-links a:hover {
+      color: var(--primary-red-dark);
+      text-decoration: underline;
+    }
+
+    .social-login {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1rem; /* Adjusted margin-top for spacing after divider */
+      margin-bottom: 0; /* No bottom margin, parent container handles it */
+    }
+    .social-btn {
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-light);
+      background: var(--background-light);
+      color: var(--text-color-dark);
+      font-size: 1.3rem;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .social-btn:hover {
+      background: var(--primary-red);
+      color: var(--card-bg);
+      border-color: var(--primary-red);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow-light);
+    }
+    .social-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.25rem var(--primary-red-light);
+    }
+
+    .divider {
+      text-align: center;
+      color: var(--text-color-muted);
+      margin: 2rem 0;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    .divider:before, .divider:after {
+      content: "";
+      display: inline-block;
+      width: 40%;
+      height: 1px;
+      background: var(--border-light);
+      vertical-align: middle;
+      margin: 0 0.75rem;
+    }
+
+    .text-danger-custom {
+      color: var(--primary-red) !important;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Adjust toast for better visibility */
+    .toast-body {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    .toast.text-bg-success {
+      background-color: #28a745 !important;
+    }
+    .toast.text-bg-danger {
+      background-color: #dc3545 !important;
+    }
+    .toast.text-bg-info {
+      background-color: #17a2b8 !important;
+    }
+
+
+    /* Responsive Adjustments */
+    @media (max-width: 900px) {
+      .login-card.landscape {
+        flex-direction: column !important;
+        max-width: 95vw;
+        border-radius: 1rem;
+      }
+      .login-side {
+        width: 100% !important;
+        min-height: 180px !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .login-form-side {
+        padding: 2rem 1.5rem !important;
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+      .login-logo {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 1rem;
+      }
+      .login-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      .login-subtitle {
+        font-size: 1rem;
+      }
+      .divider {
+        margin: 1.5rem 0;
+      }
+    }
+    @media (max-width: 576px) {
+      .login-card.landscape {
+        border-radius: 0.75rem;
+      }
+      .login-side, .login-form-side {
+        padding: 1.5rem 1rem !important;
+      }
+      .login-title {
+        font-size: 1.75rem;
+      }
+      .login-subtitle {
+        font-size: 0.9rem;
+      }
+      .social-login {
+        gap: 0.7rem;
+      }
+      .social-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+      }
+      .form-control {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      .btn-danger {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-outer d-flex align-items-center justify-content-center">
+    <div class="login-card landscape shadow-lg">
+      <div class="login-side d-none d-md-flex flex-column align-items-center justify-content-center">
+        <img src="../../assets/logo.jpg" alt="RecruitEase Logo">
+        <div class="login-title">RecruitEase</div>
+        <div class="login-subtitle">
+          Your journey starts here! Sign in to manage your applications.
+        </div>
+      </div>
+      <div class="login-form-side">
+        <div class="d-md-none text-center mb-4">
+          <img src="../../assets/logo.jpg" alt="RecruitEase Logo" class="login-logo" style="width:80px; height:80px;">
+          <div class="login-title" style="font-size:1.8rem; margin-top:0.5rem;">RecruitEase</div>
+        </div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="mb-3">
+            <label for="username" class="form-label">Email or Username</label>
+            <input type="text" class="form-control" id="username" required autocomplete="username" placeholder="Enter your email or username">
+          </div>
+          <div class="mb-3">
+            <div class="login-links">
+              <label for="password" class="form-label mb-0">Password</label>
+              <a href="#" class="small">Forgot Password?</a>
+            </div>
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" required autocomplete="current-password" placeholder="Enter your password">
+              <button class="btn" type="button" id="togglePassword">
+                <i class="bi bi-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" id="captchaLabel"></label>
+            <input type="text" class="form-control" id="captchaInput" placeholder="Enter answer" required>
+          </div>
+          <div id="captchaError" class="text-danger-custom small mb-2" style="display:none;">Incorrect captcha answer.</div>
+          <div id="loginError" class="text-danger-custom small mb-2" style="display:none;">Invalid username or password.</div>
+          <button type="submit" class="btn btn-danger w-100 mt-2">Login</button>
+
+          <div class="divider">or</div>
+          <div class="social-login">
+            <button class="social-btn" title="Sign in with Google"><i class="bi bi-google"></i></button>
+            </div>
+          </form>
+        <div class="text-center mt-4">
+          <span class="text-muted small mt-2 d-block">Need help? <a href="mailto:support@recruitease.com" class="text-danger-custom">Contact Support</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simple math captcha for demonstration
+    function generateCaptcha() {
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      document.getElementById('captchaLabel').textContent = `What is ${a} + ${b}?`;
+      return a + b;
+    }
+    let captchaAnswer = generateCaptcha();
+
+    // Password visibility toggle logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const togglePasswordButton = document.getElementById('togglePassword');
+
+        togglePasswordButton.addEventListener('click', function() {
+            // Toggle the type attribute
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle the eye icon
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+    });
+
+    // Define applicant profiles
+    const applicantProfiles = [
+      { username: 'john.doe@example.com', password: 'password123', alias: 'john' },
+      { username: 'jane.smith@example.com', password: 'mypassword', alias: 'jane' },
+      { username: 'peter.jones@example.com', password: 'securepass', alias: 'peter' },
+      { username: 'sara.williams@example.com', password: 'sara123', alias: 'sara' },
+      { username: 'david.lee@example.com', password: 'lee_pwd', alias: 'david' }
+    ];
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Reset error messages
+      document.getElementById('captchaError').style.display = 'none';
+      document.getElementById('loginError').style.display = 'none';
+
+      const userCaptcha = document.getElementById('captchaInput').value;
+      if (parseInt(userCaptcha, 10) !== captchaAnswer) {
+        document.getElementById('captchaError').style.display = 'block';
+        captchaAnswer = generateCaptcha(); // regenerate captcha
+        document.getElementById('captchaInput').value = ''; // Clear captcha input
+        return false;
+      }
+
+      const enteredUsername = document.getElementById('username').value.trim().toLowerCase();
+      const enteredPassword = document.getElementById('password').value;
+
+      let isAuthenticated = false;
+      let dashboardPath = "";
+
+      // Check against applicant profiles
+      for (const profile of applicantProfiles) {
+        if ((enteredUsername === profile.username || enteredUsername === profile.alias) && enteredPassword === profile.password) {
+          isAuthenticated = true;
+          dashboardPath = "../html/applicant/dashboard.html"; // Applicant dashboard
+          break;
+        }
+      }
+
+      // Check for employee, recruiter, or admin roles
+      if (!isAuthenticated) { // Only check if not already authenticated as an applicant
+          if (enteredUsername === "employee@gmail.com" && enteredPassword === "123") {
+              isAuthenticated = true;
+              dashboardPath = "../html/employee/Dashboard.html"; // Employee dashboard
+          } else if (enteredUsername === "recruiter@gmail.com" && enteredPassword === "123") {
+              isAuthenticated = true;
+              dashboardPath = "../html/recruiter/Dashboard.html"; // Recruiter dashboard
+          } else if (enteredUsername === "admin@gmail.com" && enteredPassword === "123") { // Changed "admin" to "admin@gmail.com"
+              isAuthenticated = true;
+              dashboardPath = "../html/Admin/Dashboard.html"; // Corrected admin dashboard path
+          }
+      }
+
+
+      if (isAuthenticated) {
+        showToast('Login successful! (Demo only)', 'success');
+        setTimeout(() => {
+          window.location.href = dashboardPath; // Redirect to the determined dashboard
+        }, 1200);
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        captchaAnswer = generateCaptcha(); // regenerate captcha on login failure
+        document.getElementById('captchaInput').value = ''; // Clear captcha input
+        showToast('Invalid username or password.', 'danger');
+      }
+    });
+
+    // Modern toast notification
+    function showToast(message, type = 'success') {
+      let toast = document.createElement('div');
+      toast.className = "position-fixed bottom-0 end-0 p-3";
+      toast.style.zIndex = 9999;
+      const bgColorClass = type === 'success' ? 'text-bg-success' : (type === 'danger' ? 'text-bg-danger' : 'text-bg-info');
+      const iconClass = type === 'success' ? 'bi-check-circle' : (type === 'danger' ? 'bi-x-circle' : 'bi-info-circle');
+
+      toast.innerHTML = `
+        <div class="toast align-items-center ${bgColorClass} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              <i class="bi ${iconClass} me-2"></i>${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        const bsToast = new bootstrap.Toast(toast.querySelector('.toast'));
+        bsToast.hide();
+        toast.remove();
+      }, 3000);
+    }
+
+    // Social login buttons (demo only)
+    document.querySelectorAll('.social-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        showToast('Social login is not implemented in this demo.', 'info');
+      });
+    });
+
+    // Register link (demo only)
+    // Assuming you have a register link with class 'login-links-register'
+    // If not, you might need to add it, or remove this part.
+    const registerLink = document.querySelector('.login-links-register');
+    if (registerLink) {
+        registerLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showToast('Registration is not implemented in this demo.', 'info');
+        });
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payroll | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar - initially off-screen */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0; /* When 'show' class is present, sidebar is visible */
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex; /* Ensure it's always flex */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem;
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    /* Content shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+    }
+    /* Navbar shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem; /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
+      padding: 3rem; /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color); /* Use general text color for headings */
+      font-weight: 600; /* Medium bold */
+      margin-bottom: 2rem; /* More space below heading */
+      font-size: 1.8rem; /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
+      padding-bottom: 1rem; /* Space for the line */
+    }
+    .table-responsive {
+      margin-top: 2.5rem; /* More space above table */
+    }
+    .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle; /* Vertically align content in table cells */
+        font-size: 0.9rem; /* Slightly smaller text for tables */
+    }
+    .table-bordered {
+      border-color: var(--border-color);
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600; /* Bolder headers */
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem; /* Increased padding */
+      color: var(--text-color-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .table-bordered tbody td {
+        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
+    }
+
+    .table .bg-white { /* Override for table cells to ensure proper background in dark mode */
+        background-color: var(--card-bg) !important;
+        color: var(--text-color);
+    }
+    /* Adjusted badge colors and styles */
+    .table .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em; /* Slightly larger badges */
+        border-radius: 0.35rem; /* More rounded */
+        text-transform: capitalize; /* Capitalize for status */
+        min-width: 80px; /* Minimum width for consistency */
+        display: inline-block;
+        text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+
+    /* Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        padding: 1.8rem;
+        box-shadow: 0 4px 18px var(--card-shadow);
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+        height: 100%;
+    }
+    .summary-card .icon {
+        font-size: 2.4rem;
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem;
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.1rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem;
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.present .icon { color: var(--status-success); }
+    .summary-card.late .icon { color: var(--status-warning); }
+    .summary-card.absent .icon { color: var(--status-danger); }
+
+    /* Analytics Card (from previous dashboard example) */
+    .analytics-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        padding: 2rem;
+        box-shadow: 0 4px 18px var(--card-shadow);
+        margin-bottom: 2.5rem;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .analytics-card h5 {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.8rem;
+    }
+    .analytics-card .chart-placeholder {
+        background-color: var(--body-bg);
+        border-radius: 0.6rem;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color-light);
+        font-style: italic;
+        border: 1px dashed var(--border-color);
+    }
+
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem;
+        border-radius: 0.8rem;
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: flex-start;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color);
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px;
+        border-color: var(--border-color);
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--text-color-light);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        box-shadow: 0 2px 5px var(--shadow-color);
+        border-width: 1px;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px var(--shadow-color);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color);
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024;
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info);
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+        box-shadow: none;
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem;
+        box-shadow: 0 6px 20px var(--shadow-color);
+        padding: 0.5rem 0;
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-day:hover,
+    body.dark-mode .flatpickr-day.inRange {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem;
+        border-radius: 0.4rem;
+        margin: 0 0.2rem;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important;
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem;
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem;
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+    /* Ensure modals are not covered by navbar and have extra space from top */
+    .modal-dialog {
+        margin-top: 110px !important;
+        z-index: 1060;
+    }
+    @media (max-width: 991.98px) {
+        .modal-dialog {
+            margin-top: 60px !important;
+        }
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+    }
+    .modal-header .modal-title {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    .modal-body {
+        padding: 2rem;
+    }
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1rem 2rem;
+    }
+    .modal .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    .modal .form-control,
+    .modal .form-select,
+    .modal textarea.form-control {
+        border-color: var(--border-color);
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .modal .form-control:focus,
+    .modal .form-select:focus,
+    .modal textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .top-navbar {
+            justify-content: space-between;
+        }
+        /* No specific display rule for sidebar-toggle here, it will default to flex */
+        .dashboard-content,
+        .top-navbar {
+            margin-left: 0 !important; /* On small screens, always reset margin */
+        }
+        .dashboard-container {
+            padding: 1.5rem 1rem;
+        }
+        .filter-actions-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .filter-actions-bar .form-control,
+        .filter-actions-bar .form-select,
+        .filter-actions-bar .btn,
+        .filter-actions-bar .dropdown,
+        .filter-actions-bar .btn-group {
+            min-width: unset;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 button {
+            width: 100%;
+        }
+        /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+        .table-responsive .table thead th,
+        .table-responsive .table tbody td {
+            white-space: nowrap;
+        }
+    }
+
+    /* New/Modified CSS for smaller summary cards */
+    .row.justify-content-center.g-4 {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .summary-card-col {
+        max-width: 250px;
+        flex: 1 1 200px;
+    }
+    @media (min-width: 768px) {
+        .summary-card-col {
+            flex: 0 0 30% !important;
+            max-width: 30% !important;
+        }
+    }
+    @media (min-width: 992px) {
+        .summary-card-col {
+            flex: 0 0 25% !important;
+            max-width: 25% !important;
+        }
+    }
+    @media (max-width: 575.98px) {
+        .summary-card-col {
+            flex: 1 1 100% !important;
+            max-width: 100% !important;
+        }
+    }
+  </style>
+</head>
+<body>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+            <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+        </div>
+        <h4 class="mb-3 dashboard-section-title text-center">
+            RecruitEase HR Management System
+        </h4>
+        <div class="active-label">RECRUITER PORTAL</div>
+        <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+        <a href="Recruitment.html"><i class="bi bi-person-workspace me-2"></i> Recruitment</a>
+        <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+        <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+        <a href="Payroll.html" class="fw-bold active"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+        <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    </div>
+
+    <div class="top-navbar" id="topNavbar">
+        <div class="d-flex align-items-center">
+            <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <div class="d-flex align-items-center ms-auto">
+            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <a href="Notifications.html" style="text-decoration:none;">
+                <i class="bi bi-bell-fill"></i>
+            </a>
+            <a href="Profile.html" style="text-decoration:none;">
+                <i class="bi bi-person-circle"></i>
+            </a>
+            <span class="ms-2">Recruiter<br><small>Welcome!</small></span>
+        </div>
+    </div>
+
+    <div class="dashboard-content" id="mainContent">
+        <div class="container dashboard-container">
+            <!-- Dashboard Overview Section -->
+             <h4 class="mb-4">Payroll Management</h4>
+             <div class="row justify-content-center g-4 mb-4">
+                <div class="col summary-card-col">
+                    <div class="summary-card present">
+                        <span class="icon"><i class="bi bi-cash-stack"></i></span>
+                        <div class="value" id="totalPayrolls">5</div>
+                        <div class="label">Total Payrolls</div>
+                    </div>
+                </div>
+                <div class="col summary-card-col">
+                    <div class="summary-card present">
+                        <span class="icon"><i class="bi bi-check-circle"></i></span>
+                        <div class="value" id="paidPayrolls">3</div>
+                        <div class="label">Paid</div>
+                    </div>
+                </div>
+                <div class="col summary-card-col">
+                    <div class="summary-card late">
+                        <span class="icon"><i class="bi bi-hourglass-split"></i></span>
+                        <div class="value" id="pendingPayrolls">1</div>
+                        <div class="label">Pending</div>
+                    </div>
+                </div>
+                <div class="col summary-card-col">
+                    <div class="summary-card absent">
+                        <span class="icon"><i class="bi bi-exclamation-circle"></i></span>
+                        <div class="value" id="overduePayrolls">1</div>
+                        <div class="label">Overdue</div>
+                    </div>
+                </div>
+            </div>
+           
+
+            <div class="filter-actions-bar">
+                <div class="d-flex flex-row align-items-center w-100 gap-2" style="gap:1rem !important;">
+                    <input type="text" class="form-control" id="searchEmployee" placeholder="Search by Employee Name/ID" style="width: 260px; min-width: 180px; max-width: 260px;">
+                    <select class="form-select" id="filterMonth" style="width: 140px; min-width: 120px; max-width: 140px;">
+                        <option selected>All Months</option>
+                        <option>January</option>
+                        <option>February</option>
+                        <option>March</option>
+                        <option>April</option>
+                        <option>May</option>
+                        <option>June</option>
+                        <option>July</option>
+                        <option>August</option>
+                        <option>September</option>
+                        <option>October</option>
+                        <option>November</option>
+                        <option>December</option>
+                    </select>
+                    <select class="form-select" id="filterYear" style="width: 110px; min-width: 90px; max-width: 110px;">
+                        <option selected>All Years</option>
+                        <option>2025</option>
+                        <option>2024</option>
+                        <option>2023</option>
+                    </select>
+                    <div class="ms-auto" style="margin-left:auto !important;">
+                        <button class="btn btn-success d-flex align-items-center justify-content-center" type="button" data-bs-toggle="modal" data-bs-target="#addPayrollModal" style="width: 180px; min-width: 150px; max-width: 180px; white-space:nowrap; font-size:1rem; padding:0.7rem 1.1rem;"><i class="bi bi-plus-circle me-2"></i>Add New Payroll</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="payrollTable">
+                    <thead>
+                        <tr>
+                            <th>Payroll ID</th>
+                            <th>Employee Name</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Gross Pay</th>
+                            <th>Deductions</th>
+                            <th>Net Pay</th>
+                            <th>Status</th>
+                            <th class="text-center">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-payroll-id="PRL001">
+                            <td>PRL001</td>
+                            <td>John Doe</td>
+                            <td>June</td>
+                            <td>2025</td>
+                            <td>3500.00</td>
+                            <td>350.00</td>
+                            <td>3150.00</td>
+                            <td><span class="badge bg-success">Paid</span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item view-payroll" href="#" data-payroll-id="PRL001"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item edit-payroll" href="#" data-payroll-id="PRL001"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item delete-payroll text-danger" href="#" data-payroll-id="PRL001"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-payroll-id="PRL002">
+                            <td>PRL002</td>
+                            <td>Jane Smith</td>
+                            <td>June</td>
+                            <td>2025</td>
+                            <td>4200.00</td>
+                            <td>420.00</td>
+                            <td>3780.00</td>
+                            <td><span class="badge bg-warning">Pending</span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item view-payroll" href="#" data-payroll-id="PRL002"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item edit-payroll" href="#" data-payroll-id="PRL002"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item delete-payroll text-danger" href="#" data-payroll-id="PRL002"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-payroll-id="PRL003">
+                            <td>PRL003</td>
+                            <td>Peter Jones</td>
+                            <td>May</td>
+                            <td>2025</td>
+                            <td>3800.00</td>
+                            <td>380.00</td>
+                            <td>3420.00</td>
+                            <td><span class="badge bg-success">Paid</span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item view-payroll" href="#" data-payroll-id="PRL003"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item edit-payroll" href="#" data-payroll-id="PRL003"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item delete-payroll text-danger" href="#" data-payroll-id="PRL003"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                         <tr data-payroll-id="PRL004">
+                            <td>PRL004</td>
+                            <td>Alice Brown</td>
+                            <td>May</td>
+                            <td>2025</td>
+                            <td>3950.00</td>
+                            <td>395.00</td>
+                            <td>3555.00</td>
+                            <td><span class="badge bg-danger">Overdue</span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item view-payroll" href="#" data-payroll-id="PRL004"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item edit-payroll" href="#" data-payroll-id="PRL004"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item delete-payroll text-danger" href="#" data-payroll-id="PRL004"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-payroll-id="PRL005">
+                            <td>PRL005</td>
+                            <td>Robert White</td>
+                            <td>April</td>
+                            <td>2025</td>
+                            <td>3600.00</td>
+                            <td>360.00</td>
+                            <td>3240.00</td>
+                            <td><span class="badge bg-success">Paid</span></td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item view-payroll" href="#" data-payroll-id="PRL005"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item edit-payroll" href="#" data-payroll-id="PRL005"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item delete-payroll text-danger" href="#" data-payroll-id="PRL005"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav aria-label="Page navigation example" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="addPayrollModal" tabindex="-1" aria-labelledby="addPayrollModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title d-flex align-items-center gap-2" id="addPayrollModalLabel">
+                        <i class="bi bi-plus-circle text-success"></i>
+                        Add New Payroll Entry
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPayrollForm">
+                        <!-- Excel Upload Section -->
+                        <div class="mb-4">
+                            <label class="form-label">Upload Payroll Excel Sheet</label>
+                            <div class="d-flex flex-column align-items-center justify-content-center p-4 border border-2 border-dashed rounded-3"
+                                style="border-color: var(--main-brand-color-border); min-height: 160px; cursor: pointer; transition: border-color 0.2s; background-color: var(--body-bg);">
+                                <i class="bi bi-file-earmark-excel" style="font-size:2.5rem; color:#229954;"></i>
+                                <span class="mt-2 mb-2" style="font-size:1.05rem; color:var(--text-color-secondary);">Drag & drop or <span style="color:var(--main-brand-color); text-decoration:underline; cursor:pointer;">browse</span> to upload Excel file (.xlsx, .xls)</span>
+                                <input type="file" id="payrollExcelUpload" accept=".xlsx,.xls" style="display:none;">
+                                <button type="button" class="btn btn-outline-success mt-2" onclick="document.getElementById('payrollExcelUpload').click();"><i class="bi bi-upload me-1"></i>Choose File</button>
+                                <span id="excelFileName" class="mt-2" style="font-size:0.95rem; color:var(--main-brand-color);"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addEmployeeName" class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" id="addEmployeeName" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addPayrollMonth" class="form-label">Month</label>
+                                <select class="form-select" id="addPayrollMonth" required>
+                                    <option value="">Select Month</option>
+                                    <option>January</option>
+                                    <option>February</option>
+                                    <option>March</option>
+                                    <option>April</option>
+                                    <option>May</option>
+                                    <option>June</option>
+                                    <option>July</option>
+                                    <option>August</option>
+                                    <option>September</option>
+                                    <option>October</option>
+                                    <option>November</option>
+                                    <option>December</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addPayrollYear" class="form-label">Year</label>
+                                <select class="form-select" id="addPayrollYear" required>
+                                    <option value="">Select Year</option>
+                                    <option>2025</option>
+                                    <option>2024</option>
+                                    <option>2023</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="addGrossPay" class="form-label">Gross Pay</label>
+                                <input type="number" step="0.01" class="form-control" id="addGrossPay" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="addDeductions" class="form-label">Deductions</label>
+                                <input type="number" step="0.01" class="form-control" id="addDeductions" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="addNetPay" class="form-label">Net Pay</label>
+                                <input type="number" step="0.01" class="form-control" id="addNetPay" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addPayrollStatus" class="form-label">Status</label>
+                            <select class="form-select" id="addPayrollStatus" required>
+                                <option value="">Select Status</option>
+                                <option>Paid</option>
+                                <option>Pending</option>
+                                <option>Overdue</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="addPayrollForm">Save Payroll</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewPayrollModal" tabindex="-1" aria-labelledby="viewPayrollModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title d-flex align-items-center gap-2" id="viewPayrollModalLabel">
+                        <i class="bi bi-eye text-info"></i>
+                        Payroll Details: <span id="viewPayrollId"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Employee Name:</strong> <span id="viewEmployeeName"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Month:</strong> <span id="viewPayrollMonth"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Year:</strong> <span id="viewPayrollYear"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Gross Pay:</strong> <span id="viewGrossPay"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Deductions:</strong> <span id="viewDeductions"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Net Pay:</strong> <span id="viewNetPay"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Status:</strong> <span id="viewPayrollStatus"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editPayrollModal" tabindex="-1" aria-labelledby="editPayrollModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title d-flex align-items-center gap-2" id="editPayrollModalLabel">
+                        <i class="bi bi-pencil-square text-warning"></i>
+                        Edit Payroll Entry: <span id="editPayrollIdDisplay"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPayrollForm">
+                        <input type="hidden" id="editPayrollId">
+                        <div class="mb-3">
+                            <label for="editEmployeeName" class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" id="editEmployeeName" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editPayrollMonth" class="form-label">Month</label>
+                                <select class="form-select" id="editPayrollMonth" required>
+                                    <option value="">Select Month</option>
+                                    <option>January</option>
+                                    <option>February</option>
+                                    <option>March</option>
+                                    <option>April</option>
+                                    <option>May</option>
+                                    <option>June</option>
+                                    <option>July</option>
+                                    <option>August</option>
+                                    <option>September</option>
+                                    <option>October</option>
+                                    <option>November</option>
+                                    <option>December</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editPayrollYear" class="form-label">Year</label>
+                                <select class="form-select" id="editPayrollYear" required>
+                                    <option value="">Select Year</option>
+                                    <option>2025</option>
+                                    <option>2024</option>
+                                    <option>2023</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="editGrossPay" class="form-label">Gross Pay</label>
+                                <input type="number" step="0.01" class="form-control" id="editGrossPay" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editDeductions" class="form-label">Deductions</label>
+                                <input type="number" step="0.01" class="form-control" id="editDeductions" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="editNetPay" class="form-label">Net Pay</label>
+                                <input type="number" step="0.01" class="form-control" id="editNetPay" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPayrollStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editPayrollStatus" required>
+                                <option value="">Select Status</option>
+                                <option>Paid</option>
+                                <option>Pending</option>
+                                <option>Overdue</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" form="editPayrollForm">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletePayrollModal" tabindex="-1" aria-labelledby="deletePayrollModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title d-flex align-items-center gap-2" id="deletePayrollModalLabel">
+                        <i class="bi bi-trash text-danger"></i>
+                        Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete payroll entry <strong id="deletePayrollIdDisplay"></strong> for <strong id="deleteEmployeeNameDisplay"></strong>? This action cannot be undone.
+                    <input type="hidden" id="confirmDeletePayrollId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Excel upload filename display
+        document.addEventListener('DOMContentLoaded', function() {
+            const excelInput = document.getElementById('payrollExcelUpload');
+            const excelFileName = document.getElementById('excelFileName');
+            if (excelInput) {
+                excelInput.addEventListener('change', function() {
+                    if (excelInput.files.length > 0) {
+                        excelFileName.textContent = 'Selected: ' + excelInput.files[0].name;
+                    } else {
+                        excelFileName.textContent = '';
+                    }
+                });
+            }
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+            const mainContent = document.getElementById('mainContent');
+            const topNavbar = document.getElementById('topNavbar');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarBackdrop.classList.toggle('show');
+                document.body.classList.toggle('sidebar-visible');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+            // Dark Mode Toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const currentTheme = localStorage.getItem('theme');
+
+            if (currentTheme) {
+                document.body.classList.add(currentTheme);
+                if (currentTheme === 'dark-mode') {
+                    darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+                }
+            }
+
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                let theme = 'light-mode';
+                if (document.body.classList.contains('dark-mode')) {
+                    theme = 'dark-mode';
+                    this.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+                } else {
+                    this.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+                }
+                localStorage.setItem('theme', theme);
+            });
+
+            // Calculate Net Pay for Add Payroll Modal
+            const addGrossPayInput = document.getElementById('addGrossPay');
+            const addDeductionsInput = document.getElementById('addDeductions');
+            const addNetPayInput = document.getElementById('addNetPay');
+
+            function calculateAddNetPay() {
+                const gross = parseFloat(addGrossPayInput.value) || 0;
+                const deductions = parseFloat(addDeductionsInput.value) || 0;
+                addNetPayInput.value = (gross - deductions).toFixed(2);
+            }
+
+            if (addGrossPayInput && addDeductionsInput && addNetPayInput) {
+                addGrossPayInput.addEventListener('input', calculateAddNetPay);
+                addDeductionsInput.addEventListener('input', calculateAddNetPay);
+            }
+
+            // Calculate Net Pay for Edit Payroll Modal
+            const editGrossPayInput = document.getElementById('editGrossPay');
+            const editDeductionsInput = document.getElementById('editDeductions');
+            const editNetPayInput = document.getElementById('editNetPay');
+
+            function calculateEditNetPay() {
+                const gross = parseFloat(editGrossPayInput.value) || 0;
+                const deductions = parseFloat(editDeductionsInput.value) || 0;
+                editNetPayInput.value = (gross - deductions).toFixed(2);
+            }
+
+            if (editGrossPayInput && editDeductionsInput && editNetPayInput) {
+                editGrossPayInput.addEventListener('input', calculateEditNetPay);
+                editDeductionsInput.addEventListener('input', calculateEditNetPay);
+            }
+
+            // --- Payroll Table Action Modals ---
+            const payrollTable = document.getElementById('payrollTable');
+            const viewPayrollModal = new bootstrap.Modal(document.getElementById('viewPayrollModal'));
+            const editPayrollModal = new bootstrap.Modal(document.getElementById('editPayrollModal'));
+            const deletePayrollModal = new bootstrap.Modal(document.getElementById('deletePayrollModal'));
+
+            // Automated Filtering
+            const searchInput = document.getElementById('searchEmployee');
+            const monthSelect = document.getElementById('filterMonth');
+            const yearSelect = document.getElementById('filterYear');
+
+            function filterPayrollTable() {
+                const searchValue = searchInput.value.trim().toLowerCase();
+                const selectedMonth = monthSelect.value;
+                const selectedYear = yearSelect.value;
+                const rows = payrollTable.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const name = row.children[1].textContent.toLowerCase();
+                    const id = row.children[0].textContent.toLowerCase();
+                    const month = row.children[2].textContent;
+                    const year = row.children[3].textContent;
+                    let show = true;
+                    if (searchValue && !(name.includes(searchValue) || id.includes(searchValue))) {
+                        show = false;
+                    }
+                    if (selectedMonth !== 'All Months' && month !== selectedMonth) {
+                        show = false;
+                    }
+                    if (selectedYear !== 'All Years' && year !== selectedYear) {
+                        show = false;
+                    }
+                    row.style.display = show ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterPayrollTable);
+            monthSelect.addEventListener('change', filterPayrollTable);
+            yearSelect.addEventListener('change', filterPayrollTable);
+
+            // Function to show View Details Modal
+            function showViewModal(payrollId) {
+                const row = payrollTable.querySelector(`tr[data-payroll-id="${payrollId}"]`);
+                if (row) {
+                    document.getElementById('viewPayrollId').textContent = row.children[0].textContent;
+                    document.getElementById('viewEmployeeName').textContent = row.children[1].textContent;
+                    document.getElementById('viewPayrollMonth').textContent = row.children[2].textContent;
+                    document.getElementById('viewPayrollYear').textContent = row.children[3].textContent;
+                    document.getElementById('viewGrossPay').textContent = `$${parseFloat(row.children[4].textContent).toFixed(2)}`;
+                    document.getElementById('viewDeductions').textContent = `$${parseFloat(row.children[5].textContent).toFixed(2)}`;
+                    document.getElementById('viewNetPay').textContent = `$${parseFloat(row.children[6].textContent).toFixed(2)}`;
+                    document.getElementById('viewPayrollStatus').textContent = row.children[7].querySelector('.badge').textContent;
+                    viewPayrollModal.show();
+                }
+            }
+
+            // Function to show Edit Payroll Modal
+            function showEditModal(payrollId) {
+                const row = payrollTable.querySelector(`tr[data-payroll-id="${payrollId}"]`);
+                if (row) {
+                    document.getElementById('editPayrollId').value = payrollId;
+                    document.getElementById('editPayrollIdDisplay').textContent = payrollId;
+                    document.getElementById('editEmployeeName').value = row.children[1].textContent;
+                    document.getElementById('editPayrollMonth').value = row.children[2].textContent;
+                    document.getElementById('editPayrollYear').value = row.children[3].textContent;
+                    document.getElementById('editGrossPay').value = parseFloat(row.children[4].textContent).toFixed(2);
+                    document.getElementById('editDeductions').value = parseFloat(row.children[5].textContent).toFixed(2);
+                    document.getElementById('editNetPay').value = parseFloat(row.children[6].textContent).toFixed(2);
+                    document.getElementById('editPayrollStatus').value = row.children[7].querySelector('.badge').textContent;
+                    calculateEditNetPay();
+                    editPayrollModal.show();
+                }
+            }
+
+            // Function to show Delete Confirmation Modal
+            function showDeleteModal(payrollId) {
+                const row = payrollTable.querySelector(`tr[data-payroll-id="${payrollId}"]`);
+                if (row) {
+                    const employeeName = row.children[1].textContent;
+                    document.getElementById('deletePayrollIdDisplay').textContent = payrollId;
+                    document.getElementById('deleteEmployeeNameDisplay').textContent = employeeName;
+                    document.getElementById('confirmDeletePayrollId').value = payrollId;
+                    deletePayrollModal.show();
+                }
+            }
+
+            payrollTable.addEventListener('click', function(event) {
+                const target = event.target;
+                if (target.classList.contains('view-payroll')) {
+                    event.preventDefault();
+                    const payrollId = target.dataset.payrollId;
+                    showViewModal(payrollId);
+                } else if (target.classList.contains('edit-payroll')) {
+                    event.preventDefault();
+                    const payrollId = target.dataset.payrollId;
+                    showEditModal(payrollId);
+                } else if (target.classList.contains('delete-payroll')) {
+                    event.preventDefault();
+                    const payrollId = target.dataset.payrollId;
+                    showDeleteModal(payrollId);
+                }
+            });
+
+            document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+                const payrollIdToDelete = document.getElementById('confirmDeletePayrollId').value;
+                if (payrollIdToDelete) {
+                    alert(`Deleting payroll entry: ${payrollIdToDelete}`);
+                    const rowToDelete = payrollTable.querySelector(`tr[data-payroll-id="${payrollIdToDelete}"]`);
+                    if (rowToDelete) {
+                        rowToDelete.remove();
+                    }
+                    deletePayrollModal.hide();
+                }
+            });
+
+            document.getElementById('editPayrollForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const payrollId = document.getElementById('editPayrollId').value;
+                const employeeName = document.getElementById('editEmployeeName').value;
+                const month = document.getElementById('editPayrollMonth').value;
+                const year = document.getElementById('editPayrollYear').value;
+                const grossPay = parseFloat(document.getElementById('editGrossPay').value).toFixed(2);
+                const deductions = parseFloat(document.getElementById('editDeductions').value).toFixed(2);
+                const netPay = parseFloat(document.getElementById('editNetPay').value).toFixed(2);
+                const status = document.getElementById('editPayrollStatus').value;
+                alert(`Updating payroll entry ${payrollId}:\nEmployee: ${employeeName}\nMonth: ${month}, Year: ${year}\nGross: $${grossPay}, Deductions: $${deductions}, Net: $${netPay}\nStatus: ${status}`);
+                const rowToUpdate = payrollTable.querySelector(`tr[data-payroll-id="${payrollId}"]`);
+                if (rowToUpdate) {
+                    rowToUpdate.children[1].textContent = employeeName;
+                    rowToUpdate.children[2].textContent = month;
+                    rowToUpdate.children[3].textContent = year;
+                    rowToUpdate.children[4].textContent = grossPay;
+                    rowToUpdate.children[5].textContent = deductions;
+                    rowToUpdate.children[6].textContent = netPay;
+                    const statusBadge = rowToUpdate.children[7].querySelector('.badge');
+                    statusBadge.textContent = status;
+                    statusBadge.className = `badge bg-${status === 'Paid' ? 'success' : status === 'Pending' ? 'warning' : 'danger'}`;
+                }
+                editPayrollModal.hide();
+            });
+
+            document.getElementById('addPayrollForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const newEmployeeName = document.getElementById('addEmployeeName').value;
+                const newPayrollMonth = document.getElementById('addPayrollMonth').value;
+                const newPayrollYear = document.getElementById('addPayrollYear').value;
+                const newGrossPay = parseFloat(document.getElementById('addGrossPay').value).toFixed(2);
+                const newDeductions = parseFloat(document.getElementById('addDeductions').value).toFixed(2);
+                const newNetPay = parseFloat(document.getElementById('addNetPay').value).toFixed(2);
+                const newPayrollStatus = document.getElementById('addPayrollStatus').value;
+                alert(`Adding new payroll entry:\nEmployee: ${newEmployeeName}\nMonth: ${newPayrollMonth}, Year: ${newPayrollYear}\nGross: $${newGrossPay}, Deductions: $${newDeductions}, Net: $${newNetPay}\nStatus: ${newPayrollStatus}`);
+                this.reset();
+                addNetPayInput.value = '';
+                bootstrap.Modal.getInstance(document.getElementById('addPayrollModal')).hide();
+            });
+        });
+    </script>
+</body>
+</html>

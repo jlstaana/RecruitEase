@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem; /* Consistent icon size */
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem; /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
+      padding: 3rem; /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color); /* Use general text color for headings */
+      font-weight: 600; /* Medium bold */
+      margin-bottom: 2rem; /* More space below heading */
+      font-size: 1.8rem; /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
+      padding-bottom: 1rem; /* Space for the line */
+    }
+    .table-responsive {
+      margin-top: 2.5rem; /* More space above table */
+    }
+    /* NEW TABLE DESIGN */
+    .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle; /* Vertically align content in table cells */
+        font-size: 0.9rem; /* Slightly smaller text for tables */
+        border-collapse: separate; /* Required for rounded corners */
+        border-spacing: 0; /* Remove default spacing */
+    }
+    .table thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600; /* Bolder headers */
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem; /* Increased padding */
+      color: var(--text-color-secondary); /* Muted header text */
+      text-transform: uppercase; /* Uppercase for formal look */
+      letter-spacing: 0.5px;
+      background-color: var(--main-brand-color-light); /* Light red background for headers */
+      position: sticky; /* Make headers sticky for scrolling tables */
+      top: 0;
+      z-index: 1; /* Ensure headers stay above content */
+    }
+    .table tbody td {
+        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
+        border-top: 1px solid var(--border-color); /* Border between rows */
+        background-color: var(--card-bg); /* Ensure consistent background for rows */
+    }
+
+    /* Rounded corners for the table */
+    .table thead th:first-child {
+        border-top-left-radius: 0.8rem;
+    }
+    .table thead th:last-child {
+        border-top-right-radius: 0.8rem;
+    }
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 0.8rem;
+    }
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 0.8rem;
+    }
+
+    .table tbody tr {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Subtle shadow for each row */
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .table tbody tr:hover {
+        background-color: var(--main-brand-color-light); /* Highlight on hover */
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* More pronounced shadow on hover */
+    }
+    body.dark-mode .table tbody tr:nth-of-type(even) {
+        background-color: rgba(255,107,107,0.05); /* Dark mode stripe */
+    }
+    body.dark-mode .table tbody tr:hover {
+        background-color: rgba(255,107,107,0.1); /* Dark mode hover */
+    }
+
+    /* Remove default Bootstrap table-bordered styling */
+    .table-bordered {
+      border: none; /* Remove main table border */
+    }
+
+    .table .bg-white { /* Override for table cells to ensure proper background in dark mode */
+        background-color: var(--card-bg) !important;
+        color: var(--text-color);
+    }
+    /* Adjusted badge colors and styles */
+    .table .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em; /* Slightly larger badges */
+        border-radius: 0.35rem; /* More rounded */
+        text-transform: capitalize; /* Capitalize for status */
+        min-width: 80px; /* Minimum width for consistency */
+        display: inline-block;
+        text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+
+
+    /* Attendance Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem; /* Consistent rounding */
+        padding: 1.8rem; /* Reduced padding slightly for smaller size */
+        box-shadow: 0 4px 18px var(--card-shadow); /* Softer, larger shadow */
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+        height: 100%; /* Ensure cards are same height */
+    }
+    .summary-card .icon {
+        font-size: 2.4rem; /* Smaller icon */
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem; /* Less space */
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 2.2rem; /* Smaller value */
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.1rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem; /* Smaller label size */
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.present .icon { color: var(--status-success); }
+    .summary-card.late .icon { color: var(--status-warning); }
+    .summary-card.absent .icon { color: var(--status-danger); }
+
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Increased padding */
+        border-radius: 0.8rem; /* Consistent rounding */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* More space below bar */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem; /* Consistent gap between elements */
+        align-items: flex-start; /* Align items to the top for multi-line inputs */
+        justify-content: flex-start; /* Align items to the start */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px; /* Ensures inputs are not too small */
+        border-color: var(--border-color);
+        background-color: var(--body-bg); /* Use body bg for inputs */
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--text-color-light);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg); /* White background on focus */
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px; /* Slightly larger min-width for buttons */
+        padding: 0.75rem 1.25rem; /* More padding */
+        border-radius: 0.5rem; /* More rounded for modern look */
+        font-weight: 600; /* Bolder text for prominence */
+        font-size: 0.95rem; /* Slightly larger font size */
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem; /* Space between icon and text */
+        box-shadow: 0 2px 5px var(--shadow-color); /* Subtle default shadow */
+        border-width: 1px; /* Thinner border */
+    }
+
+    .btn:hover {
+        transform: translateY(-1px); /* Slight lift on hover */
+        box-shadow: 0 4px 10px var(--shadow-color); /* Enhanced shadow on hover */
+    }
+
+    .btn:active {
+        transform: translateY(0); /* Press down effect */
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); /* Focus ring with subtle shadow */
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024; /* Darker red on hover */
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info); /* Using info blue as primary for diversity */
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c; /* Consistent info color */
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset; /* Remove min-width constraint for table buttons */
+        padding: 0.5rem 0.8rem; /* Smaller padding */
+        font-size: 0.85rem; /* Smaller font */
+        box-shadow: none; /* No shadow for table buttons */
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none; /* No lift on hover for table buttons */
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem; /* Consistent rounding */
+        box-shadow: 0 6px 20px var(--shadow-color); /* Softer shadow */
+        padding: 0.5rem 0; /* Adjusted padding */
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem; /* More padding */
+        display: flex;
+        align-items: center;
+        gap: 0.8rem; /* More space for icons */
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-day:hover,
+    body.dark-mode .flatpickr-day.inRange {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        margin: 0 0.2rem; /* Space between links */
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color); /* Hover color for text */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important; /* Ensure hover text color in dark mode */
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem; /* Ensure enough width for text and icons */
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem; /* Consistent rounding */
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2.5rem; /* Increased padding to match filter-actions-bar horizontal padding */
+    }
+    .modal-header .modal-title {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    .modal-body {
+        padding: 2.2rem 2.5rem; /* Increased padding to match filter-actions-bar */
+    }
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1rem 2.5rem; /* Increased padding to match filter-actions-bar horizontal padding */
+    }
+    .modal .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    .modal .form-control,
+    .modal .form-select,
+    .modal textarea.form-control {
+        border-color: var(--border-color);
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .modal .form-control:focus,
+    .modal .form-select:focus,
+    .modal textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+      }
+      .top-navbar .sidebar-toggle {
+        display: flex;
+      }
+      .dashboard-content,
+      .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+      .dashboard-container {
+        padding: 1.5rem 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .btn,
+      .filter-actions-bar .dropdown,
+      .filter-actions-bar .btn-group { /* Target btn-group for full width */
+        min-width: unset;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 {
+          flex-direction: column;
+          width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 button {
+          width: 100%;
+      }
+      /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+      .table-responsive .table thead th,
+      .table-responsive .table tbody td {
+          white-space: nowrap; /* Keep text on one line */
+      }
+    }
+
+    /* New/Modified CSS for smaller summary cards */
+    .summary-card-section {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Consistent with filter-actions-bar */
+        border-radius: 0.8rem; /* Consistent with filter-actions-bar */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* Space below this section */
+        border: 1px solid var(--border-color); /* Subtle border */
+        display: flex; /* For flexible alignment of inner row */
+        justify-content: center; /* Center the cards row */
+    }
+    .row.justify-content-center.g-4 {
+        max-width: 900px; /* Constrain the row width for centering */
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%; /* Ensure the row takes full width of its parent */
+    }
+    .summary-card-col {
+        max-width: 250px; /* Maximum width for each card column */
+        flex: 1 1 200px; /* Allow cards to grow/shrink but with a base of 200px */
+    }
+    @media (min-width: 768px) { /* On medium screens and up */
+        .summary-card-col {
+            flex: 0 0 30% !important; /* Forces 3 cards per row, approximately 30% width each */
+            max-width: 30% !important; /* Ensures consistent sizing */
+        }
+    }
+    @media (min-width: 992px) { /* On large screens and up */
+        .summary-card-col {
+            flex: 0 0 25% !important; /* Even smaller for more content on large screens */
+            max-width: 25% !important;
+        }
+    }
+    @media (max-width: 575.98px) { /* On extra small screens, stack them */
+        .summary-card-col {
+            flex: 1 1 100% !important; /* Stack vertically on small phones */
+            max-width: 100% !important;
+        }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center">
+      RecruitEase HR Management System
+    </h4>
+    <div class="active-label">HR EMPLOYEE PORTAL</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="Attendance.html"class="fw-bold active"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+<div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="Notifications.html" style="text-decoration:none;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="Profile.html" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2">HR Employee<br><small>Welcome!</small></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content" id="mainContent">
+    <div class="container dashboard-container">
+      <h4 class="mb-4">Attendance Records Overview</h4>
+
+ 
+
+     <!-- Summary Cards -->
+      <div class="summary-card-section mb-5">
+        <div class="row justify-content-center g-4">
+          <div class="col-md-4 col-sm-6 summary-card-col">
+            <div class="summary-card present">
+                <i class="bi bi-person-check-fill icon"></i>
+                <div class="value" id="totalPresent">0</div>
+                <div class="label">Total Present</div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6 summary-card-col">
+            <div class="summary-card late">
+                <i class="bi bi-hourglass-split icon"></i>
+                <div class="value" id="totalLate">0</div>
+                <div class="label">Total Late</div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6 summary-card-col">
+            <div class="summary-card absent">
+                <i class="bi bi-person-x-fill icon"></i>
+                <div class="value" id="totalAbsent">0</div>
+                <div class="label">Total Absent</div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6 summary-card-col">
+            <div class="summary-card">
+                <i class="bi bi-calendar-check icon"></i>
+                <div class="value" id="totalLeave">0</div>
+                <div class="label">On Leave</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of Summary Cards -->
+
+      <!-- Bootstrap Attendance Filter -->
+      
+      <!-- End Bootstrap Attendance Filter -->
+
+      <div class="filter-actions-bar">
+        <input type="text" class="form-control" placeholder="Search employee..." id="searchInput">
+        <select class="form-select" id="statusFilter">
+          <option value="">All Statuses</option>
+          <option value="Present">Present</option>
+          <option value="Late">Late</option>
+          <option value="Absent">Absent</option>
+          <option value="On Leave">On Leave</option>
+        </select>
+        <input type="text" class="form-control" id="dateRangePicker" placeholder="Select Date Range">
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" id="applyFilterBtn"><i class="bi bi-funnel-fill"></i> Apply Filters</button>
+          <button class="btn btn-outline-danger" id="clearFilterBtn"><i class="bi bi-x-circle-fill"></i> Clear Filters</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle" id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Time In</th>
+              <th>Time Out</th>
+              <th>Status</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <!-- Table rows will be rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center" id="paginationControls">
+          <!-- Pagination links will be inserted here by JavaScript -->
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- Modals (if any for attendance - e.g., edit record) -->
+  <div class="modal fade" id="editAttendanceModal" tabindex="-1" aria-labelledby="editAttendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg d-flex align-items-center justify-content-center" style="min-height:100vh;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editAttendanceModalLabel">Edit Attendance Record</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Landscape layout: use row with two columns -->
+          <form id="editAttendanceForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="editEmployeeName" class="form-label">Employee Name</label>
+                  <input type="text" class="form-control" id="editEmployeeName" readonly>
+                </div>
+                <div class="mb-3">
+                  <label for="editDate" class="form-label">Date</label>
+                  <input type="text" class="form-control" id="editDate" readonly>
+                </div>
+                <div class="mb-3">
+                  <label for="editStatus" class="form-label">Status</label>
+                  <select class="form-select" id="editStatus">
+                    <option value="Present">Present</option>
+                    <option value="Late">Late</option>
+                    <option value="Absent">Absent</option>
+                    <option value="On Leave">On Leave</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <input type="hidden" id="editRecordId">
+                <div class="mb-3">
+                  <label for="editTimeIn" class="form-label">Time In</label>
+                  <input type="time" class="form-control" id="editTimeIn">
+                </div>
+                <div class="mb-3">
+                  <label for="editTimeOut" class="form-label">Time Out</label>
+                  <input type="time" class="form-control" id="editTimeOut">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveAttendanceChangesBtn">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      const mainContent = document.getElementById('mainContent');
+      const topNavbar = document.getElementById('topNavbar');
+      const darkModeToggle = document.getElementById('darkModeToggle');
+
+      // Sidebar Toggle Logic
+      function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        sidebarBackdrop.classList.toggle('show');
+        mainContent.classList.toggle('sidebar-visible');
+        topNavbar.classList.toggle('sidebar-visible');
+      }
+
+      sidebarToggle.addEventListener('click', toggleSidebar);
+      sidebarBackdrop.addEventListener('click', toggleSidebar); // Close sidebar when clicking outside
+
+      // Dark Mode Toggle Logic
+      function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        // Save user preference
+        if (document.body.classList.contains('dark-mode')) {
+          localStorage.setItem('darkMode', 'enabled');
+          darkModeToggle.innerHTML = '<i class="bi bi-sun-fill"></i>'; // Change icon to sun
+        } else {
+          localStorage.setItem('darkMode', 'disabled');
+          darkModeToggle.innerHTML = '<i class="bi bi-moon-fill"></i>'; // Change icon to moon
+        }
+      }
+
+      darkModeToggle.addEventListener('click', toggleDarkMode);
+
+      // Check for saved dark mode preference
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="bi bi-sun-fill"></i>';
+      } else {
+        darkModeToggle.innerHTML = '<i class="bi bi-moon-fill"></i>';
+      }
+
+      
+
+      // Flatpickr for Date Range
+      flatpickr("#dateRangePicker", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        onReady: function(selectedDates, dateStr, instance) {
+          // Add Bootstrap form-control class to the altInput
+          instance.altInput.classList.add('form-control');
+        }
+      });
+
+
+      // Dummy Data for Attendance Records
+      let attendanceRecords = [{
+        id: 1,
+        employeeId: 'EMP001',
+        name: 'Juan Dela Cruz',
+        date: '2025-06-15',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 2,
+        employeeId: 'EMP002',
+        name: 'Maria Clara',
+        date: '2025-06-15',
+        timeIn: '08:15 AM',
+        timeOut: '05:00 PM',
+        status: 'Late'
+      }, {
+        id: 3,
+        employeeId: 'EMP003',
+        name: 'Crisostomo Ibarra',
+        date: '2025-06-15',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 4,
+        employeeId: 'EMP004',
+        name: 'Sisa Ramirez',
+        date: '2025-06-15',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 5,
+        employeeId: 'EMP005',
+        name: 'Basilio Santiago',
+        date: '2025-06-15',
+        timeIn: '',
+        timeOut: '',
+        status: 'Absent'
+      }, {
+        id: 6,
+        employeeId: 'EMP006',
+        name: 'Crispin Reyes',
+        date: '2025-06-15',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 7,
+        employeeId: 'EMP007',
+        name: 'Elias Hidalgo',
+        date: '2025-06-15',
+        timeIn: '08:20 AM',
+        timeOut: '05:00 PM',
+        status: 'Late'
+      }, {
+        id: 8,
+        employeeId: 'EMP008',
+        name: 'Padre Damaso',
+        date: '2025-06-14',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 9,
+        employeeId: 'EMP009',
+        name: 'Tia Isabel',
+        date: '2025-06-14',
+        timeIn: '',
+        timeOut: '',
+        status: 'On Leave'
+      }, {
+        id: 10,
+        employeeId: 'EMP010',
+        name: 'Don Rafael',
+        date: '2025-06-14',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 11,
+        employeeId: 'EMP011',
+        name: 'Paul Dela Cruz',
+        date: '2025-06-13',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 12,
+        employeeId: 'EMP012',
+        name: 'Ringo Clara',
+        date: '2025-06-13',
+        timeIn: '08:15 AM',
+        timeOut: '05:00 PM',
+        status: 'Late'
+      }, {
+        id: 13,
+        employeeId: 'EMP013',
+        name: 'Josh Ibarra',
+        date: '2025-06-13',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 14,
+        employeeId: 'EMP014',
+        name: 'Riza Ramirez',
+        date: '2025-06-13',
+        timeIn: '08:00 AM',
+        timeOut: '05:00 PM',
+        status: 'Present'
+      }, {
+        id: 15,
+        employeeId: 'EMP015',
+        name: 'Lian Santiago',
+        date: '2025-06-13',
+        timeIn: '',
+        timeOut: '',
+        status: 'Absent'
+      }, ];
+
+      
+      let filteredRecords = [...attendanceRecords];
+      const recordsPerPage = 10;
+      let currentPage = 1;
+
+      const attendanceTableBody = document.getElementById('attendanceTableBody');
+      const paginationControls = document.getElementById('paginationControls');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const dateRangePicker = document.getElementById('dateRangePicker');
+      const applyFilterBtn = document.getElementById('applyFilterBtn');
+      const clearFilterBtn = document.getElementById('clearFilterBtn');
+
+      const totalPresentSpan = document.getElementById('totalPresent');
+      const totalLateSpan = document.getElementById('totalLate');
+      const totalAbsentSpan = document.getElementById('totalAbsent');
+      const totalLeaveSpan = document.getElementById('totalLeave');
+
+
+      function renderTable(records) {
+        attendanceTableBody.innerHTML = '';
+        const start = (currentPage - 1) * recordsPerPage;
+        const end = start + recordsPerPage;
+        const paginatedRecords = records.slice(start, end);
+
+        if (paginatedRecords.length === 0) {
+          attendanceTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No attendance records found.</td></tr>`;
+          return;
+        }
+
+        paginatedRecords.forEach(record => {
+          const row = document.createElement('tr');
+          let statusBadgeClass = '';
+          switch (record.status) {
+            case 'Present':
+              statusBadgeClass = 'bg-success';
+              break;
+            case 'Late':
+              statusBadgeClass = 'bg-warning';
+              break;
+            case 'Absent':
+              statusBadgeClass = 'bg-danger';
+              break;
+            case 'On Leave':
+              statusBadgeClass = 'bg-info';
+              break;
+            default:
+              statusBadgeClass = 'bg-secondary';
+          }
+
+          row.innerHTML = `
+            <td>${record.employeeId}</td>
+            <td>${record.name}</td>
+            <td>${record.date}</td>
+            <td>${record.timeIn || 'N/A'}</td>
+            <td>${record.timeOut || 'N/A'}</td>
+            <td><span class="badge ${statusBadgeClass}">${record.status}</span></td>
+            <td class="text-center">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Actions
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item edit-btn" href="#" data-id="${record.id}"><i class="bi bi-pencil-fill me-2"></i> Edit</a></li>
+                  <li><a class="dropdown-item text-danger delete-btn" href="#" data-id="${record.id}"><i class="bi bi-trash-fill me-2"></i> Delete</a></li>
+                </ul>
+              </div>
+            </td>
+          `;
+          attendanceTableBody.appendChild(row);
+        });
+
+        addTableActionListeners();
+      }
+
+      function renderPagination(records) {
+        paginationControls.innerHTML = '';
+        const totalPages = Math.ceil(records.length / recordsPerPage);
+
+        if (totalPages <= 1) return;
+
+        const createPageItem = (page, isActive = false, isDisabled = false, text = page) => {
+          const li = document.createElement('li');
+          li.classList.add('page-item');
+          if (isActive) li.classList.add('active');
+          if (isDisabled) li.classList.add('disabled');
+
+          const a = document.createElement('a');
+          a.classList.add('page-link');
+          a.href = '#';
+          a.textContent = text;
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!isDisabled && !isActive) {
+              currentPage = page;
+              renderAll();
+            }
+          });
+
+          li.appendChild(a);
+          return li;
+        };
+
+        paginationControls.appendChild(createPageItem(currentPage - 1, false, currentPage === 1, 'Previous'));
+
+        for (let i = 1; i <= totalPages; i++) {
+          paginationControls.appendChild(createPageItem(i, i === currentPage));
+        }
+
+        paginationControls.appendChild(createPageItem(currentPage + 1, false, currentPage === totalPages, 'Next'));
+      }
+
+      function updateSummaryCards(records) {
+        const totalPresent = records.filter(record => record.status === 'Present').length;
+        const totalLate = records.filter(record => record.status === 'Late').length;
+        const totalAbsent = records.filter(record => record.status === 'Absent').length;
+        const totalLeave = records.filter(record => record.status === 'On Leave').length;
+
+        totalPresentSpan.textContent = totalPresent;
+        totalLateSpan.textContent = totalLate;
+        totalAbsentSpan.textContent = totalAbsent;
+        totalLeaveSpan.textContent = totalLeave;
+      }
+
+
+      function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedStatus = statusFilter.value;
+        const dateRange = dateRangePicker.value.split(' to ');
+        const startDate = dateRange[0] ? new Date(dateRange[0]) : null;
+        const endDate = dateRange[1] ? new Date(dateRange[1]) : (startDate ? startDate : null); // If only start date, treat as single day
+
+        filteredRecords = attendanceRecords.filter(record => {
+          const matchesSearch = record.name.toLowerCase().includes(searchTerm) ||
+            record.employeeId.toLowerCase().includes(searchTerm);
+          const matchesStatus = selectedStatus === '' || record.status === selectedStatus;
+
+          let matchesDate = true;
+          if (startDate) {
+            const recordDate = new Date(record.date);
+            recordDate.setHours(0, 0, 0, 0); // Normalize to start of day for comparison
+
+            if (endDate) {
+              endDate.setHours(0, 0, 0, 0);
+              matchesDate = recordDate >= startDate && recordDate <= endDate;
+            } else {
+              matchesDate = recordDate.getTime() === startDate.getTime();
+            }
+          }
+          return matchesSearch && matchesStatus && matchesDate;
+        });
+
+        currentPage = 1; // Reset to first page after applying filters
+        renderAll();
+      }
+
+      function clearFilters() {
+        searchInput.value = '';
+        statusFilter.value = '';
+        dateRangePicker._flatpickr.clear(); // Clear flatpickr selection
+        filteredRecords = [...attendanceRecords];
+        currentPage = 1;
+        renderAll();
+      }
+
+      function renderAll() {
+        renderTable(filteredRecords);
+        renderPagination(filteredRecords);
+        updateSummaryCards(filteredRecords);
+      }
+
+      // Event Listeners for Filters
+      applyFilterBtn.addEventListener('click', applyFilters);
+      clearFilterBtn.addEventListener('click', clearFilters);
+      searchInput.addEventListener('input', applyFilters); // Live search
+      statusFilter.addEventListener('change', applyFilters); // Live filter
+
+      // Initial Render
+      renderAll();
+
+
+      // Edit and Delete functionality (placeholders for now)
+      function addTableActionListeners() {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const idToEdit = parseInt(this.dataset.id);
+            const recordToEdit = attendanceRecords.find(record => record.id === idToEdit);
+
+            if (recordToEdit) {
+              document.getElementById('editRecordId').value = recordToEdit.id;
+              document.getElementById('editEmployeeName').value = recordToEdit.name;
+              document.getElementById('editDate').value = recordToEdit.date;
+              document.getElementById('editTimeIn').value = recordToEdit.timeIn;
+              document.getElementById('editTimeOut').value = recordToEdit.timeOut;
+              document.getElementById('editStatus').value = recordToEdit.status;
+
+              const editModal = new bootstrap.Modal(document.getElementById('editAttendanceModal'));
+              editModal.show();
+            }
+          });
+        });
+
+        document.getElementById('saveAttendanceChangesBtn').addEventListener('click', function() {
+          const recordId = parseInt(document.getElementById('editRecordId').value);
+          const newTimeIn = document.getElementById('editTimeIn').value;
+          const newTimeOut = document.getElementById('editTimeOut').value;
+          const newStatus = document.getElementById('editStatus').value;
+
+          const recordIndex = attendanceRecords.findIndex(record => record.id === recordId);
+          if (recordIndex !== -1) {
+            attendanceRecords[recordIndex].timeIn = newTimeIn;
+            attendanceRecords[recordIndex].timeOut = newTimeOut;
+            attendanceRecords[recordIndex].status = newStatus;
+            alert('Attendance record updated successfully!');
+            // Re-apply filters and re-render to reflect changes
+            applyFilters();
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editAttendanceModal'));
+            editModal.hide();
+          }
+        });
+
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const idToDelete = parseInt(this.dataset.id);
+            if (confirm('Are you sure you want to delete this attendance record?')) {
+              const initialLength = attendanceRecords.length;
+              // Remove from the original data array
+              attendanceRecords = attendanceRecords.filter(record => record.id !== idToDelete);
+              // If successfully removed, re-apply filters and re-render
+              if (attendanceRecords.length < initialLength) {
+                alert('Attendance record deleted successfully!');
+                applyFilters(); // Re-apply filters to update filteredRecords
+              } else {
+                alert('Failed to delete record.');
+              }
+            }
+          });
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1426 @@
+    /* Enhanced Responsive Design for All Devices */
+    @media (max-width: 1199.98px) {
+      .dashboard-container {
+        padding: 1.5rem !important;
+      }
+    }
+    @media (max-width: 991.98px) {
+      .dashboard-container {
+        padding: 1rem !important;
+      }
+      .notification-list, .notification-item {
+        flex-direction: column !important;
+        gap: 0.7rem !important;
+      }
+      .form-control, .form-select, .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        font-size: 1rem;
+        min-height: 44px;
+      }
+    }
+    @media (max-width: 767.98px) {
+      .dashboard-container {
+        padding: 0.5rem !important;
+        border-radius: 0.5rem;
+      }
+      .notification-list, .notification-item {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+      }
+      .form-control, .form-select, .btn {
+        min-width: 0 !important;
+        width: 100% !important;
+        font-size: 1rem;
+        min-height: 44px;
+      }
+    }
+    @media (min-width: 1400px) {
+      .dashboard-container {
+        max-width: 1600px;
+        font-size: 1.1rem;
+      }
+    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+      --status-primary: #0d6efd; /* For 'New' tickets, or general primary status */
+
+      /* New: Custom success message variables */
+      --success-message-bg: #198754;
+      --success-message-color: #fff;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+      --input-bg: #3a3a3a;
+      --input-border: #555;
+      --placeholder-color: #b0b0b0;
+      --info-bg: #343a40;
+      --info-color: #e0e0e0;
+
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+      --status-primary: #0a58ca;
+
+      /* New: Custom success message variables for dark mode */
+      --success-message-bg: #28a745;
+      --success-message-color: #fff;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar - initially off-screen */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0; /* When 'show' class is present, sidebar is visible */
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex; /* Ensure it's always flex */
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem; /* Consistent icon size */
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    /* Content shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200;
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+    }
+    /* Navbar shifts only when 'sidebar-visible' class is on body */
+    body.sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem; /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
+      padding: 3rem; /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color); /* Use general text color for headings */
+      font-weight: 600; /* Medium bold */
+      margin-bottom: 2rem; /* More space below heading */
+      font-size: 1.8rem; /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
+      padding-bottom: 1rem; /* Space for the line */
+    }
+    .table-responsive {
+      margin-top: 2.5rem; /* More space above table */
+    }
+    .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle; /* Vertically align content in table cells */
+        font-size: 0.9rem; /* Slightly smaller text for tables */
+    }
+    .table-bordered {
+      border-color: var(--border-color);
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600; /* Bolder headers */
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem; /* Increased padding */
+      color: var(--text-color-secondary); /* Muted header text */
+      text-transform: uppercase; /* Uppercase for formal look */
+      letter-spacing: 0.5px;
+    }
+    .table-bordered tbody td {
+        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
+    }
+
+    .table .bg-white { /* Override for table cells to ensure proper background in dark mode */
+        background-color: var(--card-bg) !important;
+        color: var(--text-color);
+    }
+    /* Adjusted badge colors and styles */
+    .table .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em; /* Slightly larger badges */
+        border-radius: 0.35rem; /* More rounded */
+        text-transform: capitalize; /* Capitalize for status */
+        min-width: 80px; /* Minimum width for consistency */
+        display: inline-block;
+        text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+    .table .badge.bg-primary { background-color: #0d6efd !important; color: white !important;}
+
+
+    /* Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem; /* Consistent rounding */
+        padding: 1.8rem; /* Reduced padding slightly for smaller size */
+        box-shadow: 0 4px 18px var(--card-shadow); /* Softer, larger shadow */
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+        height: 100%; /* Ensure cards are same height */
+    }
+    .summary-card .icon {
+        font-size: 2.4rem; /* Smaller icon */
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem; /* Less space */
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 2.2rem; /* Smaller value */
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.1rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem; /* Smaller label size */
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.system-ok .icon { color: var(--status-success); }
+    .summary-card.system-warning .icon { color: var(--status-warning); }
+    .summary-card.system-danger .icon { color: var(--status-danger); }
+    .summary-card.system-info .icon { color: var(--status-info); }
+    .summary-card.system-secondary .icon { color: var(--status-secondary); }
+
+
+    /* Analytics Card (from previous dashboard example) */
+    .analytics-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        padding: 2rem;
+        box-shadow: 0 4px 18px var(--card-shadow);
+        margin-bottom: 2.5rem;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .analytics-card h5 {
+        color: var(--text-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.8rem;
+    }
+    .analytics-card .chart-placeholder {
+        background-color: var(--body-bg);
+        border-radius: 0.6rem;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color-light);
+        font-style: italic;
+        border: 1px dashed var(--border-color);
+    }
+
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Increased padding */
+        border-radius: 0.8rem; /* Consistent rounding */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* More space below bar */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem; /* Consistent gap between elements */
+        align-items: flex-start; /* Align items to the top for multi-line inputs */
+        justify-content: flex-start; /* Align items to the start */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px; /* Ensures inputs are not too small */
+        border-color: var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--placeholder-color);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg); /* White background on focus */
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px; /* Slightly larger min-width for buttons */
+        padding: 0.75rem 1.25rem; /* More padding */
+        border-radius: 0.5rem; /* More rounded for modern look */
+        font-weight: 600; /* Bolder text for prominence */
+        font-size: 0.95rem; /* Slightly larger font size */
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem; /* Space between icon and text */
+        box-shadow: 0 2px 5px var(--shadow-color); /* Subtle default shadow */
+        border-width: 1px; /* Thinner border */
+    }
+
+    .btn:hover {
+        transform: translateY(-1px); /* Slight lift on hover */
+        box-shadow: 0 4px 10px var(--shadow-color); /* Enhanced shadow on hover */
+    }
+
+    .btn:active {
+        transform: translateY(0); /* Press down effect */
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); /* Focus ring with subtle shadow */
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024; /* Darker red on hover */
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info); /* Using info blue as primary for diversity */
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c; /* Consistent info color */
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset; /* Remove min-width constraint for table buttons */
+        padding: 0.5rem 0.8rem; /* Smaller padding */
+        font-size: 0.85rem; /* Smaller font */
+        box-shadow: none; /* No shadow for table buttons */
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none; /* No lift on hover for table buttons */
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem; /* Consistent rounding */
+        box-shadow: 0 6px 20px var(--shadow-color); /* Softer shadow */
+        padding: 0.5rem 0; /* Adjusted padding */
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem; /* More padding */
+        display: flex;
+        align-items: center;
+        gap: 0.8rem; /* More space for icons */
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-day:hover,
+    body.dark-mode .flatpickr-day.inRange {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        margin: 0 0.2rem; /* Space between links */
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color); /* Hover color for text */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important; /* Ensure hover text color in dark mode */
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem; /* Ensure enough width for text and icons */
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem; /* Consistent rounding */
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+    }
+    .modal-header .modal-title {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    .modal-body {
+        padding: 2rem;
+    }
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1rem 2rem;
+    }
+    .modal .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    .modal .form-control,
+    .modal .form-select,
+    .modal textarea.form-control {
+        border-color: var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .modal .form-control:focus,
+    .modal .form-select:focus,
+    .modal textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+    .modal .form-check-input.form-switch {
+        width: 3.5rem;
+        height: 1.75rem;
+    }
+    .modal .form-check-label {
+        font-size: 1rem;
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .top-navbar {
+            justify-content: space-between;
+        }
+        /* No specific display rule for sidebar-toggle here, it will default to flex */
+        .dashboard-content,
+        .top-navbar {
+            margin-left: 0 !important; /* On small screens, always reset margin */
+        }
+        .dashboard-container {
+            padding: 1.5rem 1rem;
+        }
+        .filter-actions-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .filter-actions-bar .form-control,
+        .filter-actions-bar .form-select,
+        .filter-actions-bar .btn,
+        .filter-actions-bar .dropdown,
+        .filter-actions-bar .btn-group { /* Target btn-group for full width */
+            min-width: unset;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+        .filter-actions-bar .d-flex.gap-2 button {
+            width: 100%;
+        }
+        /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+        .table-responsive .table thead th,
+        .table-responsive .table tbody td {
+            white-space: nowrap; /* Keep text on one line */
+        }
+        .modal-dialog {
+            margin: 0.5rem; /* Reduce margin for modals on small screens */
+        }
+    }
+
+    /* New/Modified CSS for smaller summary cards */
+    .row.justify-content-center.g-4 {
+        max-width: 900px; /* Constrain the row width for centering */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .summary-card-col {
+        max-width: 250px; /* Maximum width for each card column */
+        flex: 1 1 200px; /* Allow cards to grow/shrink but with a base of 200px */
+    }
+    @media (min-width: 768px) { /* On medium screens and up */
+        .summary-card-col {
+            flex: 0 0 30% !important; /* Forces 3 cards per row, approximately 30% width each */
+            max-width: 30% !important; /* Ensures consistent sizing */
+        }
+    }
+    @media (min-width: 992px) { /* On large screens and up */
+        .summary-card-col {
+            flex: 0 0 25% !important; /* Even smaller for more content on large screens */
+            max-width: 25% !important;
+        }
+        /* No specific display rule for sidebar-toggle here, it will default to flex */
+    }
+    @media (max-width: 575.98px) { /* On extra small screens, stack them */
+        .summary-card-col {
+            flex: 1 1 100% !important; /* Stack vertically on small phones */
+            max-width: 100% !important;
+        }
+    }
+    /* Custom Save Message for modals */
+    .save-message {
+        background-color: var(--success-message-bg);
+        color: var(--success-message-color);
+        padding: 0.35rem 0.8rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        /* Positioning for modal messages */
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1060; /* Above modal content */
+    }
+    .save-message.show {
+        opacity: 1;
+    }
+
+    /* === Applicant Notification Specific Styles (adapted for Admin theme) === */
+    .notification-item {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        position: relative; /* For the unread indicator */
+    }
+    .notification-item.unread::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--main-brand-color); /* Admin red for unread */
+        border-radius: 50%;
+    }
+    .notification-icon {
+        font-size: 1.8rem;
+        color: var(--main-brand-color); /* Admin red for notification icons */
+        flex-shrink: 0;
+        line-height: 1; /* Align icon vertically */
+    }
+    .notification-content {
+        flex-grow: 1;
+        padding-left: 0.5rem; /* Space for the unread indicator */
+    }
+    .notification-content h6 {
+        margin-bottom: 0.25rem;
+        color: var(--text-color);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    .notification-content p {
+        margin-bottom: 0.5rem;
+        color: var(--text-color-secondary);
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta {
+        font-size: 0.8rem;
+        color: var(--text-color-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta i {
+        font-size: 0.9rem;
+    }
+    .notification-actions {
+        margin-top: 1rem;
+        text-align: right; /* Align buttons to the right */
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: flex-end;
+    }
+    .notification-actions .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+        min-width: unset; /* Override general btn min-width for smaller notification buttons */
+    }
+    .notification-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align filters to the start */
+    }
+    .notification-filters .dropdown-toggle {
+        min-width: 150px; /* Ensure dropdowns have a consistent width */
+    }
+    .notification-filters .btn {
+        flex-grow: 1; /* Allow buttons to grow in size */
+        max-width: fit-content; /* Prevent button from taking full width unnecessarily */
+    }
+    /* Specific Admin button overrides for notification actions */
+    .notification-actions .btn-outline-primary {
+        color: var(--status-info); /* Use admin's info blue for primary outline */
+        border-color: var(--status-info);
+    }
+    .notification-actions .btn-outline-primary:hover {
+        background-color: var(--status-info);
+        color: white;
+    }
+    .notification-actions .btn-outline-success {
+        color: var(--status-success);
+        border-color: var(--status-success);
+    }
+    .notification-actions .btn-outline-success:hover {
+        background-color: var(--status-success);
+        color: white;
+    }
+    .notification-actions .btn-outline-info {
+        color: #1abc9c; /* Admin's specific info green */
+        border-color: #1abc9c;
+    }
+    .notification-actions .btn-outline-info:hover {
+        background-color: #1abc9c;
+        color: white;
+    }
+    .notification-actions .btn-outline-danger {
+        color: var(--status-danger);
+        border-color: var(--status-danger);
+    }
+    .notification-actions .btn-outline-danger:hover {
+        background-color: var(--status-danger);
+        color: white;
+    }
+    .notification-actions .btn-outline-secondary {
+        color: var(--text-color-secondary); /* Keep secondary for mark as read/unread */
+        border-color: var(--border-color);
+    }
+    .notification-actions .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    /* Section title (H4) already defined in admin CSS */
+
+
+    /* Responsive adjustments (from admin CSS, adapted for notification page specifics) */
+    @media (max-width: 991.98px) {
+        .top-navbar {
+            justify-content: space-between;
+        }
+        .dashboard-content,
+        .top-navbar {
+            margin-left: 0 !important;
+        }
+        /* No dashboard-container on notification page, using container-fluid directly */
+        .notification-filters { /* Override for notification page specific filters */
+            flex-direction: column;
+            align-items: stretch; /* Stack filters vertically */
+            gap: 0.75rem; /* Smaller gap when stacked */
+        }
+        .notification-filters .dropdown-toggle,
+        .notification-filters .btn {
+            width: 100%;
+            max-width: none;
+        }
+        /* No specific table responsiveness needed here */
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+    }
+    @media (max-width: 767.98px) {
+        /* No stat-card on notification page */
+        /* Notification filters already handled in 991.98px breakpoint */
+    }
+    @media (max-width: 575.98px) {
+      .notification-item {
+        padding: 1rem; /* Slightly less padding on very small screens */
+        border-radius: 0.6rem;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .notification-content {
+        padding-left: 0;
+      }
+      .notification-item.unread::before {
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .notification-actions {
+        text-align: center;
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center">
+      RecruitEase HR Management System
+    </h4>
+    <div class="active-label">IT ADMIN PORTAL</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="UserManagement.html"><i class="bi bi-people-fill me-2"></i> User Management</a>
+    <a href="SystemLogs.html"><i class="bi bi-file-earmark-text-fill me-2"></i> System Logs</a>
+    <a href="Configurations.html"><i class="bi bi-gear-fill me-2"></i> Configurations</a>
+    <a href="SupportTickets.html"><i class="bi bi-ticket-detailed-fill me-2"></i> Support Tickets</a>
+    <a href="Notifications.html" class="fw-bold active"><i class="bi bi-bell-fill me-2"></i> Notifications</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+  <div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo me-2">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="Notifications.html" style="text-decoration:none;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="profile.html" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2 d-none d-sm-block">Admin<br><small style="font-weight:400;">Welcome!</small></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content" id="mainContent">
+    <div class="container-fluid" style="max-width: 1200px;">
+      <h4 class="section-title mb-4">Notifications</h4>
+      <div class="d-flex justify-content-between align-items-center mb-4 notification-filters">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Status: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterStatusDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-status="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="unread">Unread</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="read">Read</a></li>
+          </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Type: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterTypeDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-type="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="user_management">User Management</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="system_alert">System Alert</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="ticket">Support Ticket</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="data_update">Data Update</a></li>
+          </ul>
+        </div>
+        
+        <button class="btn btn-danger" id="markAllAsReadBtn">Mark All as Read</button>
+      </div>
+
+      <div class="row">
+        <div class="col-12" id="notificationList">
+
+          <div class="notification-item unread" data-status="unread" data-type="system_alert">
+            <div class="notification-icon">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div class="notification-content">
+              <h6>Critical System Alert: Database Offline</h6>
+              <p>The primary database connection is currently offline. Immediate action required!</p>
+              <div class="notification-meta">
+                <i class="bi bi-calendar"></i><span>5 minutes ago</span>
+              </div>
+              <div class="notification-actions">
+                <a href="SystemLogs.html" class="btn btn-sm btn-outline-danger">View Logs</a>
+                <button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Mark as Read</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notification-item unread" data-status="unread" data-type="user_management">
+            <div class="notification-icon">
+              <i class="bi bi-person-exclamation-fill"></i>
+            </div>
+            <div class="notification-content">
+              <h6>New User Account Created: John Doe</h6>
+              <p>A new user account for John Doe (ID: EMP-00789) has been successfully created.</p>
+              <div class="notification-meta">
+                <i class="bi bi-calendar"></i><span>1 hour ago</span>
+              </div>
+              <div class="notification-actions">
+                <a href="UserManagement.html" class="btn btn-sm btn-outline-primary">View User</a>
+                <button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Mark as Read</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notification-item unread" data-status="unread" data-type="ticket">
+            <div class="notification-icon">
+              <i class="bi bi-ticket-fill"></i>
+            </div>
+            <div class="notification-content">
+              <h6>New Support Ticket: Password Reset Issue</h6>
+              <p>User "Jane Smith" has opened a new support ticket regarding a password reset. Ticket ID: #TKT-00123.</p>
+              <div class="notification-meta">
+                <i class="bi bi-calendar"></i><span>4 hours ago</span>
+              </div>
+              <div class="notification-actions">
+                <a href="SupportTickets.html" class="btn btn-sm btn-outline-info">View Ticket</a>
+                <button class="btn btn-sm btn-outline-secondary mark-as-read-btn">Mark as Read</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notification-item" data-status="read" data-type="data_update">
+            <div class="notification-icon">
+              <i class="bi bi-database-fill-up"></i>
+            </div>
+            <div class="notification-content">
+              <h6>Employee Data Updated: Alex Reyes</h6>
+              <p>The HR employee 'Juan Dela Cruz' updated the contact information for Alex Reyes (ID: RECHR-00123).</p>
+              <div class="notification-meta">
+                <i class="bi bi-calendar"></i><span>1 day ago</span>
+              </div>
+              <div class="notification-actions">
+                <a href="UserManagement.html" class="btn btn-sm btn-outline-success">View Details</a>
+                <button class="btn btn-sm btn-outline-secondary mark-as-unread-btn" style="display: none;">Mark as Unread</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="notification-item" data-status="read" data-type="system_alert">
+            <div class="notification-icon">
+              <i class="bi bi-info-circle-fill"></i>
+            </div>
+            <div class="notification-content">
+              <h6>Scheduled Maintenance Complete</h6>
+              <p>System maintenance from 2:00 AM - 4:00 AM PST has been successfully completed. All services operational.</p>
+              <div class="notification-meta">
+                <i class="bi bi-calendar"></i><span>2 days ago</span>
+              </div>
+              <div class="notification-actions">
+                <a href="SystemLogs.html" class="btn btn-sm btn-outline-primary">View Report</a>
+                <button class="btn btn-sm btn-outline-secondary mark-as-unread-btn" style="display: none;">Mark as Unread</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Sidebar logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const mainContent = document.getElementById('mainContent');
+    const topNavbar = document.getElementById('topNavbar');
+
+    function openSidebar() {
+      sidebar.classList.add('show');
+      sidebarBackdrop.classList.add('show');
+      document.body.classList.add('sidebar-visible'); // Add to body for content shift
+      mainContent.classList.add('sidebar-visible'); // Explicitly add to main content
+      topNavbar.classList.add('sidebar-visible'); // Explicitly add to top navbar
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebarBackdrop.classList.remove('show');
+      document.body.classList.remove('sidebar-visible'); // Remove from body
+      mainContent.classList.remove('sidebar-visible'); // Explicitly remove
+      topNavbar.classList.remove('sidebar-visible'); // Explicitly remove
+    }
+
+    sidebarToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (sidebar.classList.contains('show')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar on resize if wider than 991.98px (lg breakpoint)
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
+        closeSidebar();
+      }
+    });
+
+    // Dark Mode Toggle Logic
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+
+    function setTheme(isDarkMode) {
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeIcon.classList.remove('bi-moon-fill');
+        darkModeIcon.classList.add('bi-sun-fill');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkModeIcon.classList.remove('bi-sun-fill');
+        darkModeIcon.classList.add('bi-moon-fill');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        setTheme(true);
+      } else {
+        setTheme(false); // Default to light mode if no preference or 'light'
+      }
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark-mode'));
+    });
+
+    // Notification Filtering and Status Logic
+    const notificationList = document.getElementById('notificationList');
+    const filterStatusDropdown = document.getElementById('filterStatusDropdown');
+    const filterTypeDropdown = document.getElementById('filterTypeDropdown');
+    const markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
+
+    let currentStatusFilter = 'all';
+    let currentTypeFilter = 'all';
+
+    function applyFilters() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        const status = item.dataset.status;
+        const type = item.dataset.type;
+
+        const statusMatch = currentStatusFilter === 'all' || status === currentStatusFilter;
+        const typeMatch = currentTypeFilter === 'all' || type === currentTypeFilter;
+
+        if (statusMatch && typeMatch) {
+          item.style.display = 'flex'; // Show
+        } else {
+          item.style.display = 'none'; // Hide
+        }
+      });
+    }
+
+    function updateStatusButton(item) {
+        const markReadBtn = item.querySelector('.mark-as-read-btn');
+        const markUnreadBtn = item.querySelector('.mark-as-unread-btn');
+
+        if (item.dataset.status === 'read') {
+            item.classList.remove('unread');
+            if (markReadBtn) markReadBtn.style.display = 'none';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'inline-block';
+        } else {
+            item.classList.add('unread');
+            if (markReadBtn) markReadBtn.style.display = 'inline-block';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'none';
+        }
+    }
+
+    // Event Listeners for Status Filter
+    filterStatusDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentStatusFilter = this.dataset.filterStatus;
+        filterStatusDropdown.textContent = `Filter by Status: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Event Listeners for Type Filter
+    filterTypeDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentTypeFilter = this.dataset.filterType;
+        filterTypeDropdown.textContent = `Filter by Type: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Mark All as Read Button
+    markAllAsReadBtn.addEventListener('click', function() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        item.dataset.status = 'read';
+        updateStatusButton(item);
+      });
+      applyFilters(); // Re-apply filters to update display if "Unread" was selected
+    });
+
+    // Individual Mark as Read/Unread Buttons
+    notificationList.addEventListener('click', function(e) {
+      if (e.target.classList.contains('mark-as-read-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'read';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      } else if (e.target.classList.contains('mark-as-unread-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'unread';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      }
+    });
+
+    // Initialize button states and apply initial filters on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const notifications = notificationList.querySelectorAll('.notification-item');
+        notifications.forEach(item => {
+            updateStatusButton(item);
+        });
+        applyFilters(); // Initial filter application
+    });
+
+  </script>
+</body>
+</html>
