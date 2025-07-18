@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Postings | RecruitEase</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
+
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
+
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
+
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1050;
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1100;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem; /* Consistent icon size */
+    }
+
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200; /* Higher z-index to ensure it's above modals backdrop but usually below modal itself */
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem; /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
+      padding: 3rem; /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color); /* Use general text color for headings */
+      font-weight: 600; /* Medium bold */
+      margin-bottom: 2rem; /* More space below heading */
+      font-size: 1.8rem; /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
+      padding-bottom: 1rem; /* Space for the line */
+    }
+    .table-responsive {
+      margin-top: 2.5rem; /* More space above table */
+    }
+    .table {
+        --bs-table-bg: var(--card-bg); /* Table background uses card background variable */
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle; /* Vertically align content in table cells */
+        font-size: 0.9rem; /* Slightly smaller text for tables */
+    }
+    .table-bordered {
+      border-color: var(--border-color);
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600; /* Bolder headers */
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem; /* Increased padding */
+      color: var(--text-color-secondary); /* Muted header text */
+      text-transform: uppercase; /* Uppercase for formal look */
+      letter-spacing: 0.5px;
+      background-color: var(--card-bg); /* Ensure header also uses card bg */
+    }
+    .table-bordered tbody td {
+        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
+        background-color: var(--card-bg); /* Ensure cells also use card bg for consistency */
+    }
+
+    /* Table Row Hover Design */
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: var(--table-hover-bg-light); /* Light mode hover */
+    }
+
+    body.dark-mode .table tbody tr:hover {
+        background-color: var(--table-hover-bg-dark); /* Dark mode hover */
+    }
+
+
+    /* Adjusted badge colors and styles */
+    .table .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em; /* Slightly larger badges */
+        border-radius: 0.35rem; /* More rounded */
+        text-transform: capitalize; /* Capitalize for status */
+        min-width: 80px; /* Minimum width for consistency */
+        display: inline-block;
+        text-align: center;
+    }
+    .table .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .table .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .table .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .table .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+    /* Custom status for Job Postings */
+    .table .badge.bg-primary { background-color: #8e44ad !important; color: white !important; } /* For 'Draft' or similar */
+    .table .badge.bg-dark-blue { background-color: #2c3e50 !important; color: white !important; } /* For 'On Hold' or similar */
+
+
+    /* Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem; /* Consistent rounding */
+        padding: 1.5rem; /* Adjusted: Smaller padding */
+        box-shadow: 0 4px 18px var(--card-shadow); /* Softer, larger shadow */
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+        height: 100%; /* Ensure cards are same height */
+    }
+    .summary-card .icon {
+        font-size: 2rem; /* Adjusted: Smaller icon */
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem; /* Adjusted: Less space */
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 1.8rem; /* Adjusted: Smaller value */
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.2rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem; /* Adjusted: Smaller label size */
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.open .icon { color: var(--status-success); }
+    .summary-card.closed .icon { color: var(--status-danger); }
+    .summary-card.draft .icon { color: var(--status-info); }
+    .summary-card.on-hold .icon { color: var(--status-warning); }
+
+
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Increased padding */
+        border-radius: 0.8rem; /* Consistent rounding */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* More space below bar */
+        display: flex;
+        flex-wrap: wrap; /* Allow items to wrap */
+        gap: 1rem; /* Consistent gap between elements */
+        align-items: flex-start; /* Align items to the top for multi-line inputs */
+        justify-content: flex-start; /* Align items to the start */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px; /* Ensures inputs are not too small */
+        border-color: var(--border-color);
+        background-color: var(--body-bg); /* Use body bg for inputs */
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--text-color-light);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg); /* White background on focus */
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px; /* Slightly larger min-width for buttons */
+        padding: 0.75rem 1.25rem; /* More padding */
+        border-radius: 0.5rem; /* More rounded for modern look */
+        font-weight: 600; /* Bolder text for prominence */
+        font-size: 0.95rem; /* Slightly larger font size */
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem; /* Space between icon and text */
+        box-shadow: 0 2px 5px var(--shadow-color); /* Subtle default shadow */
+        border-width: 1px; /* Thinner border */
+    }
+
+    .btn:hover {
+        transform: translateY(-1px); /* Slight lift on hover */
+        box-shadow: 0 4px 10px var(--shadow-color); /* Enhanced shadow on hover */
+    }
+
+    .btn:active {
+        transform: translateY(0); /* Press down effect */
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); /* Focus ring with subtle shadow */
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024; /* Darker red on hover */
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info); /* Using info blue as primary for diversity */
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c; /* Consistent info color */
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset; /* Remove min-width constraint for table buttons */
+        padding: 0.5rem 0.8rem; /* Smaller padding */
+        font-size: 0.85rem; /* Smaller font */
+        box-shadow: none; /* No shadow for table buttons */
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none; /* No lift on hover for table buttons */
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem; /* Consistent rounding */
+        box-shadow: 0 6px 20px var(--shadow-color); /* Softer shadow */
+        padding: 0.5rem 0; /* Adjusted padding */
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem; /* More padding */
+        display: flex;
+        align-items: center;
+        gap: 0.8rem; /* More space for icons */
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        margin: 0 0.2rem; /* Space between links */
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color); /* Hover color for text */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important; /* Ensure hover text color in dark mode */
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem; /* Ensure enough width for text and icons */
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem; /* Consistent rounding */
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important; }
+
+    /* Modal styling */
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: 1rem;
+        box-shadow: 0 8px 30px var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+    .modal-header {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+    }
+    .modal-header .modal-title {
+        color: var(--text-color);
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+    .modal-body {
+        padding: 2rem;
+    }
+    .modal-footer {
+        border-top: 1px solid var(--border-color);
+        padding: 1rem 2rem;
+    }
+    .modal .form-label {
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    .modal .form-control,
+    .modal .form-select,
+    .modal textarea.form-control {
+        border-color: var(--border-color);
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 0.4rem;
+        font-size: 0.9rem;
+    }
+    .modal .form-control:focus,
+    .modal .form-select:focus,
+    .modal textarea.form-control:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg);
+    }
+
+    /* Adjusted to give more distance from top navbar for all modals */
+    .modal-dialog {
+        margin-top: 5.5rem; /* More space from the navbar */
+    }
+
+    /* Add space between the navbar and the main dashboard container */
+    .dashboard-container {
+        margin-top: 5.5rem !important;
+    }
+    
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+      }
+      .top-navbar .sidebar-toggle {
+        display: flex;
+      }
+      .dashboard-content,
+      .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+      .dashboard-container {
+        padding: 1.5rem 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-actions-bar .form-control,
+      .filter-actions-bar .form-select,
+      .filter-actions-bar .btn,
+      .filter-actions-bar .dropdown,
+      .filter-actions-bar .btn-group { /* Target btn-group for full width */
+        min-width: unset;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 {
+          flex-direction: column;
+          width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 button {
+          width: 100%;
+      }
+      /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+      .table-responsive .table thead th,
+      .table-responsive .table tbody td {
+          white-space: nowrap; /* Keep text on one line */
+      }
+    }
+
+    /* Modal Adjustments for Landscape Mode on Smaller Devices */
+    @media (max-width: 991.98px) and (orientation: landscape) {
+        .modal-dialog {
+            max-width: 95vw; /* Make modals wider in landscape */
+            margin: 0.5rem auto; /* Adjust margin to center and give slight space */
+        }
+        .modal-content {
+            height: auto; /* Allow content to dictate height */
+            max-height: 95vh; /* Max height to prevent overflow off screen */
+            overflow-y: hidden; /* Hide overflow initially, let modal-body handle scroll */
+            display: flex; /* Use flex to allow body to scroll independently */
+            flex-direction: column;
+        }
+        .modal-body {
+            flex-grow: 1; /* Allow body to take available space */
+            max-height: calc(95vh - 120px); /* Calculate max height for body considering header/footer */
+            overflow-y: auto; /* Enable scrolling for modal body content */
+            padding-top: 1rem; /* Adjust padding if needed */
+            padding-bottom: 1rem; /* Adjust padding if needed */
+        }
+        .modal-header, .modal-footer {
+            flex-shrink: 0; /* Prevent header/footer from shrinking */
+        }
+    }
+
+    /* Highlight table rows and cells on hover */
+    table tr:hover td {
+        background-color: #f0f8ff !important; /* Light blue background on hover */
+        transition: background 0.2s;
+    }
+    table td:hover {
+        background-color: #e0ecff !important; /* Slightly darker on cell hover */
+        transition: background 0.2s;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        table tr:hover td {
+            background-color: var(--table-hover-bg-dark) !important;
+        }
+        table td:hover {
+            background-color: var(--table-hover-cell-dark) !important;
+        }
+    }
+    @media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+        table tr:hover td {
+            background-color: var(--table-hover-bg-light) !important;
+        }
+        table td:hover {
+            background-color: var(--table-hover-cell-light) !important;
+        }
+    }
+
+    /* Custom Message Box Styles */
+    .custom-alert-modal .modal-content {
+        border-radius: 0.75rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .custom-alert-modal .modal-header {
+        background-color: var(--main-brand-color);
+        color: white;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        padding: 1rem 1.5rem;
+        border-bottom: none;
+    }
+    .custom-alert-modal .modal-title {
+        color: white;
+        font-weight: 600;
+    }
+    .custom-alert-modal .btn-close {
+        filter: invert(1); /* Make close button white */
+    }
+    .custom-alert-modal .modal-body {
+        padding: 1.5rem;
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+    .custom-alert-modal .modal-footer {
+        border-top: none;
+        padding: 0.75rem 1.5rem 1.5rem;
+        justify-content: flex-end;
+    }
+    .custom-alert-modal .btn-ok {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 0.3rem;
+        font-weight: 500;
+    }
+    .custom-alert-modal .btn-ok:hover {
+        background-color: #a03024;
+        border-color: #a03024;
+    }
+    .custom-alert-modal .btn-cancel {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 0.3rem;
+        font-weight: 500;
+    }
+    .custom-alert-modal .btn-cancel:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+  </style>
+</head>
+<body>
+
+   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+    </div>
+    <h4 class="mb-3 dashboard-section-title text-center">
+      RecruitEase HR Management System
+    </h4>
+    <div class="active-label">HR RECRUITER PORTAL</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="jobs.html" class="fw-bold active"><i class="bi bi-briefcase-fill me-2"></i> Jobs</a>
+    <a href="Recruitment.html"><i class="bi bi-person-workspace me-2"></i> Recruitment</a>
+    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
+
+<div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <a href="Notifications.html" style="text-decoration:none;">
+            <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="Profile.html" style="text-decoration:none;">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <span class="ms-2">HR Recruiter<br><small>Welcome!</small></span>
+    </div>
+  </div>
+
+  <div class="dashboard-content" id="mainContent">
+    <div class="container dashboard-container">
+      <h4 class="mb-4">Job Postings Overview</h4>
+
+      <div class="row mb-5 justify-content-center g-4">
+        <div class="col-md-3 mb-3">
+          <div class="summary-card open">
+            <i class="bi bi-briefcase-fill icon"></i>
+            <div class="value" id="totalOpenPostings">0</div>
+            <div class="label">Open Postings</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="summary-card closed">
+            <i class="bi bi-x-circle-fill icon"></i>
+            <div class="value" id="totalClosedPostings">0</div>
+            <div class="label">Closed Postings</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="summary-card draft">
+            <i class="bi bi-file-earmark-text-fill icon"></i>
+            <div class="value" id="totalDraftPostings">0</div>
+            <div class="label">Draft Postings</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="summary-card on-hold">
+            <i class="bi bi-pause-circle-fill icon"></i>
+            <div class="value" id="totalOnHoldPostings">0</div>
+            <div class="label">On Hold Postings</div>
+          </div>
+        </div>
+      </div>
+
+  <!-- View Job Details Modal -->
+  <div class="modal fade" id="viewJobModal" tabindex="-1" aria-labelledby="viewJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="viewJobModalLabel">
+            <i class="bi bi-eye-fill text-info"></i>
+            Job Posting Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-4">Job ID</dt>
+            <dd class="col-sm-8" id="viewJobId">-</dd>
+            <dt class="col-sm-4">Job Title</dt>
+            <dd class="col-sm-8" id="viewJobTitle">-</dd>
+            <dt class="col-sm-4">Department</dt>
+            <dd class="col-sm-8" id="viewJobDepartment">-</dd>
+            <dt class="col-sm-4">Location</dt>
+            <dd class="col-sm-8" id="viewJobLocation">-</dd>
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8" id="viewJobStatus">-</dd>
+            <dt class="col-sm-4">Posted Date</dt>
+            <dd class="col-sm-8" id="viewJobPostedDate">-</dd>
+            <dt class="col-sm-4">Application Deadline</dt>
+            <dd class="col-sm-8" id="viewJobApplicationDeadline">-</dd>
+            <dt class="col-sm-4">Description</dt>
+            <dd class="col-sm-8" id="viewJobDescription">-</dd>
+            <dt class="col-sm-4">Requirements</dt>
+            <dd class="col-sm-8" id="viewJobRequirements">-</dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <div class="filter-actions-bar mb-5">
+        <input type="text" id="jobSearch" class="form-control" placeholder="Search by Job Title, ID, or Department">
+        <select id="departmentFilter" class="form-select">
+          <option value="">All Departments</option>
+          <option value="HR">Human Resources</option>
+          <option value="IT">Information Technology</option>
+          <option value="Sales">Sales</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Finance">Finance</option>
+          <option value="Operations">Operations</option>
+        </select>
+        <select id="statusFilter" class="form-select">
+          <option value="">All Statuses</option>
+          <option value="Open">Open</option>
+          <option value="Closed">Closed</option>
+          <option value="Draft">Draft</option>
+          <option value="On Hold">On Hold</option>
+        </select>
+        <div class="d-flex gap-2 w-100 flex-wrap flex-md-nowrap">
+            <button class="btn btn-success flex-grow-1" data-bs-toggle="modal" data-bs-target="#addApplicantModal"><i class="bi bi-plus-circle me-2"></i>Add Applicant</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle" id="jobTable">
+          <thead class="table-light">
+            <tr>
+              <th>Job ID</th>
+              <th>Job Title</th>
+              <th>Department</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Posted Date</th>
+              <th>Application Deadline</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Job postings will be rendered here by JavaScript -->
+          </tbody>
+        </table>
+        <div id="noRecordsMessage" class="text-center text-muted py-4 d-none">
+            No job postings found matching your criteria.
+        </div>
+      </div>
+
+      <nav aria-label="Job Posting Pagination" class="mt-4">
+        <ul class="pagination justify-content-center" id="paginationControls">
+          <!-- Pagination controls will be rendered here by JavaScript -->
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+
+  <!-- Add Applicant Modal (replaces Add Job Modal) -->
+  <div class="modal fade" id="addApplicantModal" tabindex="-1" aria-labelledby="addApplicantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="addApplicantModalLabel">
+            <i class="bi bi-person-plus-fill text-success"></i>
+            Add New Applicant
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addApplicantForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="newApplicantName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="newApplicantEmail" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantDepartment" class="form-label">Department</label>
+                    <select class="form-select" id="newApplicantDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="HR">Human Resources</option>
+                        <option value="IT">Information Technology</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Operations">Operations</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantPosition" class="form-label">Position Applied</label>
+                    <input type="text" class="form-control" id="newApplicantPosition" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantPhone" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="newApplicantPhone">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="newApplicantResume" class="form-label">Resume (URL or File)</label>
+                    <input type="text" class="form-control" id="newApplicantResume">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="newApplicantNotes" class="form-label">Notes</label>
+                <textarea class="form-control" id="newApplicantNotes" rows="3"></textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Add Applicant</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Job Modal -->
+  <div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="editJobModalLabel">
+            <i class="bi bi-pencil-square text-primary"></i>
+            Edit Job Posting Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editJobForm">
+            <div class="mb-3">
+              <label for="editJobId" class="form-label">Job ID</label>
+              <input type="text" class="form-control" id="editJobId" readonly>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="editJobTitle" class="form-label">Job Title</label>
+                    <input type="text" class="form-control" id="editJobTitle" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="editDepartment" class="form-label">Department</label>
+                    <select class="form-select" id="editDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="HR">Human Resources</option>
+                        <option value="IT">Information Technology</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Operations">Operations</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="editLocation" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="editLocation" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="editStatus" class="form-label">Status</label>
+                    <select class="form-select" id="editStatus" required>
+                        <option value="Draft">Draft</option>
+                        <option value="Open">Open</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="editPostedDate" class="form-label">Posted Date</label>
+                    <input type="text" class="form-control" id="editPostedDate" placeholder="YYYY-MM-DD" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="editApplicationDeadline" class="form-label">Application Deadline</label>
+                    <input type="text" class="form-control" id="editApplicationDeadline" placeholder="YYYY-MM-DD">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="editDescription" class="form-label">Job Description</label>
+                <textarea class="form-control" id="editDescription" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="editRequirements" class="form-label">Requirements</label>
+                <textarea class="form-control" id="editRequirements" rows="3" required></textarea>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Alert/Confirmation Modal -->
+  <div class="modal fade custom-alert-modal" id="customAlertModal" tabindex="-1" aria-labelledby="customAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="customAlertModalLabel">
+            <i class="bi bi-info-circle-fill text-info"></i>
+            Notification
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="customAlertModalBody">
+          <!-- Message will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ok" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Modal -->
+  <div class="modal fade custom-alert-modal" id="customConfirmModal" tabindex="-1" aria-labelledby="customConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="customConfirmModalLabel">
+            <i class="bi bi-question-circle-fill text-warning"></i>
+            Confirmation
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="customConfirmModalBody">
+          <!-- Message will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-cancel" data-bs-dismiss="modal" id="confirmCancelBtn">Cancel</button>
+          <button type="button" class="btn btn-ok" id="confirmOkBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    // Sidebar logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const topNavbar = document.getElementById('topNavbar');
+
+    function openSidebar() {
+      sidebar.classList.add('show');
+      sidebarBackdrop.classList.add('show');
+      document.body.classList.add('sidebar-visible');
+      if (topNavbar) topNavbar.classList.add('sidebar-visible');
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebarBackdrop.classList.remove('show');
+      document.body.classList.remove('sidebar-visible');
+      if (topNavbar) topNavbar.classList.remove('sidebar-visible');
+    }
+    sidebarToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (sidebar.classList.contains('show')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Optional: close sidebar when resizing to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 992) {
+        closeSidebar();
+      }
+    });
+
+    // Optional: close sidebar if user clicks outside on mobile
+    document.addEventListener('click', function(e) {
+      if (
+        window.innerWidth < 992 &&
+        sidebar.classList.contains('show') &&
+        !sidebar.contains(e.target) &&
+        e.target !== sidebarToggle
+      ) {
+        closeSidebar();
+      }
+    });
+
+    // Dark Mode Toggle Logic
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        darkModeToggle.querySelector('i').classList.remove('bi-moon-fill');
+        darkModeToggle.querySelector('i').classList.add('bi-sun-fill');
+    } else {
+        darkModeToggle.querySelector('i').classList.remove('bi-sun-fill');
+        darkModeToggle.querySelector('i').classList.add('bi-moon-fill');
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            darkModeToggle.querySelector('i').classList.remove('bi-moon-fill');
+            darkModeToggle.querySelector('i').classList.add('bi-sun-fill');
+        } else {
+            localStorage.setItem('theme', 'light');
+            darkModeToggle.querySelector('i').classList.remove('bi-sun-fill');
+            darkModeToggle.querySelector('i').classList.add('bi-moon-fill');
+        }
+    });
+
+    // Custom Alert/Confirmation Modals
+    function showAlert(message, title = "Notification") {
+        document.getElementById('customAlertModalLabel').textContent = title;
+        document.getElementById('customAlertModalBody').textContent = message;
+        const alertModal = new bootstrap.Modal(document.getElementById('customAlertModal'));
+        alertModal.show();
+    }
+
+    function showConfirm(message, callback, title = "Confirmation") {
+        document.getElementById('customConfirmModalLabel').textContent = title;
+        document.getElementById('customConfirmModalBody').textContent = message;
+        const confirmModal = new bootstrap.Modal(document.getElementById('customConfirmModal'));
+
+        const confirmOkBtn = document.getElementById('confirmOkBtn');
+        const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+
+        // Clear previous event listeners
+        confirmOkBtn.onclick = null;
+        confirmCancelBtn.onclick = null;
+
+        confirmOkBtn.onclick = () => {
+            callback(true);
+            confirmModal.hide();
+        };
+        confirmCancelBtn.onclick = () => {
+            callback(false);
+            confirmModal.hide();
+        };
+
+        confirmModal.show();
+    }
+
+
+    // Flatpickr Initialization for Add/Edit Modals
+    flatpickr("#newPostedDate", { dateFormat: "Y-m-d" });
+    flatpickr("#newApplicationDeadline", { dateFormat: "Y-m-d" });
+    flatpickr("#editPostedDate", { dateFormat: "Y-m-d" });
+    flatpickr("#editApplicationDeadline", { dateFormat: "Y-m-d" });
+
+    // --- Job Postings Logic ---
+
+    // --- Backend Integration ---
+    const API_BASE = '/api'; // Adjust if your backend is on a different path
+    let jobPostings = [];
+    let applicants = [];
+
+    // Fetch jobs from backend
+    async function fetchJobs() {
+    renderJobTable([], true, null); // Show loading spinner
+    try {
+        const res = await fetch(`${API_BASE}/jobs/`);
+        if (!res.ok) throw new Error('Failed to fetch jobs');
+        jobPostings = await res.json();
+        renderJobTable(jobPostings);
+    } catch (err) {
+        renderJobTable([], false, 'Error loading jobs: ' + err.message);
+    }
+}
+
+    // Fetch applicants from backend
+    async function fetchApplicants() {
+        renderApplicantTable([], true, null); // Show loading spinner
+        try {
+            const res = await fetch(`${API_BASE}/applicants/`);
+            if (!res.ok) throw new Error('Failed to fetch applicants');
+            applicants = await res.json();
+            renderApplicantTable(applicants);
+        } catch (err) {
+            renderApplicantTable([], false, 'Error loading applicants: ' + err.message);
+        }
+    }
+
+    // Add new applicant to backend
+    async function addApplicant(applicant) {
+        try {
+            const res = await fetch(`${API_BASE}/applicants/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(applicant)
+            });
+            if (!res.ok) throw new Error('Failed to add applicant');
+            showAlert('New applicant added successfully!');
+            bootstrap.Modal.getInstance(document.getElementById('addApplicantModal')).hide();
+            addApplicantForm.reset();
+            fetchApplicants();
+        } catch (err) {
+            showAlert('Error adding applicant: ' + err.message, 'Error');
+        }
+    }
+
+    // Update job in backend
+    async function updateJob(job) {
+        try {
+            const res = await fetch(`${API_BASE}/jobs/${job.id}/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(job)
+            });
+            if (!res.ok) throw new Error('Failed to update job');
+            showAlert('Job posting details updated successfully!', 'Update Successful');
+            bootstrap.Modal.getInstance(document.getElementById('editJobModal')).hide();
+            fetchJobs();
+        } catch (err) {
+            showAlert('Error updating job: ' + err.message, 'Update Failed');
+        }
+    }
+
+    // Delete job in backend
+    async function deleteJob(jobId, jobTitle) {
+        try {
+            const res = await fetch(`${API_BASE}/jobs/${jobId}/`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Failed to delete job');
+            showAlert(`Job posting "${jobTitle}" has been removed.`, 'Job Deleted');
+            fetchJobs();
+        } catch (err) {
+            showAlert('Error deleting job: ' + err.message, 'Delete Failed');
+        }
+    }
+
+    function renderJobTable(jobList, loading = false, error = null) {
+        const tableBody = document.querySelector('#jobTable tbody');
+        tableBody.innerHTML = '';
+        const noRecordsMessage = document.getElementById('noRecordsMessage');
+        let spinnerRow = `<tr><td colspan="8" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>`;
+        let errorRow = error ? `<tr><td colspan="8" class="text-center text-danger py-4">${error}</td></tr>` : '';
+
+        if (loading) {
+            tableBody.innerHTML = spinnerRow;
+            noRecordsMessage.classList.add('d-none');
+            return;
+        }
+        if (error) {
+            tableBody.innerHTML = errorRow;
+            noRecordsMessage.classList.add('d-none');
+            return;
+        }
+        if (jobList.length === 0) {
+            noRecordsMessage.classList.remove('d-none');
+            return;
+        } else {
+            noRecordsMessage.classList.add('d-none');
+        }
+        const role = window.role || getUserRole();
+        jobList.forEach((job, index) => {
+            const row = tableBody.insertRow();
+            // Add data attributes for easy access during edit/delete
+            row.setAttribute('data-id', job.id);
+            row.setAttribute('data-title', job.title);
+            row.setAttribute('data-department', job.department);
+            row.setAttribute('data-location', job.location);
+            row.setAttribute('data-status', job.status);
+            row.setAttribute('data-posteddate', job.postedDate);
+            row.setAttribute('data-applicationdeadline', job.applicationDeadline);
+            row.setAttribute('data-description', job.description);
+            row.setAttribute('data-requirements', job.requirements);
+
+            let statusClass = '';
+            switch (job.status) {
+                case 'Open':
+                    statusClass = 'bg-success';
+                    break;
+                case 'Closed':
+                    statusClass = 'bg-danger';
+                    break;
+                case 'Draft':
+                    statusClass = 'bg-primary'; // Custom color for Draft
+                    break;
+                case 'On Hold':
+                    statusClass = 'bg-warning text-dark'; // Custom color for On Hold
+                    break;
+                default:
+                    statusClass = 'bg-secondary';
+            }
+
+            // Role-based actions: only recruiters can edit/delete
+            let actionsHtml = `<li><a class="dropdown-item view-job-btn" href="#" data-bs-toggle="modal" data-bs-target="#viewJobModal"><i class="bi bi-eye me-2"></i>View Details</a></li>`;
+            if (role === 'recruiter') {
+                actionsHtml = `
+                    <li><a class="dropdown-item edit-job-btn" href="#" data-bs-toggle="modal" data-bs-target="#editJobModal"><i class="bi bi-pencil-square me-2"></i>Edit</a></li>
+                    <li><a class="dropdown-item text-danger delete-job-btn" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    ${actionsHtml}
+                `;
+            }
+
+            row.innerHTML = `
+                <td>${job.id}</td>
+                <td>${job.title}</td>
+                <td>${job.department}</td>
+                <td>${job.location}</td>
+                <td><span class="badge ${statusClass}">${job.status}</span></td>
+                <td>${job.postedDate}</td>
+                <td>${job.applicationDeadline || 'N/A'}</td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton${index}" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${index}">
+                            ${actionsHtml}
+                        </ul>
+                    </div>
+                </td>
+            `;
+        });
+        updateSummaryCards();
+        setupActionButtons(); // Re-attach event listeners after rendering
+    }
+
+    function updateSummaryCards() {
+        let open = jobPostings.filter(job => job.status === 'Open').length;
+        let closed = jobPostings.filter(job => job.status === 'Closed').length;
+        let draft = jobPostings.filter(job => job.status === 'Draft').length;
+        let onHold = jobPostings.filter(job => job.status === 'On Hold').length;
+
+        document.getElementById('totalOpenPostings').textContent = open;
+        document.getElementById('totalClosedPostings').textContent = closed;
+        document.getElementById('totalDraftPostings').textContent = draft;
+        document.getElementById('totalOnHoldPostings').textContent = onHold;
+    }
+
+    function filterJobPostings() {
+        const jobSearch = document.getElementById('jobSearch').value.toLowerCase();
+        const departmentFilter = document.getElementById('departmentFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        const filteredJobs = jobPostings.filter(job => {
+            const searchMatch = !jobSearch ||
+                                job.title.toLowerCase().includes(jobSearch) ||
+                                job.id.toLowerCase().includes(jobSearch) ||
+                                job.department.toLowerCase().includes(jobSearch);
+            const departmentMatch = !departmentFilter || job.department === departmentFilter;
+            const statusMatch = !statusFilter || job.status === statusFilter;
+
+            return searchMatch && departmentMatch && statusMatch;
+        });
+
+        renderJobTable(filteredJobs);
+    }
+
+    function clearFilters() {
+        document.getElementById('jobSearch').value = '';
+        document.getElementById('departmentFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        renderJobTable(jobPostings); // Render all job postings
+    }
+
+    // Add New Applicant Logic (connect to backend)
+    const addApplicantForm = document.getElementById('addApplicantForm');
+    addApplicantForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const submitBtn = addApplicantForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Adding...';
+        const applicant = {
+            name: document.getElementById('newApplicantName').value,
+            email: document.getElementById('newApplicantEmail').value,
+            department: document.getElementById('newApplicantDepartment').value,
+            position_applied: document.getElementById('newApplicantPosition').value,
+            phone: document.getElementById('newApplicantPhone').value,
+            resume: document.getElementById('newApplicantResume').value,
+            notes: document.getElementById('newApplicantNotes').value
+        };
+        addApplicant(applicant).finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Add Applicant';
+        });
+    });
+
+    // Edit Job Logic (connect to backend)
+    const editJobForm = document.getElementById('editJobForm');
+    editJobForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const submitBtn = editJobForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        const updatedJob = {
+            id: document.getElementById('editJobId').value,
+            title: document.getElementById('editJobTitle').value,
+            department: document.getElementById('editDepartment').value,
+            location: document.getElementById('editLocation').value,
+            status: document.getElementById('editStatus').value,
+            postedDate: document.getElementById('editPostedDate').value,
+            applicationDeadline: document.getElementById('editApplicationDeadline').value,
+            description: document.getElementById('editDescription').value,
+            requirements: document.getElementById('editRequirements').value
+        };
+        updateJob(updatedJob).finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Save Changes';
+        });
+    });
+
+
+    // --- Applicant Table Render ---
+    function renderApplicantTable(applicantList, loading = false, error = null) {
+        const tableBody = document.getElementById('applicantTableBody');
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+        let spinnerRow = `<tr><td colspan="9" class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>`;
+        let errorRow = error ? `<tr><td colspan="9" class="text-center text-danger py-4">${error}</td></tr>` : '';
+        if (loading) {
+            tableBody.innerHTML = spinnerRow;
+            document.getElementById('noApplicantsMessage').classList.add('d-none');
+            return;
+        }
+        if (error) {
+            tableBody.innerHTML = errorRow;
+            document.getElementById('noApplicantsMessage').classList.add('d-none');
+            return;
+        }
+        if (applicantList.length === 0) {
+            document.getElementById('noApplicantsMessage').classList.remove('d-none');
+            return;
+        } else {
+            document.getElementById('noApplicantsMessage').classList.add('d-none');
+        }
+        const role = window.role || getUserRole();
+        applicantList.forEach(app => {
+            const row = document.createElement('tr');
+            // Placeholder for future CRUD actions (edit/delete) for applicants
+            let actionsHtml = '';
+            if (role === 'recruiter') {
+                actionsHtml = `<td><button class="btn btn-outline-secondary btn-sm" disabled title="Edit (coming soon)"><i class="bi bi-pencil-square"></i></button> <button class="btn btn-outline-danger btn-sm" disabled title="Delete (coming soon)"><i class="bi bi-trash"></i></button></td>`;
+            } else {
+                actionsHtml = '<td></td>';
+            }
+            row.innerHTML = `
+                <td>${app.id}</td>
+                <td>${app.name}</td>
+                <td>${app.email}</td>
+                <td>${app.department}</td>
+                <td>${app.position_applied}</td>
+                <td>${app.phone || ''}</td>
+                <td><a href="${app.resume}" target="_blank">Resume</a></td>
+                <td>${app.notes || ''}</td>
+                ${actionsHtml}
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // --- Authentication/Authorization Check ---
+    function isAuthenticated() {
+        // Example: check for a token in localStorage (adjust as needed for your backend)
+        return !!localStorage.getItem('authToken');
+    }
+
+    function getUserRole() {
+        // Example: get user role from localStorage or backend (adjust as needed)
+        return localStorage.getItem('userRole') || 'recruiter';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!isAuthenticated()) {
+            window.location.href = '/login/Login.html';
+            return;
+        }
+        // --- Role-based UI logic ---
+        const role = getUserRole();
+        // Example: Hide Add Applicant button for non-recruiters
+        if (role !== 'recruiter') {
+            const addApplicantBtn = document.querySelector('.btn-success[data-bs-target="#addApplicantModal"]');
+            if (addApplicantBtn) addApplicantBtn.style.display = 'none';
+        }
+        // Example: Hide Edit/Delete job actions for non-recruiters
+        window.role = role; // Expose for use in renderJobTable
+        fetchJobs();
+        fetchApplicants();
+        // --- Prepare for additional modules (attendance, leave, payroll, onboarding, etc.) ---
+        // TODO: Dynamically show/hide sidebar links and dashboard sections based on role
+        // Example: document.querySelector('a[href="Attendance.html"]').style.display = (role === 'recruiter' ? '' : 'none');
+    });
+
+  </script>
+
+  <!-- Applicant Management Table -->
+  <div class="container dashboard-container mt-5">
+    <h4 class="mb-4">Applicant Management</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle" id="applicantTable">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Position Applied</th>
+            <th>Phone</th>
+            <th>Resume</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="applicantTableBody">
+          <!-- Applicants will be rendered here by JavaScript -->
+        </tbody>
+      </table>
+      <div id="noApplicantsMessage" class="text-center text-muted py-4 d-none">
+        No applicants found.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

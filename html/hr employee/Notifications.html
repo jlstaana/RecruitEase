@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard | RecruitEase Applicant</title>
-  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notifications | J. Alcabasa HR Management System</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
-    /* Root variables for theming */
+    /* Root variables for theming (Applicant's design) */
     :root {
       --main-red: #dc3545;
-      --main-red-light: #f8e3e3;
+      --main-red-light: #fbe3e3; /* Slightly lighter red for light backgrounds */
       --main-red-bg-hover: rgba(220, 53, 69, 0.07);
       --main-red-border: #f3cccc;
       --main-gold: #fbbf24;
@@ -37,7 +37,7 @@
       --info-bg: #cff4fc;
     }
 
-    /* Dark Mode Overrides */
+    /* Dark Mode Overrides (Applicant's design) */
     body.dark-mode {
       --main-red: #ff6b6b; /* Slightly brighter red for dark mode contrast */
       --main-red-light: #4a1a1a;
@@ -63,15 +63,18 @@
       --info-bg: #1a4a4a;
     }
 
-    /* Base Body Styles */
+    /* Base Body Styles (Applicant's design) */
     body {
       background-color: var(--body-bg);
       overflow-x: hidden;
       color: var(--text-color);
       transition: background-color 0.3s ease, color 0.3s ease;
     }
+    body.sidebar-visible {
+      overflow: hidden; /* Prevent scrolling when sidebar is open on small screens */
+    }
 
-    /* Sidebar Styles */
+    /* Sidebar Styles (Applicant's design) */
     .sidebar {
       width: 250px;
       background-color: var(--sidebar-bg);
@@ -99,7 +102,7 @@
       display: block;
       margin-left: auto;
       margin-right: auto;
-
+      border-radius: 50%; /* Added border-radius for consistency */
     }
     .sidebar h4 {
       color: var(--main-red); /* Dashboard section title color */
@@ -145,7 +148,7 @@
       z-index: 1049;
     }
 
-    /* Sidebar Toggle */
+    /* Sidebar Toggle (Applicant's design) */
     .sidebar-toggle {
       background: none;
       border: none;
@@ -164,7 +167,7 @@
       font-size: 1.5rem;
     }
 
-    /* Main Content Area */
+    /* Main Content Area (Applicant's design) */
     .dashboard-content {
       padding: 2.5rem 0 2rem 0;
       transition: margin-left 0.3s;
@@ -175,7 +178,7 @@
       margin-left: 250px;
     }
 
-    /* Top Navbar */
+    /* Top Navbar (Applicant's design) */
     .top-navbar {
       background-color: var(--top-navbar-bg);
       padding: 0.85rem 2rem;
@@ -210,15 +213,14 @@
         transition: color 0.3s ease;
     }
 
-    /* Navbar Logo */
+    /* Navbar Logo (Applicant's design) */
     .top-navbar .navbar-logo {
       height: 40px; /* Adjust size as needed */
       width: auto; /* Maintain aspect ratio */
-      /* margin-right: 1rem; Space handled by me-2 on the img */
       transition: height 0.3s ease;
     }
 
-    /* Dark Mode Toggle specific styles */
+    /* Dark Mode Toggle specific styles (Applicant's design) */
     .dark-mode-toggle {
       background: none;
       border: none;
@@ -235,7 +237,7 @@
       font-size: 1.2rem;
     }
 
-    /* Dashboard Card Styles */
+    /* Dashboard Card Styles (used for general content cards - Applicant's design) */
     .dashboard-card {
       background-color: var(--card-bg);
       border-radius: 1rem;
@@ -255,7 +257,7 @@
       transition: color 0.3s ease;
     }
 
-    /* Stat Card Styles */
+    /* Stat Card Styles (Applicant's design) */
     .stat-card {
       background-color: var(--card-bg);
       border-radius: 1rem;
@@ -293,7 +295,7 @@
       transition: color 0.3s ease;
     }
 
-    /* Recent Activity List */
+    /* Recent Activity List / General List Group Styles (Applicant's design) */
     .list-group-item {
       background-color: var(--card-bg); /* Ensure list items match card background */
       border-color: var(--border-color); /* Ensure list item borders match theme */
@@ -320,7 +322,92 @@
       transition: color 0.3s ease;
     }
 
-    /* Responsive adjustments */
+    /* Specific styles for Notifications Page (Applicant's design) */
+    .notification-item {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        position: relative; /* For the unread indicator */
+    }
+    .notification-item.unread::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--main-red);
+        border-radius: 50%;
+    }
+    .notification-icon {
+        font-size: 1.8rem;
+        color: var(--main-red);
+        flex-shrink: 0;
+        line-height: 1; /* Align icon vertically */
+    }
+    .notification-content {
+        flex-grow: 1;
+        padding-left: 0.5rem; /* Space for the unread indicator */
+    }
+    .notification-content h6 {
+        margin-bottom: 0.25rem;
+        color: var(--text-color);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    .notification-content p {
+        margin-bottom: 0.5rem;
+        color: var(--text-color-secondary);
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta {
+        font-size: 0.8rem;
+        color: var(--text-color-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: color 0.3s ease;
+    }
+    .notification-meta i {
+        font-size: 0.9rem;
+    }
+    .notification-actions {
+        margin-top: 1rem;
+        text-align: right; /* Align buttons to the right */
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: flex-end;
+    }
+    .notification-actions .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+    .notification-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align filters to the start */
+    }
+    .notification-filters .dropdown-toggle {
+        min-width: 150px; /* Ensure dropdowns have a consistent width */
+    }
+    .notification-filters .btn {
+        flex-grow: 1; /* Allow buttons to grow in size */
+        max-width: fit-content; /* Prevent button from taking full width unnecessarily */
+    }
+
+
+    /* Responsive adjustments (Applicant's design) */
     @media (max-width: 991.98px) {
       .top-navbar {
         justify-content: space-between;
@@ -342,62 +429,47 @@
       .stat-icon {
         margin-bottom: 0.5rem;
       }
+      .notification-filters {
+        flex-direction: column;
+        align-items: stretch; /* Stack filters vertically */
+      }
+      .notification-filters .dropdown-toggle,
+      .notification-filters .btn {
+        width: 100%;
+        max-width: none;
+      }
     }
     @media (max-width: 575.98px) {
-      .dashboard-card {
-        padding: 1.5rem;
+      .dashboard-card, .notification-item {
+        padding: 1.25rem;
         border-radius: 0.75rem;
       }
       .stat-card {
         border-radius: 0.75rem;
       }
+      .notification-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .notification-content {
+        padding-left: 0; /* Remove padding if icon is centered above */
+      }
+      .notification-item.unread::before {
+        top: 5px; /* Adjust indicator position for stacked layout */
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .notification-actions {
+        text-align: center; /* Center buttons on small screens */
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Floating Report Button -->
-  <button id="reportBtn" class="btn btn-danger position-fixed" style="bottom: 32px; right: 32px; z-index: 2000; border-radius: 50%; width: 56px; height: 56px; box-shadow: 0 4px 16px rgba(220,53,69,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.7rem;">
-    <i class="bi bi-flag-fill"></i>
-  </button>
 
-  <!-- Report Modal -->
-  <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="reportModalLabel"><i class="bi bi-flag-fill me-2 text-danger"></i>Report an Issue</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="reportForm">
-            <div class="mb-3">
-              <label for="reportCategory" class="form-label">Category</label>
-              <select class="form-select" id="reportCategory" required>
-                <option value="" disabled selected>Select a category</option>
-                <option value="login">Login Issue</option>
-                <option value="account">Account Problem</option>
-                <option value="bug">Bug/Error</option>
-                <option value="feature">Feature Request</option>
-                <option value="feedback">General Feedback</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="reportReason" class="form-label">Reason for Report</label>
-              <textarea class="form-control" id="reportReason" rows="4" placeholder="Describe the issue or concern..." required></textarea>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-danger">Submit Report</button>
-            </div>
-          </form>
-          <div id="reportSuccessMsg" class="alert alert-success mt-3 d-none" role="alert">
-            Thank you for your report! Our team will review it shortly.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <div class="sidebar" id="sidebar">
@@ -406,17 +478,17 @@
     </div>
     <h4 class="mb-3 dashboard-section-title text-center"
         style="font-size:1.25rem; font-family:'Segoe UI',Arial,sans-serif; font-weight:700; line-height:1.3;">
-           Welcome to RecruitEase, Applicant!
+      RecruitEase HR Management System
     </h4>
-    <div class="active-label">APPLICANT</div>
-    <a href="dashboard.html" class="fw-bold"><i class="bi bi-grid me-2"></i> Dashboard</a>
-    <a href="jobs.html"><i class="bi bi-briefcase me-2"></i> Job Openings</a>
-    <a href="applications.html"><i class="bi bi-file-earmark-text me-2"></i> My Applications</a>
-    <a href="onboarding.html"><i class="bi bi-calendar-check me-2"></i> Onboarding</a>
+    <div class="active-label">HR EMPLOYEE PORTAL</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
     <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
   </div>
 
- <div class="top-navbar" id="topNavbar">
+  <div class="top-navbar" id="topNavbar">
     <div class="d-flex align-items-center">
         <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo me-2">
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
@@ -427,113 +499,57 @@
         <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
             <i class="bi bi-moon-fill"></i>
         </button>
-        <a href="notifications.html" style="text-decoration:none;">
+        <a href="Notifications.html" style="text-decoration:none;">
             <i class="bi bi-bell-fill"></i>
         </a>
-        <a href="profile.html" style="text-decoration:none;">
+        <a href="Profile.html" style="text-decoration:none;">
             <i class="bi bi-person-circle"></i>
         </a>
-        <span class="ms-2 d-none d-sm-block">Applicant<br><small style="font-weight:400;">Welcome!</small></span>
+        <span class="ms-2 d-none d-sm-block">HR Employee<br><small style="font-weight:400;">Welcome!</small></span>
     </div>
   </div>
 
   <div class="dashboard-content" id="mainContent">
     <div class="container-fluid" style="max-width: 1200px;">
-      <div class="row mb-4">
-        <div class="col-12 col-md-8 col-lg-9">
-          <div class="dashboard-card h-100">
-            <h5 class="dashboard-card-title">Welcome, Applicant!</h5>
-            <p class="dashboard-card-text">
-              This is your central hub for managing your job applications and staying updated.
-              Explore new job openings, track your current applications, and prepare for onboarding.
-            </p>
-            <a href="jobs.html" class="btn btn-primary"><i class="bi bi-search me-2"></i>Explore Job Openings</a>
-          </div>
+      <h4 class="section-title mb-4">Notifications</h4>
+      <div class="d-flex justify-content-between align-items-center mb-4 notification-filters">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Status: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterStatusDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-status="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="unread">Unread</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-status="read">Read</a></li>
+          </ul>
         </div>
-        <div class="col-12 col-md-4 col-lg-3 mt-3 mt-md-0">
-          <div class="dashboard-card h-100 d-flex flex-column justify-content-between">
-            <div>
-              <h5 class="dashboard-card-title">Quick Actions</h5>
-              <div class="d-grid gap-2">
-                <a href="profile.html" class="btn btn-outline-danger btn-sm"><i class="bi bi-person-circle me-2"></i>Update Profile</a>
-                <a href="applications.html" class="btn btn-outline-danger btn-sm"><i class="bi bi-file-earmark-text me-2"></i>View Applications</a>
-              </div>
-            </div>
-          </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter by Type: All
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterTypeDropdown">
+            <li><a class="dropdown-item" href="#" data-filter-type="all">All</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="payroll">Payroll</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="leave">Leave</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="announcement">Announcement</a></li>
+            <li><a class="dropdown-item" href="#" data-filter-type="system">System</a></li>
+          </ul>
         </div>
+        
+        <button class="btn btn-danger" id="markAllAsReadBtn">Mark All as Read</button>
       </div>
 
-      <div class="row g-4 mb-4">
-        <div class="col-md-4">
-          <div class="stat-card">
-            <div class="stat-icon bg-success">
-              <i class="bi bi-check-circle"></i>
-            </div>
-            <div>
-              <div class="stat-value">&nbsp;</div>
-              <div class="stat-label">Applications Approved</div>
-            </div>
-          </div>
+      <div class="row">
+        <div class="col-12" id="notificationList">
+          <div class="text-center text-muted py-5">No notifications available.</div>
         </div>
-        <div class="col-md-4">
-          <div class="stat-card">
-            <div class="stat-icon bg-warning">
-              <i class="bi bi-hourglass-split"></i>
-            </div>
-            <div>
-              <div class="stat-value">&nbsp;</div>
-              <div class="stat-label">Applications Pending</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="stat-card">
-            <div class="stat-icon bg-info">
-              <i class="bi bi-briefcase"></i>
-            </div>
-            <div>
-              <div class="stat-value">&nbsp;</div>
-              <div class="stat-label">Available Jobs</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <h4 class="section-title">Recent Activity</h4>
-      <div class="dashboard-card">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-center text-muted" style="font-style:italic;">No recent activity to display.</li>
-        </ul>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Report Button Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var reportBtn = document.getElementById('reportBtn');
-      var reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
-      var reportForm = document.getElementById('reportForm');
-      var reportSuccessMsg = document.getElementById('reportSuccessMsg');
-      if (reportBtn) {
-        reportBtn.addEventListener('click', function() {
-          reportSuccessMsg.classList.add('d-none');
-          reportForm.reset();
-          reportModal.show();
-        });
-      }
-      if (reportForm) {
-        reportForm.addEventListener('submit', function(e) {
-          e.preventDefault();
-          reportSuccessMsg.classList.remove('d-none');
-          setTimeout(function() {
-            reportModal.hide();
-          }, 1800);
-        });
-      }
-    });
-  </script>
     // Sidebar logic
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -566,7 +582,6 @@
     });
     sidebarBackdrop.addEventListener('click', closeSidebar);
 
-    // Close sidebar on resize if wider than mobile
     window.addEventListener('resize', () => {
       if (window.innerWidth > 991.98 && sidebar.classList.contains('show')) {
         closeSidebar();
@@ -577,7 +592,6 @@
     const darkModeToggle = document.getElementById('darkModeToggle');
     const darkModeIcon = darkModeToggle.querySelector('i');
 
-    // Function to set the theme
     function setTheme(isDarkMode) {
       if (isDarkMode) {
         document.body.classList.add('dark-mode');
@@ -592,7 +606,6 @@
       }
     }
 
-    // Check for saved theme preference on load
     document.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'dark') {
@@ -602,11 +615,109 @@
       }
     });
 
-    // Toggle theme on button click
     darkModeToggle.addEventListener('click', () => {
       setTheme(!document.body.classList.contains('dark-mode'));
     });
+
+    // Notification Filtering and Status Logic (Copied from Applicant's design)
+    const notificationList = document.getElementById('notificationList');
+    const filterStatusDropdown = document.getElementById('filterStatusDropdown');
+    const filterTypeDropdown = document.getElementById('filterTypeDropdown');
+    const markAllAsReadBtn = document.getElementById('markAllAsReadBtn');
+
+    let currentStatusFilter = 'all';
+    let currentTypeFilter = 'all';
+
+    function applyFilters() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        const status = item.dataset.status;
+        const type = item.dataset.type;
+
+        const statusMatch = currentStatusFilter === 'all' || status === currentStatusFilter;
+        const typeMatch = currentTypeFilter === 'all' || type === currentTypeFilter;
+
+        if (statusMatch && typeMatch) {
+          item.style.display = 'flex'; // Show
+        } else {
+          item.style.display = 'none'; // Hide
+        }
+      });
+    }
+
+    function updateStatusButton(item) {
+        const markReadBtn = item.querySelector('.mark-as-read-btn');
+        const markUnreadBtn = item.querySelector('.mark-as-unread-btn');
+
+        if (item.dataset.status === 'read') {
+            item.classList.remove('unread');
+            if (markReadBtn) markReadBtn.style.display = 'none';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'inline-block';
+        } else {
+            item.classList.add('unread');
+            if (markReadBtn) markReadBtn.style.display = 'inline-block';
+            if (markUnreadBtn) markUnreadBtn.style.display = 'none';
+        }
+    }
+
+    // Event Listeners for Status Filter
+    filterStatusDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentStatusFilter = this.dataset.filterStatus;
+        filterStatusDropdown.textContent = `Filter by Status: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Event Listeners for Type Filter
+    filterTypeDropdown.nextElementSibling.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        currentTypeFilter = this.dataset.filterType;
+        filterTypeDropdown.textContent = `Filter by Type: ${this.textContent}`;
+        applyFilters();
+      });
+    });
+
+    // Mark All as Read Button
+    markAllAsReadBtn.addEventListener('click', function() {
+      const notifications = notificationList.querySelectorAll('.notification-item');
+      notifications.forEach(item => {
+        item.dataset.status = 'read';
+        updateStatusButton(item);
+      });
+      applyFilters(); // Re-apply filters to update display if "Unread" was selected
+    });
+
+    // Individual Mark as Read/Unread Buttons
+    notificationList.addEventListener('click', function(e) {
+      if (e.target.classList.contains('mark-as-read-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'read';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      } else if (e.target.classList.contains('mark-as-unread-btn')) {
+        const item = e.target.closest('.notification-item');
+        if (item) {
+          item.dataset.status = 'unread';
+          updateStatusButton(item);
+          applyFilters();
+        }
+      }
+    });
+
+    // Initialize button states and apply initial filters on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const notifications = notificationList.querySelectorAll('.notification-item');
+        notifications.forEach(item => {
+            updateStatusButton(item);
+        });
+        applyFilters(); // Initial filter application
+    });
+
   </script>
 </body>
 </html>
-```

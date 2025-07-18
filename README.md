@@ -1,3 +1,6 @@
+# RecruitEase
+Web-based HR Management System for J. Alcabasa Enterprises And General Services, Incorporated
+
 RecruitEase is a comprehensive HR management system designed for J. Alcabasa. It streamlines recruitment processes, employee management, and HR operations to enhance organizational efficiency.
 
 ## Features

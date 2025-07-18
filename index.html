@@ -388,6 +388,7 @@
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
     // Simple math captcha for demonstration
     function generateCaptcha() {
@@ -495,6 +496,41 @@
             showToast('Registration is not implemented in this demo.', 'info');
         });
     }
+    function handleCredentialResponse(response) {
+      const token = response.credential;
+      fetch('http://localhost:8000/api/google-sign-in/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.dashboard) {
+            showToast('Login successful!', 'success');
+            setTimeout(() => {
+              window.location.href = data.dashboard;
+            }, 1200);
+          } else {
+            showToast(data.message, 'danger');
+          }
+        })
+        .catch(() => {
+          showToast('An error occurred during Google Sign-In.', 'danger');
+        });
+    }
+
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "YOUR_GOOGLE_CLIENT_ID", // Replace with your Google Client ID
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.querySelector('.social-login'),
+        { theme: "outline", size: "large" } // Customize button appearance
+      );
+    };
   </script>
 </body>
 </html>
