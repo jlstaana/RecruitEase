@@ -820,8 +820,8 @@
 </head>
 <body>
 
+  <!-- Sidebar and Top Navbar -->
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
   <div class="sidebar" id="sidebar">
     <div class="w-100 d-flex justify-content-center align-items-center mb-3">
       <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
@@ -831,13 +831,14 @@
     </h4>
     <div class="active-label">RECRUITER PORTAL</div>
     <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
-    <a href="Recruitment.html"><i class="bi bi-person-workspace me-2"></i> Recruitment</a>
     <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
     <a href="Leave.html" class="fw-bold active"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
     <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
     <a href="/login/index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
   </div>
 
+
+  <!-- Top Navbar -->
 <div class="top-navbar" id="topNavbar">
     <div class="d-flex align-items-center">
         <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
@@ -859,6 +860,7 @@
     </div>
   </div>
 
+  <!-- Main Content Area -->
   <div class="dashboard-content" id="mainContent">
     <div class="container dashboard-container">
       <h4 class="mb-4">Employee Leave Requests</h4>
@@ -887,6 +889,7 @@
         </div>
       </div>
 
+      <!-- Filter and Action Bar -->
       <div class="filter-actions-bar mb-5">
         <input type="text" id="employeeFilter" class="form-control" placeholder="Search by Employee Name/ID">
         <input type="text" id="leaveTypeFilter" class="form-control" placeholder="Filter by Leave Type">
@@ -900,6 +903,7 @@
         <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#addLeaveModal"><i class="bi bi-plus-circle me-2"></i>Add Leave</button>
       </div>
 
+      <!-- Leave Requests Table -->
       <div class="table-responsive">
         <table class="table table-hover" id="leaveRequestsTable">
           <thead>
@@ -920,6 +924,7 @@
         </table>
       </div>
 
+      <!-- Pagination -->
       <nav aria-label="Page navigation example" class="mt-4">
         <ul class="pagination justify-content-center">
           <li class="page-item disabled">
@@ -937,6 +942,7 @@
     </div>
   </div>
 
+  <!-- Add Leave Modals -->
   <div class="modal fade" id="addLeaveModal" tabindex="-1" aria-labelledby="addLeaveModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
@@ -997,6 +1003,7 @@
     </div>
   </div>
 
+  <!-- Leave Reason Modal -->
   <div class="modal fade" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

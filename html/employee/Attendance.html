@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Attendance | J. Alcabasa HR Management System</title>
+  <title>My HR Portal | J. Alcabasa HR Management System</title>
   <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
@@ -29,6 +29,8 @@
       --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
       --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
       --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+      --table-hover-bg-light: #f0f8ff; /* Light blue background on hover for tables */
+      --table-hover-cell-light: #e0ecff; /* Slightly darker on cell hover for tables */
 
       /* Status Colors (slightly adjusted for consistency) */
       --status-success: #27ae60;
@@ -40,11 +42,11 @@
 
     /* Dark Mode Overrides */
     body.dark-mode {
+      color-scheme: dark; /* Helps with browser-native UI like scrollbars */
       --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
       --main-brand-color-light: #4a1a1a;
       --main-brand-color-bg-hover: rgba(255,107,107,0.15);
       --main-brand-color-border: #5c2020;
-
       --body-bg: #1f252d;
       --text-color: #ecf0f1;
       --text-color-secondary: #bdc3c7;
@@ -61,7 +63,7 @@
       --status-success: #2ecc71;
       --status-warning: #f1c40f;
       --status-danger: #e74c3c;
-      --status-info: #3498db;
+      --status-info: #6cb6ff; /* BRIGHTER BLUE FOR DARK MODE */
       --status-secondary: #95a5a6;
     }
 
@@ -91,7 +93,6 @@
         background: var(--text-color-light);
     }
 
-
     /* Sidebar Styles */
     .sidebar {
       width: 260px; /* Slightly wider for content */
@@ -103,7 +104,7 @@
       left: -270px; /* Adjusted for wider sidebar */
       top: 0;
       transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
-      z-index: 1050;
+      z-index: 1201; /* INCREASED Z-INDEX TO BE ABOVE NAVBAR */
       box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
       display: flex;
       flex-direction: column;
@@ -183,12 +184,12 @@
       display: flex;
       align-items: center;
       cursor: pointer;
-      z-index: 1100;
+      z-index: 1300;
       transition: color 0.3s ease;
       padding: 0.2rem; /* Small padding for click area */
     }
     .sidebar-toggle i {
-      font-size: 1.8rem; /* Consistent icon size */
+      font-size: 1.8rem;
     }
 
     /* Main Content Area */
@@ -215,13 +216,17 @@
       align-items: center;
       position: sticky; /* Make it sticky */
       top: 0;
-      z-index: 1200;
-      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease;
+      z-index: 1200; /* KEPT AS IS, BUT NOW LOWER THAN SIDEBAR */
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease, left 0.3s ease, width 0.3s ease; /* Added left and width to transition */
       margin-left: 0;
       box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+      left: 0; /* Default position */
+      right: 0; /* Default width */
     }
     .sidebar-visible .top-navbar {
       margin-left: 260px; /* Adjusted for wider sidebar */
+      left: 260px; /* Position next to sidebar */
+      width: calc(100% - 260px); /* Adjust width to fit remaining space */
     }
     .top-navbar .navbar-logo {
         height: 36px; /* Slightly smaller logo */
@@ -276,102 +281,107 @@
     .dashboard-container {
       max-width: 1500px; /* Wider container for more content */
       background: var(--card-bg);
-      border-radius: 1rem; /* Standard rounded corners */
-      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
-      padding: 3rem; /* Generous padding */
+      border-radius: 1rem;
+      box-shadow: 0 8px 25px var(--card-shadow);
+      padding: 3rem;
       margin-top: 2.5rem;
       margin-bottom: 2.5rem;
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      width: 100%; /* Ensure it takes full width within max-width */
+      width: 100%;
     }
     .dashboard-container h4 {
-      color: var(--text-color); /* Use general text color for headings */
-      font-weight: 600; /* Medium bold */
-      margin-bottom: 2rem; /* More space below heading */
-      font-size: 1.8rem; /* Prominent heading */
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
       transition: color 0.3s ease;
-      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
-      padding-bottom: 1rem; /* Space for the line */
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
     }
     .table-responsive {
-      margin-top: 2.5rem; /* More space above table */
+      margin-top: 2.5rem;
     }
-    /* NEW TABLE DESIGN */
+    /* Table Styling */
     .table {
         --bs-table-bg: var(--card-bg);
         --bs-table-color: var(--text-color);
         --bs-table-border-color: var(--border-color);
-        vertical-align: middle; /* Vertically align content in table cells */
-        font-size: 0.9rem; /* Slightly smaller text for tables */
-        border-collapse: separate; /* Required for rounded corners */
-        border-spacing: 0; /* Remove default spacing */
+        vertical-align: middle;
+        font-size: 0.9rem;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .table-responsive {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px var(--shadow-color);
+        border: 1px solid var(--border-color);
+    }
+    .table th,
+    .table td {
+        padding: 1rem 1.2rem;
+        border-bottom: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
     }
     .table thead th {
-      border-bottom-width: 2px;
-      border-color: var(--border-color);
-      font-weight: 600; /* Bolder headers */
-      font-size: 0.95rem;
-      padding: 1rem 0.8rem; /* Increased padding */
-      color: var(--text-color-secondary); /* Muted header text */
-      text-transform: uppercase; /* Uppercase for formal look */
-      letter-spacing: 0.5px;
-      background-color: var(--main-brand-color-light); /* Light red background for headers */
-      position: sticky; /* Make headers sticky for scrolling tables */
-      top: 0;
-      z-index: 1; /* Ensure headers stay above content */
-    }
-    .table tbody td {
-        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
-        border-top: 1px solid var(--border-color); /* Border between rows */
-        background-color: var(--card-bg); /* Ensure consistent background for rows */
+        background-color: var(--body-bg);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
     }
 
-    /* Rounded corners for the table */
-    .table thead th:first-child {
-        border-top-left-radius: 0.8rem;
+    .table tbody tr:last-child td {
+        border-bottom: none;
     }
-    .table thead th:last-child {
-        border-top-right-radius: 0.8rem;
-    }
-    .table tbody tr:last-child td:first-child {
-        border-bottom-left-radius: 0.8rem;
-    }
-    .table tbody tr:last-child td:last-child {
-        border-bottom-right-radius: 0.8rem;
+    .table thead th:last-child,
+    .table tbody td:last-child {
+        border-right: none;
     }
 
-    .table tbody tr {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Subtle shadow for each row */
-        transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    /* Striped rows for better readability */
+    .table tbody tr:nth-of-type(even) {
+        background-color: var(--main-brand-color-bg-hover);
     }
     .table tbody tr:hover {
-        background-color: var(--main-brand-color-light); /* Highlight on hover */
+        background-color: var(--main-brand-color-light);
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* More pronounced shadow on hover */
     }
     body.dark-mode .table tbody tr:nth-of-type(even) {
-        background-color: rgba(255,107,107,0.05); /* Dark mode stripe */
+        background-color: rgba(255,107,107,0.05);
     }
     body.dark-mode .table tbody tr:hover {
-        background-color: rgba(255,107,107,0.1); /* Dark mode hover */
+        background-color: #1a2027; /* Darker background on hover */
+        color: #bdc3c7; /* Darker text color on hover for better contrast */
     }
 
-    /* Remove default Bootstrap table-bordered styling */
+    /* Remove default table borders */
     .table-bordered {
-      border: none; /* Remove main table border */
+      border: none;
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+    }
+    .table-bordered tbody td {
+        border-color: var(--border-color);
     }
 
-    .table .bg-white { /* Override for table cells to ensure proper background in dark mode */
-        background-color: var(--card-bg) !important;
+    .table .bg-white {
+        background-color: transparent !important;
         color: var(--text-color);
     }
     /* Adjusted badge colors and styles */
     .table .badge {
         font-weight: 600;
-        padding: 0.45em 0.8em; /* Slightly larger badges */
-        border-radius: 0.35rem; /* More rounded */
-        text-transform: capitalize; /* Capitalize for status */
-        min-width: 80px; /* Minimum width for consistency */
+        padding: 0.45em 0.8em;
+        border-radius: 0.35rem;
+        text-transform: capitalize;
+        min-width: 80px;
         display: inline-block;
         text-align: center;
     }
@@ -382,63 +392,63 @@
     .table .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
 
 
-    /* Attendance Summary Cards */
+    /* Summary Cards */
     .summary-card {
         background-color: var(--card-bg);
-        border-radius: 0.8rem; /* Consistent rounding */
-        padding: 1.8rem; /* Reduced padding slightly for smaller size */
-        box-shadow: 0 4px 18px var(--card-shadow); /* Softer, larger shadow */
+        border-radius: 0.8rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 18px var(--card-shadow);
         text-align: center;
         transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid var(--border-color); /* Subtle border */
-        height: 100%; /* Ensure cards are same height */
+        border: 1px solid var(--border-color);
+        height: 100%;
     }
     .summary-card .icon {
-        font-size: 2.4rem; /* Smaller icon */
+        font-size: 2rem;
         color: var(--main-brand-color);
-        margin-bottom: 0.6rem; /* Less space */
+        margin-bottom: 0.6rem;
         display: block;
     }
     .summary-card .value {
-        font-size: 2.2rem; /* Smaller value */
+        font-size: 1.8rem;
         font-weight: bold;
         color: var(--text-color);
-        margin-bottom: 0.1rem;
+        margin-bottom: 0.2rem;
     }
     .summary-card .label {
-        font-size: 0.85rem; /* Smaller label size */
+        font-size: 0.85rem;
         color: var(--text-color-secondary);
         font-weight: 500;
     }
     /* Specific status colors for cards */
-    .summary-card.present .icon { color: var(--status-success); }
     .summary-card.late .icon { color: var(--status-warning); }
+    .summary-card.on-time .icon { color: var(--status-success); }
     .summary-card.absent .icon { color: var(--status-danger); }
 
     /* Filter & Action Bar */
     .filter-actions-bar {
         background-color: var(--card-bg);
-        padding: 2.2rem 2.5rem; /* Increased padding */
-        border-radius: 0.8rem; /* Consistent rounding */
+        padding: 2.2rem 2.5rem;
+        border-radius: 0.8rem;
         box-shadow: 0 4px 18px var(--shadow-color);
-        margin-bottom: 2.5rem; /* More space below bar */
+        margin-bottom: 2.5rem;
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem; /* Consistent gap between elements */
-        align-items: flex-start; /* Align items to the top for multi-line inputs */
-        justify-content: flex-start; /* Align items to the start */
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: flex-start;
         transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid var(--border-color); /* Subtle border */
+        border: 1px solid var(--border-color);
     }
     .filter-actions-bar .form-control,
     .filter-actions-bar .form-select {
         flex: 1;
-        min-width: 220px; /* Ensures inputs are not too small */
+        min-width: 220px;
         border-color: var(--border-color);
-        background-color: var(--body-bg); /* Use body bg for inputs */
+        background-color: var(--body-bg);
         color: var(--text-color);
-        padding: 0.7rem 0.9rem; /* More padding */
-        border-radius: 0.4rem; /* More rounded */
+        padding: 0.7rem 0.9rem;
+        border-radius: 0.4rem;
         font-size: 0.9rem;
         transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -449,37 +459,37 @@
     .filter-actions-bar .form-select:focus {
         border-color: var(--main-brand-color);
         box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
-        background-color: var(--card-bg); /* White background on focus */
+        background-color: var(--card-bg);
     }
     /* Modern Button Styles */
     .btn {
-        min-width: 140px; /* Slightly larger min-width for buttons */
-        padding: 0.75rem 1.25rem; /* More padding */
-        border-radius: 0.5rem; /* More rounded for modern look */
-        font-weight: 600; /* Bolder text for prominence */
-        font-size: 0.95rem; /* Slightly larger font size */
+        min-width: 140px;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
         transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-        display: inline-flex; /* For icon alignment */
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.6rem; /* Space between icon and text */
-        box-shadow: 0 2px 5px var(--shadow-color); /* Subtle default shadow */
-        border-width: 1px; /* Thinner border */
+        gap: 0.6rem;
+        box-shadow: 0 2px 5px var(--shadow-color);
+        border-width: 1px;
     }
 
     .btn:hover {
-        transform: translateY(-1px); /* Slight lift on hover */
-        box-shadow: 0 4px 10px var(--shadow-color); /* Enhanced shadow on hover */
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px var(--shadow-color);
     }
 
     .btn:active {
-        transform: translateY(0); /* Press down effect */
+        transform: translateY(0);
         box-shadow: 0 1px 3px var(--shadow-color);
     }
 
     .btn:focus {
         outline: none;
-        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); /* Focus ring with subtle shadow */
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color);
     }
 
     /* Specific Button Color Overrides */
@@ -489,7 +499,7 @@
         color: white;
     }
     .btn-danger:hover {
-        background-color: #a03024; /* Darker red on hover */
+        background-color: #a03024;
         border-color: #a03024;
     }
     .btn-danger:focus {
@@ -510,7 +520,7 @@
     }
 
     .btn-primary {
-        background-color: var(--status-info); /* Using info blue as primary for diversity */
+        background-color: var(--status-info);
         border-color: var(--status-info);
         color: white;
     }
@@ -523,7 +533,7 @@
     }
 
     .btn-info {
-        background-color: #1abc9c; /* Consistent info color */
+        background-color: #1abc9c;
         border-color: #1abc9c;
         color: white;
     }
@@ -641,6 +651,11 @@
     body.dark-mode .flatpickr-arrows .flatpickr-next-month {
         color: var(--text-color) !important;
     }
+    /* FIX: Style for the hovered number in Flatpickr time input */
+    body.dark-mode .flatpickr-time .numInput:hover {
+        background: var(--main-brand-color-bg-hover) !important;
+        color: var(--text-color) !important;
+    }
 
 
     /* Pagination styles */
@@ -747,6 +762,15 @@
         box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
         background-color: var(--card-bg);
     }
+ /* Ensure modals are not covered by sticky navbar */
+    .modal-dialog {
+      margin-top: 80px !important; /* Adjust as needed to clear navbar height */
+    }
+    @media (max-width: 575.98px) {
+      .modal-dialog {
+        margin-top: 60px !important;
+      }
+    }
 
     /* Responsive adjustments */
     @media (max-width: 991.98px) {
@@ -836,198 +860,426 @@
 </head>
 <body>
 
+   
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <div class="sidebar" id="sidebar">
     <div class="w-100 d-flex justify-content-center align-items-center mb-3">
-      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+      <img src="/assets/logo.jpg" alt="Company Logo" class="img-fluid rounded-circle mb-2">
     </div>
-    <h4 class="mb-3 dashboard-section-title text-center">
-      RecruitEase HR Management System
-    </h4>
-    <div class="active-label">HR EMPLOYEE PORTAL</div>
-    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
-    <a href="Attendance.html"class="fw-bold active"><i class="bi bi-clock-history me-2"></i> Attendance</a>
-    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
-    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+    <h4 class="mb-3 dashboard-section-title text-center"> J. Alcabasa HR Management System </h4>
+    <div class="active-label">EMPLOYEE PORTAL</div>
+    <a href="dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="attendance.html" class="fw-bold active"><i class="bi bi-clock-history me-2"></i> My Attendance</a>
+    <a href="leave.html"><i class="bi bi-calendar2-check me-2"></i> My Leave</a>
+    <a href="payroll.html"><i class="bi bi-cash-coin me-2"></i> My Payroll</a>
     <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
   </div>
 
-<div class="top-navbar" id="topNavbar">
+  <div class="top-navbar" id="topNavbar">
     <div class="d-flex align-items-center">
-        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-            <i class="bi bi-list"></i>
-        </button>
+      <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
     <div class="d-flex align-items-center ms-auto">
-        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
-            <i class="bi bi-moon-fill"></i>
-        </button>
-        <a href="Notifications.html" style="text-decoration:none;">
-            <i class="bi bi-bell-fill"></i>
-        </a>
-        <a href="Profile.html" style="text-decoration:none;">
-            <i class="bi bi-person-circle"></i>
-        </a>
-        <span class="ms-2">HR Employee<br><small>Welcome!</small></span>
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <i class="bi bi-moon-fill"></i>
+      </button>
+      <a href="Notifications.html" style="text-decoration:none;">
+        <i class="bi bi-bell-fill"></i>
+      </a>
+      <a href="employee_profile.html" style="text-decoration:none;">
+        <i class="bi bi-person-circle"></i>
+      </a>
+      <span class="ms-2" id="employeeNameDisplay">Employee Name<br><small>Welcome!</small></span>
     </div>
   </div>
 
+  <!-- Main Content -->
   <div class="dashboard-content" id="mainContent">
     <div class="container dashboard-container">
-      <h4 class="mb-4">Attendance Records Overview</h4>
+      <h4 class="mb-4">My Attendance</h4>
 
- 
-
-     <!-- Summary Cards -->
-      <div class="summary-card-section mb-5">
-        <div class="row justify-content-center g-4">
-          <div class="col-md-4 col-sm-6 summary-card-col">
-            <div class="summary-card present">
-                <i class="bi bi-person-check-fill icon"></i>
-                <div class="value" id="totalPresent">0</div>
-                <div class="label">Total Present</div>
-            </div>
+      <div class="row mb-5 justify-content-center g-4">
+        <div class="col-md-4 mb-3">
+          <div class="summary-card on-time">
+            <i class="bi bi-calendar-check-fill icon"></i>
+            <div class="value" id="myTotalLeaves">--</div>
+            <div class="label">Approved Leaves This Year</div>
           </div>
-          <div class="col-md-4 col-sm-6 summary-card-col">
-            <div class="summary-card late">
-                <i class="bi bi-hourglass-split icon"></i>
-                <div class="value" id="totalLate">0</div>
-                <div class="label">Total Late</div>
-            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="summary-card late">
+            <i class="bi bi-clock-history icon"></i>
+            <div class="value" id="myLateArrivals">--</div>
+            <div class="label">Late Arrivals This Month</div>
           </div>
-          <div class="col-md-4 col-sm-6 summary-card-col">
-            <div class="summary-card absent">
-                <i class="bi bi-person-x-fill icon"></i>
-                <div class="value" id="totalAbsent">0</div>
-                <div class="label">Total Absent</div>
-            </div>
-          </div>
-          <div class="col-md-4 col-sm-6 summary-card-col">
-            <div class="summary-card">
-                <i class="bi bi-calendar-check icon"></i>
-                <div class="value" id="totalLeave">0</div>
-                <div class="label">On Leave</div>
-            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="summary-card absent">
+            <i class="bi bi-cash-coin icon"></i>
+            <div class="value" id="myLastPayroll">--</div>
+            <div class="label">Last Payroll Amount</div>
           </div>
         </div>
       </div>
-      <!-- End of Summary Cards -->
+        <br>
 
-      <!-- Bootstrap Attendance Filter -->
-      
-      <!-- End Bootstrap Attendance Filter -->
-
-      <div class="filter-actions-bar">
-        <input type="text" class="form-control" placeholder="Search employee..." id="searchInput">
-        <select class="form-select" id="statusFilter">
-          <option value="">All Statuses</option>
-          <option value="Present">Present</option>
-          <option value="Late">Late</option>
-          <option value="Absent">Absent</option>
-          <option value="On Leave">On Leave</option>
-        </select>
-        <input type="text" class="form-control" id="dateRangePicker" placeholder="Select Date Range">
-        <div class="d-flex gap-2">
-          <button class="btn btn-primary" id="applyFilterBtn"><i class="bi bi-funnel-fill"></i> Apply Filters</button>
-          <button class="btn btn-outline-danger" id="clearFilterBtn"><i class="bi bi-x-circle-fill"></i> Clear Filters</button>
+        <!-- Quick Attendance Actions -->
+      <h5 class="mb-3">Quick Attendance Actions</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <button class="btn btn-success w-100" id="clockInBtn" data-bs-toggle="modal" data-bs-target="#clockInModal">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Clock In
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-danger w-100" id="clockOutBtn" data-bs-toggle="modal" data-bs-target="#clockOutModal">
+            <i class="bi bi-box-arrow-left me-2"></i> Clock Out
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-outline-info w-100" id="viewAttendanceBtn" data-bs-toggle="modal" data-bs-target="#viewAttendanceModal">
+            <i class="bi bi-calendar3 me-2"></i> View My Attendance Log
+          </button>
         </div>
       </div>
+      <br>
+      <br>
 
-      <div class="table-responsive">
-        <table class="table table-hover align-middle" id="attendanceTable">
+      <!-- Recent Activities -->
+      <h5 class="mb-3">My Recent Activities</h5>
+      <div class="table-responsive mb-5">
+        <table class="table table-hover" id="recentActivitiesTable">
           <thead>
             <tr>
-              <th>Employee ID</th>
-              <th>Name</th>
               <th>Date</th>
-              <th>Time In</th>
-              <th>Time Out</th>
+              <th>Type</th>
+              <th>Description</th>
               <th>Status</th>
-              <th class="text-center">Actions</th>
             </tr>
           </thead>
-          <tbody id="attendanceTableBody">
-            <!-- Table rows will be rendered by JS -->
+          <tbody>
+            <!-- Recent activities will be rendered by JS -->
           </tbody>
         </table>
       </div>
 
+
+
+      <!-- Clock In Modal -->
+      <div class="modal fade" id="clockInModal" tabindex="-1" aria-labelledby="clockInModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clockInModalLabel"><i class="bi bi-box-arrow-in-right me-2 text-success"></i>Clock In</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Your clock in has been recorded successfully!</p>
+              <p class="text-muted">Time: <span id="clockInTime"></span></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clock Out Modal -->
+      <div class="modal fade" id="clockOutModal" tabindex="-1" aria-labelledby="clockOutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="clockOutModalLabel"><i class="bi bi-box-arrow-left me-2 text-danger"></i>Clock Out</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Your clock out has been recorded successfully!</p>
+              <p class="text-muted">Time: <span id="clockOutTime"></span></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Attendance Log Modal -->
+      <div class="modal fade" id="viewAttendanceModal" tabindex="-1" aria-labelledby="viewAttendanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="viewAttendanceModalLabel"><i class="bi bi-calendar3 me-2 text-info"></i>My Attendance Log</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0" id="attendanceLogTable">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time In</th>
+                      <th>Time Out</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Attendance log rows will be rendered by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+        
+      
+
       <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center" id="paginationControls">
-          <!-- Pagination links will be inserted here by JavaScript -->
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
         </ul>
       </nav>
-
     </div>
   </div>
 
-  <!-- Modals (if any for attendance - e.g., edit record) -->
-  <div class="modal fade" id="editAttendanceModal" tabindex="-1" aria-labelledby="editAttendanceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg d-flex align-items-center justify-content-center" style="min-height:100vh;">
+  <!-- Request Leave Modal -->
+  <div class="modal fade" id="requestLeaveModal" tabindex="-1" aria-labelledby="requestLeaveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editAttendanceModalLabel">Edit Attendance Record</h5>
+          <h5 class="modal-title" id="requestLeaveModalLabel"><i class="bi bi-calendar-plus-fill me-2"></i>Request Leave</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Landscape layout: use row with two columns -->
-          <form id="editAttendanceForm">
-            <div class="row">
+          <form id="requestLeaveForm">
+            <div class="mb-3">
+              <label for="leaveType" class="form-label">Leave Type</label>
+              <select class="form-select" id="leaveType" required>
+                <option value="">Select Leave Type</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Vacation Leave">Vacation Leave</option>
+                <option value="Emergency Leave">Emergency Leave</option>
+                <option value="Maternity Leave">Maternity Leave</option>
+                <option value="Paternity Leave">Paternity Leave</option>
+              </select>
+            </div>
+            <div class="row mb-3">
               <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="editEmployeeName" class="form-label">Employee Name</label>
-                  <input type="text" class="form-control" id="editEmployeeName" readonly>
-                </div>
-                <div class="mb-3">
-                  <label for="editDate" class="form-label">Date</label>
-                  <input type="text" class="form-control" id="editDate" readonly>
-                </div>
-                <div class="mb-3">
-                  <label for="editStatus" class="form-label">Status</label>
-                  <select class="form-select" id="editStatus">
-                    <option value="Present">Present</option>
-                    <option value="Late">Late</option>
-                    <option value="Absent">Absent</option>
-                    <option value="On Leave">On Leave</option>
-                  </select>
-                </div>
+                <label for="leaveStartDate" class="form-label">Start Date</label>
+                <input type="text" class="form-control" id="leaveStartDate" required>
               </div>
               <div class="col-md-6">
-                <input type="hidden" id="editRecordId">
-                <div class="mb-3">
-                  <label for="editTimeIn" class="form-label">Time In</label>
-                  <input type="time" class="form-control" id="editTimeIn">
-                </div>
-                <div class="mb-3">
-                  <label for="editTimeOut" class="form-label">Time Out</label>
-                  <input type="time" class="form-control" id="editTimeOut">
-                </div>
+                <label for="leaveEndDate" class="form-label">End Date</label>
+                <input type="text" class="form-control" id="leaveEndDate" required>
               </div>
             </div>
+            <div class="mb-3">
+              <label for="leaveReason" class="form-label">Reason for Leave</label>
+              <textarea class="form-control" id="leaveReason" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="supportingDocument" class="form-label">Supporting Document (Optional)</label>
+              <input type="file" class="form-control" id="supportingDocument" accept=".pdf,.doc,.docx,.jpg,.png">
+              <div class="form-text text-muted">e.g., Medical certificate for sick leave.</div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit Request</button>
+            </div>
           </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveAttendanceChangesBtn">Save Changes</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- View Payslip Modal -->
+  <div class="modal fade" id="viewPayslipModal" tabindex="-1" aria-labelledby="viewPayslipModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewPayslipModalLabel"><i class="bi bi-file-earmark-text-fill me-2"></i>Latest Payslip (July 2024)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>Earnings:</h6>
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Basic Salary
+              <span>$3,500.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Housing Allowance
+              <span>$500.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Transportation Allowance
+              <span>$200.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Bonus
+              <span>$300.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+              Gross Earnings
+              <span>$4,500.00</span>
+            </li>
+          </ul>
+
+          <h6>Deductions:</h6>
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Income Tax
+              <span>$450.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Social Security
+              <span>$200.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Health Insurance
+              <span>$150.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+              Total Deductions
+              <span>$800.00</span>
+            </li>
+          </ul>
+          <h5 class="text-end mt-4">Net Pay: <span class="text-success">$3,700.00</span></h5>
+          <p class="text-center text-muted mt-3">Payslip for the period of July 1 - July 31, 2024</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary"><i class="bi bi-download me-2"></i>Download Payslip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Update Profile Modal -->
+  <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateProfileModalLabel"><i class="bi bi-person-gear-fill me-2"></i>Update My Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="updateProfileForm">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="profileName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="profileName" value="John Doe" required>
+              </div>
+              <div class="col-md-6">
+                <label for="profileEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="profileEmail" value="john.doe@example.com" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="profilePhone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="profilePhone" value="+1234567890">
+              </div>
+              <div class="col-md-6">
+                <label for="profileAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="profileAddress" value="123 Main St, Anytown, USA">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="profileEmergencyContact" class="form-label">Emergency Contact Name</label>
+              <input type="text" class="form-control" id="profileEmergencyContact" value="Jane Doe">
+            </div>
+            <div class="mb-3">
+              <label for="profileEmergencyPhone" class="form-label">Emergency Contact Phone</label>
+              <input type="tel" class="form-control" id="profileEmergencyPhone" value="+1987654321">
+            </div>
+            <div class="mb-3">
+              <label for="profilePicture" class="form-label">Profile Picture</label>
+              <input type="file" class="form-control" id="profilePicture" accept="image/*">
+              <div class="form-text text-muted">Upload a new profile picture (JPG, PNG).</div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal (for generic actions like submitting leave) -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel"><i class="bi bi-check-circle-fill me-2"></i>Success!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmationMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const sidebar = document.getElementById('sidebar');
+      // Dark Mode Toggle Logic
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+      }
+
+      darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+          localStorage.setItem('theme', 'dark');
+          darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+        } else {
+          localStorage.setItem('theme', 'light');
+          darkModeToggle.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+        }
+      });
+
+      // Sidebar Toggle Logic
       const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
       const sidebarBackdrop = document.getElementById('sidebarBackdrop');
       const mainContent = document.getElementById('mainContent');
       const topNavbar = document.getElementById('topNavbar');
-      const darkModeToggle = document.getElementById('darkModeToggle');
 
-      // Sidebar Toggle Logic
       function toggleSidebar() {
         sidebar.classList.toggle('show');
         sidebarBackdrop.classList.toggle('show');
@@ -1036,413 +1288,217 @@
       }
 
       sidebarToggle.addEventListener('click', toggleSidebar);
-      sidebarBackdrop.addEventListener('click', toggleSidebar); // Close sidebar when clicking outside
+      sidebarBackdrop.addEventListener('click', toggleSidebar);
 
-      // Dark Mode Toggle Logic
-      function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        // Save user preference
-        if (document.body.classList.contains('dark-mode')) {
-          localStorage.setItem('darkMode', 'enabled');
-          darkModeToggle.innerHTML = '<i class="bi bi-sun-fill"></i>'; // Change icon to sun
-        } else {
-          localStorage.setItem('darkMode', 'disabled');
-          darkModeToggle.innerHTML = '<i class="bi bi-moon-fill"></i>'; // Change icon to moon
-        }
-      }
-
-      darkModeToggle.addEventListener('click', toggleDarkMode);
-
-      // Check for saved dark mode preference
-      if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeToggle.innerHTML = '<i class="bi bi-sun-fill"></i>';
-      } else {
-        darkModeToggle.innerHTML = '<i class="bi bi-moon-fill"></i>';
-      }
-
-      
-
-      // Flatpickr for Date Range
-      flatpickr("#dateRangePicker", {
-        mode: "range",
+      // Initialize Flatpickr for date inputs in modals
+      flatpickr("#leaveStartDate", {
         dateFormat: "Y-m-d",
         altInput: true,
         altFormat: "F j, Y",
-        onReady: function(selectedDates, dateStr, instance) {
-          // Add Bootstrap form-control class to the altInput
-          instance.altInput.classList.add('form-control');
-        }
+        allowInput: true,
       });
 
+      flatpickr("#leaveEndDate", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        allowInput: true,
+      });
 
-      // Dummy Data for Attendance Records
-      let attendanceRecords = [{
-        id: 1,
-        employeeId: 'EMP001',
-        name: 'Juan Dela Cruz',
-        date: '2025-06-15',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 2,
-        employeeId: 'EMP002',
-        name: 'Maria Clara',
-        date: '2025-06-15',
-        timeIn: '08:15 AM',
-        timeOut: '05:00 PM',
-        status: 'Late'
-      }, {
-        id: 3,
-        employeeId: 'EMP003',
-        name: 'Crisostomo Ibarra',
-        date: '2025-06-15',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 4,
-        employeeId: 'EMP004',
-        name: 'Sisa Ramirez',
-        date: '2025-06-15',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 5,
-        employeeId: 'EMP005',
-        name: 'Basilio Santiago',
-        date: '2025-06-15',
-        timeIn: '',
-        timeOut: '',
-        status: 'Absent'
-      }, {
-        id: 6,
-        employeeId: 'EMP006',
-        name: 'Crispin Reyes',
-        date: '2025-06-15',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 7,
-        employeeId: 'EMP007',
-        name: 'Elias Hidalgo',
-        date: '2025-06-15',
-        timeIn: '08:20 AM',
-        timeOut: '05:00 PM',
-        status: 'Late'
-      }, {
-        id: 8,
-        employeeId: 'EMP008',
-        name: 'Padre Damaso',
-        date: '2025-06-14',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 9,
-        employeeId: 'EMP009',
-        name: 'Tia Isabel',
-        date: '2025-06-14',
-        timeIn: '',
-        timeOut: '',
-        status: 'On Leave'
-      }, {
-        id: 10,
-        employeeId: 'EMP010',
-        name: 'Don Rafael',
-        date: '2025-06-14',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 11,
-        employeeId: 'EMP011',
-        name: 'Paul Dela Cruz',
-        date: '2025-06-13',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 12,
-        employeeId: 'EMP012',
-        name: 'Ringo Clara',
-        date: '2025-06-13',
-        timeIn: '08:15 AM',
-        timeOut: '05:00 PM',
-        status: 'Late'
-      }, {
-        id: 13,
-        employeeId: 'EMP013',
-        name: 'Josh Ibarra',
-        date: '2025-06-13',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 14,
-        employeeId: 'EMP014',
-        name: 'Riza Ramirez',
-        date: '2025-06-13',
-        timeIn: '08:00 AM',
-        timeOut: '05:00 PM',
-        status: 'Present'
-      }, {
-        id: 15,
-        employeeId: 'EMP015',
-        name: 'Lian Santiago',
-        date: '2025-06-13',
-        timeIn: '',
-        timeOut: '',
-        status: 'Absent'
-      }, ];
+      // Dummy Data for Employee (replace with actual backend data)
+      let employeeData = {
+        id: "EMP001",
+        name: "John Doe",
+        department: "IT",
+        position: "Software Engineer",
+        status: "Active",
+        employmentDate: "2022-01-15",
+        email: "john.doe@example.com",
+        phone: "+1234567890",
+        address: "123 Main St, Anytown, USA",
+        salary: 75000,
+        leavesApproved: 8, // Example data
+        lateArrivalsMonth: 2, // Example data
+        lastPayrollAmount: 3700.00 // Example data
+      };
 
-      
-      let filteredRecords = [...attendanceRecords];
-      const recordsPerPage = 10;
-      let currentPage = 1;
+      let recentActivities = [
+        { date: "2024-07-17", type: "Attendance", description: "Clocked In", status: "Success" },
+        { date: "2024-07-16", type: "Leave Request", description: "Vacation Leave (July 20-25)", status: "Pending" },
+        { date: "2024-07-15", type: "Payroll", description: "Payslip for July", status: "Completed" },
+        { date: "2024-07-14", type: "Attendance", description: "Clocked Out", status: "Success" },
+        { date: "2024-07-13", type: "Profile Update", description: "Updated contact info", status: "Completed" }
+      ];
 
-      const attendanceTableBody = document.getElementById('attendanceTableBody');
-      const paginationControls = document.getElementById('paginationControls');
-      const searchInput = document.getElementById('searchInput');
-      const statusFilter = document.getElementById('statusFilter');
-      const dateRangePicker = document.getElementById('dateRangePicker');
-      const applyFilterBtn = document.getElementById('applyFilterBtn');
-      const clearFilterBtn = document.getElementById('clearFilterBtn');
+      const employeeNameDisplay = document.getElementById('employeeNameDisplay');
+      const myTotalLeavesCard = document.getElementById('myTotalLeaves');
+      const myLateArrivalsCard = document.getElementById('myLateArrivals');
+      const myLastPayrollCard = document.getElementById('myLastPayroll');
+      const recentActivitiesTableBody = document.getElementById('recentActivitiesTable').querySelector('tbody');
 
-      const totalPresentSpan = document.getElementById('totalPresent');
-      const totalLateSpan = document.getElementById('totalLate');
-      const totalAbsentSpan = document.getElementById('totalAbsent');
-      const totalLeaveSpan = document.getElementById('totalLeave');
+      function renderEmployeeDashboard() {
+        employeeNameDisplay.innerHTML = `${employeeData.name}<br><small>Welcome!</small>`;
+        myTotalLeavesCard.textContent = employeeData.leavesApproved;
+        myLateArrivalsCard.textContent = employeeData.lateArrivalsMonth;
+        myLastPayrollCard.textContent = `$${employeeData.lastPayrollAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+        renderRecentActivities();
+      }
 
-      function renderTable(records) {
-        attendanceTableBody.innerHTML = '';
-        const start = (currentPage - 1) * recordsPerPage;
-        const end = start + recordsPerPage;
-        const paginatedRecords = records.slice(start, end);
-
-        if (paginatedRecords.length === 0) {
-          attendanceTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4">No attendance records found.</td></tr>`;
+      function renderRecentActivities() {
+        recentActivitiesTableBody.innerHTML = '';
+        if (recentActivities.length === 0) {
+          recentActivitiesTableBody.innerHTML = '<tr><td colspan="4" class="text-center">No recent activities found.</td></tr>';
           return;
         }
-
-        paginatedRecords.forEach(record => {
+        recentActivities.forEach(activity => {
           const row = document.createElement('tr');
-          let statusBadgeClass = '';
-          switch (record.status) {
-            case 'Present':
+          let statusBadgeClass;
+          switch (activity.status) {
+            case 'Success':
+            case 'Completed':
+            case 'Approved':
               statusBadgeClass = 'bg-success';
               break;
-            case 'Late':
+            case 'Pending':
               statusBadgeClass = 'bg-warning';
               break;
-            case 'Absent':
+            case 'Rejected':
               statusBadgeClass = 'bg-danger';
-              break;
-            case 'On Leave':
-              statusBadgeClass = 'bg-info';
               break;
             default:
               statusBadgeClass = 'bg-secondary';
           }
-
           row.innerHTML = `
-            <td>${record.employeeId}</td>
-            <td>${record.name}</td>
-            <td>${record.date}</td>
-            <td>${record.timeIn || 'N/A'}</td>
-            <td>${record.timeOut || 'N/A'}</td>
-            <td><span class="badge ${statusBadgeClass}">${record.status}</span></td>
-            <td class="text-center">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Actions
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item edit-btn" href="#" data-id="${record.id}"><i class="bi bi-pencil-fill me-2"></i> Edit</a></li>
-                  <li><a class="dropdown-item text-danger delete-btn" href="#" data-id="${record.id}"><i class="bi bi-trash-fill me-2"></i> Delete</a></li>
-                </ul>
-              </div>
-            </td>
+            <td>${activity.date}</td>
+            <td>${activity.type}</td>
+            <td>${activity.description}</td>
+            <td><span class="badge ${statusBadgeClass}">${activity.status}</span></td>
           `;
-          attendanceTableBody.appendChild(row);
-        });
-
-        addTableActionListeners();
-      }
-
-      function renderPagination(records) {
-        paginationControls.innerHTML = '';
-        const totalPages = Math.ceil(records.length / recordsPerPage);
-
-        if (totalPages <= 1) return;
-
-        const createPageItem = (page, isActive = false, isDisabled = false, text = page) => {
-          const li = document.createElement('li');
-          li.classList.add('page-item');
-          if (isActive) li.classList.add('active');
-          if (isDisabled) li.classList.add('disabled');
-
-          const a = document.createElement('a');
-          a.classList.add('page-link');
-          a.href = '#';
-          a.textContent = text;
-          a.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (!isDisabled && !isActive) {
-              currentPage = page;
-              renderAll();
-            }
-          });
-
-          li.appendChild(a);
-          return li;
-        };
-
-        paginationControls.appendChild(createPageItem(currentPage - 1, false, currentPage === 1, 'Previous'));
-
-        for (let i = 1; i <= totalPages; i++) {
-          paginationControls.appendChild(createPageItem(i, i === currentPage));
-        }
-
-        paginationControls.appendChild(createPageItem(currentPage + 1, false, currentPage === totalPages, 'Next'));
-      }
-
-      function updateSummaryCards(records) {
-        const totalPresent = records.filter(record => record.status === 'Present').length;
-        const totalLate = records.filter(record => record.status === 'Late').length;
-        const totalAbsent = records.filter(record => record.status === 'Absent').length;
-        const totalLeave = records.filter(record => record.status === 'On Leave').length;
-
-        totalPresentSpan.textContent = totalPresent;
-        totalLateSpan.textContent = totalLate;
-        totalAbsentSpan.textContent = totalAbsent;
-        totalLeaveSpan.textContent = totalLeave;
-      }
-
-
-      function applyFilters() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedStatus = statusFilter.value;
-        const dateRange = dateRangePicker.value.split(' to ');
-        const startDate = dateRange[0] ? new Date(dateRange[0]) : null;
-        const endDate = dateRange[1] ? new Date(dateRange[1]) : (startDate ? startDate : null); // If only start date, treat as single day
-
-        filteredRecords = attendanceRecords.filter(record => {
-          const matchesSearch = record.name.toLowerCase().includes(searchTerm) ||
-            record.employeeId.toLowerCase().includes(searchTerm);
-          const matchesStatus = selectedStatus === '' || record.status === selectedStatus;
-
-          let matchesDate = true;
-          if (startDate) {
-            const recordDate = new Date(record.date);
-            recordDate.setHours(0, 0, 0, 0); // Normalize to start of day for comparison
-
-            if (endDate) {
-              endDate.setHours(0, 0, 0, 0);
-              matchesDate = recordDate >= startDate && recordDate <= endDate;
-            } else {
-              matchesDate = recordDate.getTime() === startDate.getTime();
-            }
-          }
-          return matchesSearch && matchesStatus && matchesDate;
-        });
-
-        currentPage = 1; // Reset to first page after applying filters
-        renderAll();
-      }
-
-      function clearFilters() {
-        searchInput.value = '';
-        statusFilter.value = '';
-        dateRangePicker._flatpickr.clear(); // Clear flatpickr selection
-        filteredRecords = [...attendanceRecords];
-        currentPage = 1;
-        renderAll();
-      }
-
-      function renderAll() {
-        renderTable(filteredRecords);
-        renderPagination(filteredRecords);
-        updateSummaryCards(filteredRecords);
-      }
-
-      // Event Listeners for Filters
-      applyFilterBtn.addEventListener('click', applyFilters);
-      clearFilterBtn.addEventListener('click', clearFilters);
-      searchInput.addEventListener('input', applyFilters); // Live search
-      statusFilter.addEventListener('change', applyFilters); // Live filter
-
-      // Initial Render
-      renderAll();
-
-
-      // Edit and Delete functionality (placeholders for now)
-      function addTableActionListeners() {
-        document.querySelectorAll('.edit-btn').forEach(button => {
-          button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const idToEdit = parseInt(this.dataset.id);
-            const recordToEdit = attendanceRecords.find(record => record.id === idToEdit);
-
-            if (recordToEdit) {
-              document.getElementById('editRecordId').value = recordToEdit.id;
-              document.getElementById('editEmployeeName').value = recordToEdit.name;
-              document.getElementById('editDate').value = recordToEdit.date;
-              document.getElementById('editTimeIn').value = recordToEdit.timeIn;
-              document.getElementById('editTimeOut').value = recordToEdit.timeOut;
-              document.getElementById('editStatus').value = recordToEdit.status;
-
-              const editModal = new bootstrap.Modal(document.getElementById('editAttendanceModal'));
-              editModal.show();
-            }
-          });
-        });
-
-        document.getElementById('saveAttendanceChangesBtn').addEventListener('click', function() {
-          const recordId = parseInt(document.getElementById('editRecordId').value);
-          const newTimeIn = document.getElementById('editTimeIn').value;
-          const newTimeOut = document.getElementById('editTimeOut').value;
-          const newStatus = document.getElementById('editStatus').value;
-
-          const recordIndex = attendanceRecords.findIndex(record => record.id === recordId);
-          if (recordIndex !== -1) {
-            attendanceRecords[recordIndex].timeIn = newTimeIn;
-            attendanceRecords[recordIndex].timeOut = newTimeOut;
-            attendanceRecords[recordIndex].status = newStatus;
-            alert('Attendance record updated successfully!');
-            // Re-apply filters and re-render to reflect changes
-            applyFilters();
-            const editModal = bootstrap.Modal.getInstance(document.getElementById('editAttendanceModal'));
-            editModal.hide();
-          }
-        });
-
-
-        document.querySelectorAll('.delete-btn').forEach(button => {
-          button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const idToDelete = parseInt(this.dataset.id);
-            if (confirm('Are you sure you want to delete this attendance record?')) {
-              const initialLength = attendanceRecords.length;
-              // Remove from the original data array
-              attendanceRecords = attendanceRecords.filter(record => record.id !== idToDelete);
-              // If successfully removed, re-apply filters and re-render
-              if (attendanceRecords.length < initialLength) {
-                alert('Attendance record deleted successfully!');
-                applyFilters(); // Re-apply filters to update filteredRecords
-              } else {
-                alert('Failed to delete record.');
-              }
-            }
-          });
+          recentActivitiesTableBody.appendChild(row);
         });
       }
 
+      // Request Leave Form Submission
+      const requestLeaveForm = document.getElementById('requestLeaveForm');
+      requestLeaveForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const leaveType = document.getElementById('leaveType').value;
+        const leaveStartDate = document.getElementById('leaveStartDate').value;
+        const leaveEndDate = document.getElementById('leaveEndDate').value;
+        const leaveReason = document.getElementById('leaveReason').value;
+        const supportingDocument = document.getElementById('supportingDocument').files[0];
+
+        // In a real app, send this data to a backend for leave approval
+        console.log({ leaveType, leaveStartDate, leaveEndDate, leaveReason, supportingDocument });
+
+        // Add to recent activities
+        recentActivities.unshift({
+          date: new Date().toISOString().slice(0, 10),
+          type: "Leave Request",
+          description: `${leaveType} (${leaveStartDate} to ${leaveEndDate})`,
+          status: "Pending"
+        });
+        renderRecentActivities();
+
+        const requestLeaveModal = bootstrap.Modal.getInstance(document.getElementById('requestLeaveModal'));
+        requestLeaveModal.hide();
+        requestLeaveForm.reset();
+
+        // Show confirmation modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        document.getElementById('confirmationMessage').textContent = 'Your leave request has been submitted successfully!';
+        confirmationModal.show();
+      });
+
+      // Update Profile Form Submission
+      const updateProfileForm = document.getElementById('updateProfileForm');
+      updateProfileForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        employeeData.name = document.getElementById('profileName').value;
+        employeeData.email = document.getElementById('profileEmail').value;
+        employeeData.phone = document.getElementById('profilePhone').value;
+        employeeData.address = document.getElementById('profileAddress').value;
+        // Handle emergency contacts and profile picture upload in a real application
+        // For now, just update the display name
+        employeeNameDisplay.innerHTML = `${employeeData.name}<br><small>Welcome!</small>`;
+
+        // Add to recent activities
+        recentActivities.unshift({
+          date: new Date().toISOString().slice(0, 10),
+          type: "Profile Update",
+          description: "Updated personal information",
+          status: "Completed"
+        });
+        renderRecentActivities();
+
+        const updateProfileModal = bootstrap.Modal.getInstance(document.getElementById('updateProfileModal'));
+        updateProfileModal.hide();
+
+        // Show confirmation modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        document.getElementById('confirmationMessage').textContent = 'Your profile has been updated successfully!';
+        confirmationModal.show();
+      });
+
+      // Initial render of the employee dashboard
+      renderEmployeeDashboard();
     });
+    
+    // Set current time in modals when opened
+    const clockInModal = document.getElementById('clockInModal');
+    if (clockInModal) {
+      clockInModal.addEventListener('show.bs.modal', function () {
+        document.getElementById('clockInTime').textContent = new Date().toLocaleTimeString();
+      });
+    }
+    const clockOutModal = document.getElementById('clockOutModal');
+    if (clockOutModal) {
+      clockOutModal.addEventListener('show.bs.modal', function () {
+        document.getElementById('clockOutTime').textContent = new Date().toLocaleTimeString();
+      });
+    }
+
+    // Attendance log data (sample, replace with backend data as needed)
+    const attendanceLog = [
+      { date: '2024-07-17', timeIn: '08:01', timeOut: '17:00', status: 'Present' },
+      { date: '2024-07-16', timeIn: '08:05', timeOut: '17:02', status: 'Present' },
+      { date: '2024-07-15', timeIn: '08:00', timeOut: '16:55', status: 'Present' },
+      { date: '2024-07-14', timeIn: '08:20', timeOut: '17:10', status: 'Late' },
+      { date: '2024-07-13', timeIn: '-', timeOut: '-', status: 'Absent' },
+    ];
+
+    function renderAttendanceLog() {
+      const tbody = document.querySelector('#attendanceLogTable tbody');
+      tbody.innerHTML = '';
+      if (attendanceLog.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center">No attendance records found.</td></tr>';
+        return;
+      }
+      attendanceLog.forEach(entry => {
+        let badgeClass = '';
+        switch (entry.status) {
+          case 'Present': badgeClass = 'bg-success'; break;
+          case 'Late': badgeClass = 'bg-warning'; break;
+          case 'Absent': badgeClass = 'bg-danger'; break;
+          default: badgeClass = 'bg-secondary';
+        }
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${entry.date}</td>
+          <td>${entry.timeIn}</td>
+          <td>${entry.timeOut}</td>
+          <td><span class="badge ${badgeClass}">${entry.status}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Render attendance log when modal is shown
+    const viewAttendanceModal = document.getElementById('viewAttendanceModal');
+    if (viewAttendanceModal) {
+      viewAttendanceModal.addEventListener('show.bs.modal', renderAttendanceLog);
+    }
   </script>
 </body>
 </html>

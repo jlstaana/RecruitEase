@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard | J. Alcabasa HR Management System</title>
+  <title>My HR Portal | J. Alcabasa HR Management System</title>
   <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
@@ -29,6 +29,8 @@
       --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
       --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
       --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+      --table-hover-bg-light: #f0f8ff; /* Light blue background on hover for tables */
+      --table-hover-cell-light: #e0ecff; /* Slightly darker on cell hover for tables */
 
       /* Status Colors (slightly adjusted for consistency) */
       --status-success: #27ae60;
@@ -90,7 +92,6 @@
     body::-webkit-scrollbar-thumb:hover {
         background: var(--text-color-light);
     }
-
 
     /* Sidebar Styles */
     .sidebar {
@@ -809,7 +810,14 @@
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
-    body.dark-mode .modal .form-control[type="file"]::-webkit-file-upload-button:hover,
+    /* Dark mode for list-group-items in modals (e.g., View Payslip) */
+    body.dark-mode .modal .list-group-item {
+        background-color: var(--body-bg) !important;
+        color: var(--text-color) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    body.dark-mode .modal .form-control[type="file"]::-webkit-file-upload-button,
     body.dark-mode .modal .form-control[type="file"]::file-selector-button:hover {
         background-color: var(--body-bg); /* Darker on hover */
         cursor: pointer;
@@ -937,16 +945,17 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <div class="sidebar" id="sidebar">
     <div class="w-100 d-flex justify-content-center align-items-center mb-3">
-      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+      <img src="/assets/logo.jpg" alt="Company Logo" class="img-fluid rounded-circle mb-2">
     </div>
-    <h4 class="mb-3 dashboard-section-title text-center"> RecruitEase Management System </h4>
-    <div class="active-label">HR PORTAL</div>
-    <a href="Dashboard.html" class="fw-bold active"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
-    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
-    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
-    <a href="Payroll.html"><i class="bi bi-cash-stack me-2"></i> Payroll</a>
+    <h4 class="mb-3 dashboard-section-title text-center"> J. Alcabasa HR Management System </h4>
+    <div class="active-label">EMPLOYEE PORTAL</div>
+    <a href="dashboard.html" class="fw-bold active"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="attendance.html"><i class="bi bi-clock-history me-2"></i> My Attendance</a>
+    <a href="leave.html"><i class="bi bi-calendar2-check me-2"></i> My Leave</a>
+    <a href="payroll.html"><i class="bi bi-cash-coin me-2"></i> My Payroll</a>
     <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
   </div>
+
   <div class="top-navbar" id="topNavbar">
     <div class="d-flex align-items-center">
       <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
@@ -961,315 +970,277 @@
       <a href="Notifications.html" style="text-decoration:none;">
         <i class="bi bi-bell-fill"></i>
       </a>
-      <a href="Profile.html" style="text-decoration:none;">
+      <a href="profile.html" style="text-decoration:none;">
         <i class="bi bi-person-circle"></i>
       </a>
-      <span class="ms-2">HR<br><small>Welcome!</small></span>
+      <span class="ms-2" id="employeeNameDisplay">Employee Name<br><small>Welcome!</small></span>
     </div>
   </div>
+
   <div class="dashboard-content" id="mainContent">
     <div class="container dashboard-container">
-      <h4 class="mb-4">HR Dashboard Overview</h4>
+      <h4 class="mb-4">My Dashboard</h4>
+
       <div class="row mb-5 justify-content-center g-4">
         <div class="col-md-4 mb-3">
           <div class="summary-card on-time">
-            <i class="bi bi-people-fill icon"></i>
-            <div class="value" id="totalEmployees">35</div>
-            <div class="label">Total Employees</div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-3">
-          <div class="summary-card absent">
             <i class="bi bi-calendar-check-fill icon"></i>
-            <div class="value" id="pendingLeaves">3</div>
-            <div class="label">Pending Leave Requests</div>
+            <div class="value" id="myTotalLeaves">--</div>
+            <div class="label">Approved Leaves This Year</div>
           </div>
         </div>
         <div class="col-md-4 mb-3">
           <div class="summary-card late">
             <i class="bi bi-clock-history icon"></i>
-            <div class="value" id="attendanceToday">30</div>
-            <div class="label">Attendance Today</div>
+            <div class="value" id="myLateArrivals">--</div>
+            <div class="label">Late Arrivals This Month</div>
           </div>
         </div>
+        <div class="col-md-4 mb-3">
+          <div class="summary-card absent">
+            <i class="bi bi-cash-coin icon"></i>
+            <div class="value" id="myLastPayroll">--</div>
+            <div class="label">Last Payroll Amount</div>
+          </div>
+        </div>
+
+        <!-- Add more summary cards as needed -->
       </div>
-      <div class="filter-actions-bar mb-5">
-        <input type="text" id="employeeSearch" class="form-control" placeholder="Search by Employee Name/ID">
-        <select id="statusFilter" class="form-select">
-          <option value="">All Statuses</option>
-          <option value="Active">Active</option>
-          <option value="On Leave">On Leave</option>
-          <option value="Terminated">Terminated</option>
-        </select>
-        <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#addEmployeeModal"><i class="bi bi-plus-circle me-2"></i>Add Employee</button>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-hover" id="employeeTable">
+      <h5 class="mb-3">Quick Actions</h5>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#requestLeaveModal">
+            <i class="bi bi-calendar-plus me-2"></i> Request Leave
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#viewPayslipModal">
+            <i class="bi bi-file-earmark-text me-2"></i> View Latest Payslip
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+            <i class="bi bi-person-gear me-2"></i> Update My Profile
+          </button>
+        </div>
+        </div>
+        <br>
+        <br>
+
+      <!-- Recent Activities Section -->
+      <h5 class="mb-3">My Recent Activities</h5>
+      <div class="table-responsive mb-5">
+        <table class="table table-hover" id="recentActivitiesTable">
           <thead>
             <tr>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Department</th>
-              <th>Position</th>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Description</th>
               <th>Status</th>
-              <th>Employment Date</th>
-              <th class="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Table rows will be rendered by JS -->
+            <!-- Recent activities will be rendered by JS -->
           </tbody>
         </table>
       </div>
+
+      <!-- Pagination -->
+      <nav aria-label="Page navigation example" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+
     </div>
   </div>
 
-  <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+
+  
+  <!-- Request Leave Modal -->
+  <div class="modal fade" id="requestLeaveModal" tabindex="-1" aria-labelledby="requestLeaveModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addEmployeeModalLabel"><i class="bi bi-person-plus me-2"></i>Add New Employee</h5>
+          <h5 class="modal-title" id="requestLeaveModalLabel"><i class="bi bi-calendar-plus-fill me-2"></i>Request Leave</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="addEmployeeForm">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="employeeName" class="form-label">Employee Name</label>
-                <input type="text" class="form-control" id="employeeName" required>
-              </div>
-              <div class="col-md-6">
-                <label for="employeeId" class="form-label">Employee ID</label>
-                <input type="text" class="form-control" id="employeeId" required>
-              </div>
+          <form id="requestLeaveForm">
+            <div class="mb-3">
+              <label for="leaveType" class="form-label">Leave Type</label>
+              <select class="form-select" id="leaveType" required>
+                <option value="">Select Leave Type</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Vacation Leave">Vacation Leave</option>
+                <option value="Emergency Leave">Emergency Leave</option>
+                <option value="Maternity Leave">Maternity Leave</option>
+                <option value="Paternity Leave">Paternity Leave</option>
+              </select>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label for="department" class="form-label">Department</label>
-                <input type="text" class="form-control" id="department" required>
+                <label for="leaveStartDate" class="form-label">Start Date</label>
+                <input type="text" class="form-control" id="leaveStartDate" required>
               </div>
               <div class="col-md-6">
-                <label for="position" class="form-label">Position</label>
-                <input type="text" class="form-control" id="position" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" required>
-                  <option value="Active">Active</option>
-                  <option value="On Leave">On Leave</option>
-                  <option value="Terminated">Terminated</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label for="employmentDate" class="form-label">Employment Date</label>
-                <input type="date" class="form-control" id="employmentDate" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email">
-              </div>
-              <div class="col-md-6">
-                <label for="phone" class="form-label">Phone</label>
-                <input type="tel" class="form-control" id="phone">
+                <label for="leaveEndDate" class="form-label">End Date</label>
+                <input type="text" class="form-control" id="leaveEndDate" required>
               </div>
             </div>
             <div class="mb-3">
-              <label for="address" class="form-label">Address</label>
-              <textarea class="form-control" id="address" rows="3"></textarea>
+              <label for="leaveReason" class="form-label">Reason for Leave</label>
+              <textarea class="form-control" id="leaveReason" rows="4" required></textarea>
             </div>
             <div class="mb-3">
-              <label for="salary" class="form-label">Salary</label>
-              <input type="number" class="form-control" id="salary" step="0.01">
+              <label for="supportingDocument" class="form-label">Supporting Document (Optional)</label>
+              <input type="file" class="form-control" id="supportingDocument" accept=".pdf,.doc,.docx,.jpg,.png">
+              <div class="form-text text-muted">e.g., Medical certificate for sick leave.</div>
             </div>
-            <div class="mb-4">
-              <label for="resumeUpload" class="form-label">Resume Upload</label>
-              <div class="input-group">
-                <input type="file" class="form-control" id="resumeUpload" accept=".pdf,.doc,.docx" aria-describedby="uploadResumeHelp">
-                <button class="btn btn-primary" type="button" id="scanResumeBtn"><i class="bi bi-file-earmark-arrow-up me-2"></i>Scan Resume</button>
-              </div>
-              <div id="uploadResumeHelp" class="form-text text-muted mt-2">Upload PDF or Word documents (max 5MB).</div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit Request</button>
             </div>
           </form>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Payslip Modal -->
+  <div class="modal fade" id="viewPayslipModal" tabindex="-1" aria-labelledby="viewPayslipModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewPayslipModalLabel"><i class="bi bi-file-earmark-text-fill me-2"></i>Latest Payslip (July 2024)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>Earnings:</h6>
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Basic Salary
+              <span>$3,500.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Housing Allowance
+              <span>$500.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Transportation Allowance
+              <span>$200.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Bonus
+              <span>$300.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+              Gross Earnings
+              <span>$4,500.00</span>
+            </li>
+          </ul>
+
+          <h6>Deductions:</h6>
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Income Tax
+              <span>$450.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Social Security
+              <span>$200.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Health Insurance
+              <span>$150.00</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+              Total Deductions
+              <span>$800.00</span>
+            </li>
+          </ul>
+          <h5 class="text-end mt-4">Net Pay: <span class="text-success">$3,700.00</span></h5>
+          <p class="text-center text-muted mt-3">Payslip for the period of July 1 - July 31, 2024</p>
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" form="addEmployeeForm" class="btn btn-primary">Add Employee</button>
+          <button type="button" class="btn btn-primary"><i class="bi bi-download me-2"></i>Download Payslip</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="viewEmployeeModal" tabindex="-1" aria-labelledby="viewEmployeeModalLabel" aria-hidden="true">
+  <!-- Update Profile Modal -->
+  <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="viewEmployeeModalLabel"><i class="bi bi-person-lines-fill me-2"></i>Employee Details</h5>
+          <h5 class="modal-title" id="updateProfileModalLabel"><i class="bi bi-person-gear-fill me-2"></i>Update My Profile</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="employee-profile-header text-center mb-4">
-                <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Employee Profile Picture" class="profile-picture rounded-circle mb-3">
-                <h5 id="viewEmployeeName" class="employee-name mb-1">John Doe</h5>
-                <p id="viewEmployeePosition" class="employee-position text-muted">Software Engineer</p>
-                <span id="viewEmployeeStatus" class="badge bg-success">Active</span>
-            </div>
-            <hr class="mb-4">
-            <div class="row employee-details-grid">
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Employee ID:</p>
-                        <p id="viewEmployeeId" class="info-value">EMP001</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Department:</p>
-                        <p id="viewEmployeeDepartment" class="info-value">IT</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Email:</p>
-                        <p id="viewEmployeeEmail" class="info-value">john.doe@example.com</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Phone:</p>
-                        <p id="viewEmployeePhone" class="info-value">+123 456 7890</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Employment Date:</p>
-                        <p id="viewEmployeeEmploymentDate" class="info-value">2022-01-15</p>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Salary:</p>
-                        <p id="viewEmployeeSalary" class="info-value">$75,000</p>
-                    </div>
-                </div>
-                <div class="col-12 mb-3">
-                    <div class="info-item">
-                        <p class="info-label">Address:</p>
-                        <p id="viewEmployeeAddress" class="info-value">123 Main St, Anytown, USA</p>
-                    </div>
-                </div>
-                </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editEmployeeModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit Employee Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editEmployeeForm">
-            <input type="hidden" id="editEmployeeOriginalId">
+          <form id="updateProfileForm">
             <div class="row mb-3">
               <div class="col-md-6">
-                <label for="editEmployeeName" class="form-label">Employee Name</label>
-                <input type="text" class="form-control" id="editEmployeeName" required>
+                <label for="profileName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="profileName" value="John Doe" required>
               </div>
               <div class="col-md-6">
-                <label for="editEmployeeId" class="form-label">Employee ID</label>
-                <input type="text" class="form-control" id="editEmployeeId" required>
+                <label for="profileEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="profileEmail" value="john.doe@example.com" required>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label for="editDepartment" class="form-label">Department</label>
-                <input type="text" class="form-control" id="editDepartment" required>
+                <label for="profilePhone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="profilePhone" value="+1234567890">
               </div>
               <div class="col-md-6">
-                <label for="editPosition" class="form-label">Position</label>
-                <input type="text" class="form-control" id="editPosition" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="editStatus" class="form-label">Status</label>
-                <select class="form-select" id="editStatus" required>
-                  <option value="Active">Active</option>
-                  <option value="On Leave">On Leave</option>
-                  <option value="Terminated">Terminated</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label for="editEmploymentDate" class="form-label">Employment Date</label>
-                <input type="date" class="form-control" id="editEmploymentDate" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="editEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="editEmail">
-              </div>
-              <div class="col-md-6">
-                <label for="editPhone" class="form-label">Phone</label>
-                <input type="tel" class="form-control" id="editPhone">
+                <label for="profileAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="profileAddress" value="123 Main St, Anytown, USA">
               </div>
             </div>
             <div class="mb-3">
-              <label for="editAddress" class="form-label">Address</label>
-              <textarea class="form-control" id="editAddress" rows="3"></textarea>
+              <label for="profileEmergencyContact" class="form-label">Emergency Contact Name</label>
+              <input type="text" class="form-control" id="profileEmergencyContact" value="Jane Doe">
             </div>
             <div class="mb-3">
-              <label for="editSalary" class="form-label">Salary</label>
-              <input type="number" class="form-control" id="editSalary" step="0.01">
+              <label for="profileEmergencyPhone" class="form-label">Emergency Contact Phone</label>
+              <input type="tel" class="form-control" id="profileEmergencyPhone" value="+1987654321">
+            </div>
+            <div class="mb-3">
+              <label for="profilePicture" class="form-label">Profile Picture</label>
+              <input type="file" class="form-control" id="profilePicture" accept="image/*">
+              <div class="form-text text-muted">Upload a new profile picture (JPG, PNG).</div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" form="editEmployeeForm" class="btn btn-primary">Save Changes</button>
-        </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <!-- Confirmation Modal (for generic actions like submitting leave) -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="deleteConfirmationModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+          <h5 class="modal-title" id="confirmationModalLabel"><i class="bi bi-check-circle-fill me-2"></i>Success!</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to delete employee ID: <strong id="deleteEmployeeIdDisplay"></strong>? This action cannot be undone.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification Modal for Resume Scan -->
-  <div class="modal fade" id="resumeScanNotificationModal" tabindex="-1" aria-labelledby="resumeScanNotificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="resumeScanNotificationModalLabel"><i class="bi bi-bell-fill me-2"></i>Resume Scan Notification</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          The resume has been scanned. A notification has been sent to the recruiter and HR employees for review and further action.
+          <p id="confirmationMessage"></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
@@ -1277,6 +1248,7 @@
       </div>
     </div>
   </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -1321,250 +1293,160 @@
       sidebarToggle.addEventListener('click', toggleSidebar);
       sidebarBackdrop.addEventListener('click', toggleSidebar);
 
-      // Initialize Flatpickr for date inputs
-      flatpickr("#employmentDate", {
+      // Initialize Flatpickr for date inputs in modals
+      flatpickr("#leaveStartDate", {
         dateFormat: "Y-m-d",
         altInput: true,
         altFormat: "F j, Y",
         allowInput: true,
       });
 
-      flatpickr("#editEmploymentDate", {
+      flatpickr("#leaveEndDate", {
         dateFormat: "Y-m-d",
         altInput: true,
         altFormat: "F j, Y",
         allowInput: true,
       });
 
-      // Dummy Data for Employees (replace with actual backend data)
-      let employees = [
-        { id: "EMP001", name: "John Doe", department: "IT", position: "Software Engineer", status: "Active", employmentDate: "2022-01-15", email: "john.doe@example.com", phone: "+1234567890", address: "123 Main St, Anytown, USA", salary: 75000 },
-        { id: "EMP002", name: "Jane Smith", department: "HR", position: "HR Specialist", status: "On Leave", employmentDate: "2021-03-01", email: "jane.smith@example.com", phone: "+1987654321", address: "456 Oak Ave, Anytown, USA", salary: 60000 },
-        { id: "EMP003", name: "Peter Jones", department: "Sales", position: "Sales Manager", status: "Terminated", employmentDate: "2020-07-20", email: "peter.jones@example.com", phone: "+1122334455", address: "789 Pine Ln, Anytown, USA", salary: 80000 }
+      // Dummy Data for Employee (replace with actual backend data)
+      let employeeData = {
+        id: "EMP001",
+        name: "John Doe",
+        department: "IT",
+        position: "Software Engineer",
+        status: "Active",
+        employmentDate: "2022-01-15",
+        email: "john.doe@example.com",
+        phone: "+1234567890",
+        address: "123 Main St, Anytown, USA",
+        salary: 75000,
+        leavesApproved: 8, // Example data
+        lateArrivalsMonth: 2, // Example data
+        lastPayrollAmount: 3700.00 // Example data
+      };
+
+      let recentActivities = [
+        { date: "2024-07-17", type: "Attendance", description: "Clocked In", status: "Success" },
+        { date: "2024-07-16", type: "Leave Request", description: "Vacation Leave (July 20-25)", status: "Pending" },
+        { date: "2024-07-15", type: "Payroll", description: "Payslip for July", status: "Completed" },
+        { date: "2024-07-14", type: "Attendance", description: "Clocked Out", status: "Success" },
+        { date: "2024-07-13", type: "Profile Update", description: "Updated contact info", status: "Completed" }
       ];
 
-      const employeeTableBody = document.querySelector('#employeeTable tbody');
-      const totalEmployeesCard = document.getElementById('totalEmployees');
-      const newApplicantsCard = document.getElementById('newApplicants');
-      const pendingLeavesCard = document.getElementById('pendingLeaves');
+      const employeeNameDisplay = document.getElementById('employeeNameDisplay');
+      const myTotalLeavesCard = document.getElementById('myTotalLeaves');
+      const myLateArrivalsCard = document.getElementById('myLateArrivals');
+      const myLastPayrollCard = document.getElementById('myLastPayroll');
+      const recentActivitiesTableBody = document.getElementById('recentActivitiesTable').querySelector('tbody');
 
-      function renderEmployees() {
-        employeeTableBody.innerHTML = '';
-        const searchTerm = document.getElementById('employeeSearch').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
+      function renderEmployeeDashboard() {
+        employeeNameDisplay.innerHTML = `${employeeData.name}<br><small>Welcome!</small>`;
+        myTotalLeavesCard.textContent = employeeData.leavesApproved;
+        myLateArrivalsCard.textContent = employeeData.lateArrivalsMonth;
+        myLastPayrollCard.textContent = `$${employeeData.lastPayrollAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-        let filteredEmployees = employees.filter(employee => {
-          const matchesSearch = employee.name.toLowerCase().includes(searchTerm) || employee.id.toLowerCase().includes(searchTerm);
-          const matchesStatus = statusFilter === '' || employee.status === statusFilter;
-          return matchesSearch && matchesStatus;
-        });
+        renderRecentActivities();
+      }
 
-        filteredEmployees.forEach(employee => {
+      function renderRecentActivities() {
+        recentActivitiesTableBody.innerHTML = '';
+        if (recentActivities.length === 0) {
+          recentActivitiesTableBody.innerHTML = '<tr><td colspan="4" class="text-center">No recent activities found.</td></tr>';
+          return;
+        }
+        recentActivities.forEach(activity => {
           const row = document.createElement('tr');
-          row.setAttribute('data-employee-id', employee.id);
-          row.innerHTML = `
-            <td>${employee.id}</td>
-            <td>${employee.name}</td>
-            <td>${employee.department}</td>
-            <td>${employee.position}</td>
-            <td><span class="badge bg-${getBadgeClass(employee.status)}">${employee.status}</span></td>
-            <td>${employee.employmentDate}</td>
-            <td class="text-center">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Manage
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item view-employee" href="#" data-bs-toggle="modal" data-bs-target="#viewEmployeeModal"><i class="bi bi-eye me-2"></i>View Details</a></li>
-                  <li><a class="dropdown-item edit-employee" href="#" data-bs-toggle="modal" data-bs-target="#editEmployeeModal"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                  <li><a class="dropdown-item text-danger delete-employee" href="#" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-employee-id="EMP001"><i class="bi bi-trash me-2"></i>Delete</a></li>
-                </ul>
-              </div>
-            </td>
-          `;
-          employeeTableBody.appendChild(row);
-        });
-
-        updateSummaryCards();
-        attachEventListenersToTableButtons();
-      }
-
-      function getBadgeClass(status) {
-        switch (status) {
-          case 'Active': return 'success';
-          case 'On Leave': return 'warning';
-          case 'Terminated': return 'danger';
-          default: return 'secondary';
-        }
-      }
-
-      function updateSummaryCards() {
-        totalEmployeesCard.textContent = employees.length;
-        // Dummy data for new applicants and pending leaves
-        newApplicantsCard.textContent = 12; // Example value
-        pendingLeavesCard.textContent = 3; // Example value
-      }
-
-      // Search and Filter Event Listeners
-      document.getElementById('employeeSearch').addEventListener('input', renderEmployees);
-      document.getElementById('statusFilter').addEventListener('change', renderEmployees);
-
-      // Add Employee Logic
-      const addEmployeeForm = document.getElementById('addEmployeeForm');
-      addEmployeeForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const newEmployee = {
-          id: document.getElementById('employeeId').value,
-          name: document.getElementById('employeeName').value,
-          department: document.getElementById('department').value,
-          position: document.getElementById('position').value,
-          status: document.getElementById('status').value,
-          employmentDate: document.getElementById('employmentDate').value,
-          email: document.getElementById('email').value,
-          phone: document.getElementById('phone').value,
-          address: document.getElementById('address').value,
-          salary: parseFloat(document.getElementById('salary').value) || 0
-        };
-        employees.push(newEmployee);
-        renderEmployees();
-        const addModal = bootstrap.Modal.getInstance(document.getElementById('addEmployeeModal'));
-        addModal.hide();
-        addEmployeeForm.reset(); // Clear form
-      });
-
-      // Edit Employee Logic
-      const editEmployeeModal = document.getElementById('editEmployeeModal');
-      editEmployeeModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
-        const employeeId = button.closest('tr').dataset.employeeId;
-        const employee = employees.find(emp => emp.id === employeeId);
-
-        if (employee) {
-          document.getElementById('editEmployeeOriginalId').value = employee.id;
-          document.getElementById('editEmployeeId').value = employee.id;
-          document.getElementById('editEmployeeName').value = employee.name;
-          document.getElementById('editDepartment').value = employee.department;
-          document.getElementById('editPosition').value = employee.position;
-          document.getElementById('editStatus').value = employee.status;
-          document.getElementById('editEmploymentDate').value = employee.employmentDate;
-          document.getElementById('editEmail').value = employee.email;
-          document.getElementById('editPhone').value = employee.phone;
-          document.getElementById('editAddress').value = employee.address;
-          document.getElementById('editSalary').value = employee.salary;
-        }
-      });
-
-      const editEmployeeForm = document.getElementById('editEmployeeForm');
-      editEmployeeForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const originalId = document.getElementById('editEmployeeOriginalId').value;
-        const updatedEmployee = {
-          id: document.getElementById('editEmployeeId').value,
-          name: document.getElementById('editEmployeeName').value,
-          department: document.getElementById('editDepartment').value,
-          position: document.getElementById('editPosition').value,
-          status: document.getElementById('editStatus').value,
-          employmentDate: document.getElementById('editEmploymentDate').value,
-          email: document.getElementById('editEmail').value,
-          phone: document.getElementById('editPhone').value,
-          address: document.getElementById('editAddress').value,
-          salary: parseFloat(document.getElementById('editSalary').value) || 0
-        };
-
-        employees = employees.map(emp => emp.id === originalId ? updatedEmployee : emp);
-        renderEmployees();
-        const editModal = bootstrap.Modal.getInstance(document.getElementById('editEmployeeModal'));
-        editModal.hide();
-      });
-
-      // View Employee Details Logic
-      const viewEmployeeModal = document.getElementById('viewEmployeeModal');
-      viewEmployeeModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
-        const employeeId = button.closest('tr').dataset.employeeId;
-        const employee = employees.find(emp => emp.id === employeeId);
-
-        if (employee) {
-          document.getElementById('viewEmployeeId').textContent = employee.id;
-          document.getElementById('viewEmployeeName').textContent = employee.name;
-          document.getElementById('viewEmployeePosition').textContent = employee.position;
-          document.getElementById('viewEmployeeDepartment').textContent = employee.department;
-          document.getElementById('viewEmployeeEmail').textContent = employee.email;
-          document.getElementById('viewEmployeePhone').textContent = employee.phone;
-          document.getElementById('viewEmployeeEmploymentDate').textContent = employee.employmentDate;
-          document.getElementById('viewEmployeeSalary').textContent = `$${employee.salary.toLocaleString()}`;
-          document.getElementById('viewEmployeeAddress').textContent = employee.address;
-
-          const viewEmployeeStatusSpan = document.getElementById('viewEmployeeStatus');
-          viewEmployeeStatusSpan.textContent = employee.status;
-          viewEmployeeStatusSpan.className = 'badge bg-' + getBadgeClass(employee.status);
-          // Optional: Update profile picture source if you have paths for each employee
-          // document.querySelector('#viewEmployeeModal .profile-picture').src = `/assets/profile_pics/${employee.id}.jpg`;
-        }
-      });
-
-      // Delete Employee Logic
-      let employeeToDeleteId = null;
-      const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
-      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-
-      function attachEventListenersToTableButtons() {
-        document.querySelectorAll('.delete-employee').forEach(button => {
-          button.removeEventListener('click', setEmployeeToDelete); // Prevent duplicate listeners
-          button.addEventListener('click', setEmployeeToDelete);
-        });
-      }
-
-      function setEmployeeToDelete(event) {
-          const button = event.relatedTarget || event.currentTarget; // event.currentTarget for direct clicks
-          employeeToDeleteId = button.dataset.employeeId;
-          document.getElementById('deleteEmployeeIdDisplay').textContent = employeeToDeleteId;
-      }
-
-      confirmDeleteBtn.addEventListener('click', function () {
-          if (employeeToDeleteId) {
-              employees = employees.filter(emp => emp.id !== employeeToDeleteId);
-              renderEmployees();
-              const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
-              deleteModal.hide();
-              employeeToDeleteId = null; // Reset the stored ID
+          let statusBadgeClass;
+          switch (activity.status) {
+            case 'Success':
+            case 'Completed':
+            case 'Approved':
+              statusBadgeClass = 'bg-success';
+              break;
+            case 'Pending':
+              statusBadgeClass = 'bg-warning';
+              break;
+            case 'Rejected':
+              statusBadgeClass = 'bg-danger';
+              break;
+            default:
+              statusBadgeClass = 'bg-secondary';
           }
-      });
-
-      // Scan Resume Button Logic
-      const scanResumeBtn = document.getElementById('scanResumeBtn');
-      if (scanResumeBtn) {
-        scanResumeBtn.addEventListener('click', function() {
-          const notificationModal = new bootstrap.Modal(document.getElementById('resumeScanNotificationModal'));
-          notificationModal.show();
+          row.innerHTML = `
+            <td>${activity.date}</td>
+            <td>${activity.type}</td>
+            <td>${activity.description}</td>
+            <td><span class="badge ${statusBadgeClass}">${activity.status}</span></td>
+          `;
+          recentActivitiesTableBody.appendChild(row);
         });
       }
 
-      // Initial render of employees
-      renderEmployees();
-    });
+      // Request Leave Form Submission
+      const requestLeaveForm = document.getElementById('requestLeaveForm');
+      requestLeaveForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const leaveType = document.getElementById('leaveType').value;
+        const leaveStartDate = document.getElementById('leaveStartDate').value;
+        const leaveEndDate = document.getElementById('leaveEndDate').value;
+        const leaveReason = document.getElementById('leaveReason').value;
+        const supportingDocument = document.getElementById('supportingDocument').files[0];
 
-    // Enhance badge color in view modal dynamically (redundant after modal redesign, but kept for safety)
-    // document.addEventListener('DOMContentLoaded', function () {
-    //   function updateViewEmployeeStatusBadge() {
-    //     const statusSpan = document.getElementById('viewEmployeeStatus');
-    //     if (!statusSpan) return;
-    //     const status = statusSpan.textContent.trim();
-    //     statusSpan.className = 'badge ' +
-    //       (status === 'Active'
-    //         ? 'bg-success'
-    //         : status === 'On Leave'
-    //         ? 'bg-warning'
-    //         : status === 'Terminated'
-    //         ? 'bg-danger'
-    //         : 'bg-secondary');
-    //   }
-    //   // Hook into modal show event
-    //   const viewModal = document.getElementById('viewEmployeeModal');
-    //   if (viewModal) {
-    //     viewModal.addEventListener('show.bs.modal', updateViewEmployeeStatusBadge);
-    //   }
-    // });
+        // In a real app, send this data to a backend for leave approval
+        console.log({ leaveType, leaveStartDate, leaveEndDate, leaveReason, supportingDocument });
+
+        // Add to recent activities
+        recentActivities.unshift({
+          date: new Date().toISOString().slice(0, 10),
+          type: "Leave Request",
+          description: `${leaveType} (${leaveStartDate} to ${leaveEndDate})`,
+          status: "Pending"
+        });
+        renderRecentActivities();
+
+        const requestLeaveModal = bootstrap.Modal.getInstance(document.getElementById('requestLeaveModal'));
+        requestLeaveModal.hide();
+        requestLeaveForm.reset();
+
+        // Show confirmation modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        document.getElementById('confirmationMessage').textContent = 'Your leave request has been submitted successfully!';
+        confirmationModal.show();
+      });
+
+      // Update Profile Form Submission
+      const updateProfileForm = document.getElementById('updateProfileForm');
+      updateProfileForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        employeeData.name = document.getElementById('profileName').value;
+        employeeData.email = document.getElementById('profileEmail').value;
+        employeeData.phone = document.getElementById('profilePhone').value;
+        employeeData.address = document.getElementById('profileAddress').value;
+        // Handle emergency contacts and profile picture upload in a real application
+        // For now, just update the display name
+        employeeNameDisplay.innerHTML = `${employeeData.name}<br><small>Welcome!</small>`;
+
+        // Add to recent activities
+        recentActivities.unshift({
+          date: new Date().toISOString().slice(0, 10),
+          type: "Profile Update",
+          description: "Updated personal information",
+          status: "Completed"
+        });
+        renderRecentActivities();
+
+        const updateProfileModal = bootstrap.Modal.getInstance(document.getElementById('updateProfileModal'));
+        updateProfileModal.hide();
+
+        // Show confirmation modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        document.getElementById('confirmationMessage').textContent = 'Your profile has been updated successfully!';
+        confirmationModal.show();
+      });
+
+      // Initial render of the employee dashboard
+      renderEmployeeDashboard();
+    });
   </script>
 </body>
 </html>

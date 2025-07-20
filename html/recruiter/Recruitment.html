@@ -1,1167 +1,1542 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Recruitment | J. Alcabasa HR Management System</title>
-    <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-        /* Root variables for theming */
-        :root {
-            /* Main Brand Colors (desaturated for professional look) */
-            --main-brand-color: #c0392b; /* A more subdued, professional red */
-            --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
-            --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
-            --main-brand-color-border: #e6b0ad; /* For borders/outlines */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jobs & Recruitment | RecruitEase</title>
+  <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* File Drop Area Styles */
+    .file-drop-area {
+      background-color: #f8f9fa;
+      border-style: dashed;
+      border-color: var(--border-color, #dee2e6);
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .file-drop-area .bi-cloud-arrow-up {
+      color: #adb5bd;
+      transition: color 0.2s;
+    }
+    .file-drop-area.border-primary {
+      border-color: var(--main-brand-color, #c0392b) !important;
+      background-color: #fbecec;
+    }
+    body.dark-mode .file-drop-area {
+      background-color: #232a34;
+      border-color: #3a4756;
+    }
+    body.dark-mode .file-drop-area .bi-cloud-arrow-up {
+      color: #6c7a89;
+    }
+    body.dark-mode .file-drop-area.border-primary {
+      background-color: rgba(255,107,107,0.08);
+      border-color: var(--main-brand-color, #ff6b6b) !important;
+    }
+    /* Root variables for theming */
+    :root {
+      /* Main Brand Colors (desaturated for professional look) */
+      --main-brand-color: #c0392b; /* A more subdued, professional red */
+      --main-brand-color-light: #fbecec; /* Lighter shade for accents/hover */
+      --main-brand-color-bg-hover: rgba(192, 57, 43, 0.08); /* Soft hover state */
+      --main-brand-color-border: #e6b0ad; /* For borders/outlines */
 
-            /* Neutral Palette */
-            --body-bg: #f9fafb; /* Light, airy background */
-            --text-color: #34495e; /* Darker text for readability */
-            --text-color-secondary: #7f8c8d; /* Muted secondary text */
-            --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
-            --card-bg: #ffffff;
-            --sidebar-bg: #ffffff;
-            --top-navbar-bg: white;
-            --border-color: #ecf0f1; /* Very light, subtle border */
-            --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
-            --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
-            --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
-
-            /* Status Colors (slightly adjusted for consistency) */
-            --status-success: #27ae60;
-            --status-warning: #f39c12;
-            --status-danger: #e74c3c;
-            --status-info: #3498db;
-            --status-secondary: #95a5a6;
-        }
-
-        /* Dark Mode Overrides */
-        body.dark-mode {
-            color-scheme: dark; /* Helps with browser-native UI like scrollbars */
-            --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
-            --main-brand-color-light: #4a1a1a;
-            --main-brand-color-bg-hover: rgba(255,107,107,0.15);
-            --main-brand-color-border: #5c2020;
-            --body-bg: #1f252d;
-            --text-color: #ecf0f1;
-            --text-color-secondary: #bdc3c7;
-            --text-color-light: #7f8c8d;
-            --card-bg: #2d343c;
-            --sidebar-bg: #2d343c;
-            --top-navbar-bg: #2d343c;
-            --border-color: #3a4756;
-            --shadow-color: rgba(0,0,0,0.25);
-            --card-shadow: rgba(0,0,0,0.35);
-            --red-accent-shadow: rgba(255,107,107,0.15);
-
-            /* Dark mode status colors */
-            --status-success: #2ecc71;
-            --status-warning: #f1c40f;
-            --status-danger: #e74c3c;
-            --status-info: #3498db;
-            --status-secondary: #95a5a6;
-        }
-
-        /* Base Body Styles */
-        body {
-            background-color: var(--body-bg);
-            overflow-x: hidden;
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
-            font-size: 0.95rem; /* Standard body font size */
-            line-height: 1.6;
-        }
-
-        /* Scrollbar Styling (subtle for professionalism) */
-        body::-webkit-scrollbar {
-            width: 8px;
-        }
-        body::-webkit-scrollbar-track {
-            background: var(--body-bg);
-        }
-        body::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-        body::-webkit-scrollbar-thumb:hover {
-            background: var(--text-color-light);
-        }
+      /* Neutral Palette */
+      --body-bg: #f9fafb; /* Light, airy background */
+      --text-color: #34495e; /* Darker text for readability */
+      --text-color-secondary: #7f8c8d; /* Muted secondary text */
+      --text-color-light: #bdc3c7; /* Lighter text for placeholders/hints */
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --top-navbar-bg: white;
+      --border-color: #ecf0f1; /* Very light, subtle border */
+      --shadow-color: rgba(0,0,0,0.06); /* General softer shadow */
+      --card-shadow: rgba(0,0,0,0.08); /* Slightly more prominent card shadow */
+      --red-accent-shadow: rgba(192,57,43,0.1); /* Subtle red tint for focus states */
+      --table-hover-bg-light: #f0f8ff; /* Light blue background on hover for tables */
+      --table-hover-cell-light: #e0ecff; /* Slightly darker on cell hover for tables */
 
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 260px; /* Slightly wider for content */
-            background-color: var(--sidebar-bg);
-            color: var(--main-brand-color);
-            position: fixed;
-            height: 100vh;
-            padding: 2rem 1.5rem; /* Increased padding */
-            left: -270px; /* Adjusted for wider sidebar */
-            top: 0;
-            transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
-            z-index: 1050; /* Ensure it's above content */
-            box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .sidebar.show {
-            left: 0;
-        }
-        .sidebar img {
-            width: 80px; /* Adjusted logo size for balance */
-            height: 80px;
-            object-fit: cover;
-            margin-bottom: 1.5rem; /* More space */
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 50%; /* Ensure perfect circle */
-            border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
-        }
-        .sidebar h4 {
-            color: var(--main-brand-color);
-            transition: color 0.3s ease;
-            font-weight: 600; /* Bolder heading */
-            font-size: 1.15rem; /* Slightly smaller for sidebar */
-        }
-        .sidebar a {
-            color: var(--text-color-secondary); /* Muted link color */
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 0.85rem 1.2rem; /* More padding */
-            border-radius: 0.6rem; /* More rounded */
-            font-size: 0.95rem;
-            width: 100%;
-            transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-            font-weight: 500;
-            gap: 0.75rem; /* Increased gap for icon and text */
-        }
-        .sidebar a:hover, .sidebar a.fw-bold {
-            background-color: var(--main-brand-color-bg-hover);
-            color: var(--main-brand-color);
-        }
-        .sidebar a.fw-bold { /* Ensure active link is clearly visible */
-            color: var(--main-brand-color);
-            font-weight: 600;
-        }
-        .sidebar .active-label {
-            text-align: center;
-            background-color: var(--main-brand-color);
-            color: #ffffff;
-            font-weight: bold;
-            padding: 0.6rem 1rem; /* Adjusted padding */
-            border-radius: 0.4rem; /* More rounded */
-            margin-bottom: 2rem; /* More space */
-            width: 100%;
-            letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
-            font-size: 0.85rem;
-            text-transform: uppercase; /* Uppercase for formal look */
-        }
-        .sidebar-backdrop {
-            display: none;
-        }
-        .sidebar-backdrop.show {
-            display: block;
-            position: fixed;
-            top: 0; left: 0;
-            right: 0; bottom: 0;
-            background: rgba(0,0,0,0.15); /* Softer backdrop */
-            z-index: 1049;
-        }
+      /* Status Colors (slightly adjusted for consistency) */
+      --status-success: #27ae60;
+      --status-warning: #f39c12;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
 
-        /* Sidebar Toggle */
-        .sidebar-toggle {
-            background: none;
-            border: none;
-            color: var(--main-brand-color);
-            font-size: 1.8rem; /* Adjusted size */
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            z-index: 1051;
-            transition: color 0.3s ease;
-            padding: 0.2rem; /* Small padding for click area */
-        }
-        .sidebar-toggle i {
-            font-size: 1.8rem;
-        }
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
+      --main-brand-color-light: #4a1a1a;
+      --main-brand-color-bg-hover: rgba(255,107,107,0.15);
+      --main-brand-color-border: #5c2020;
+      --body-bg: #1f252d;
+      --text-color: #ecf0f1;
+      --text-color-secondary: #bdc3c7;
+      --text-color-light: #7f8c8d;
+      --card-bg: #2d343c;
+      --sidebar-bg: #2d343c;
+      --top-navbar-bg: #2d343c;
+      --border-color: #3a4756;
+      --shadow-color: rgba(0,0,0,0.25);
+      --card-shadow: rgba(0,0,0,0.35);
+      --red-accent-shadow: rgba(255,107,107,0.15);
+      --table-hover-bg-dark: #3a4756; /* Dark mode hover for tables */
+      --table-hover-cell-dark: #4a5a6a; /* Darker on cell hover for tables */
 
-        /* Main Content Area */
-        .recruitment-content {
-            padding: 2rem; /* Uniform padding */
-            transition: margin-left 0.3s;
-            margin-left: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center content horizontally */
-        }
-        .sidebar-visible .recruitment-content {
-            margin-left: 260px; /* Adjusted for wider sidebar */
-        }
+      /* Dark mode status colors */
+      --status-success: #2ecc71;
+      --status-warning: #f1c40f;
+      --status-danger: #e74c3c;
+      --status-info: #3498db;
+      --status-secondary: #95a5a6;
+    }
 
-        /* Top Navbar */
-        .top-navbar {
-            background-color: var(--top-navbar-bg);
-            padding: 0.8rem 2rem; /* Adjusted padding */
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky; /* Make it sticky */
-            top: 0;
-            z-index: 1020;
-            transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease, left 0.3s ease, width 0.3s ease;
-            /* Added left and width to transition */
-            margin-left: 0;
-            box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
-            left: 0; /* Default position */
-            right: 0; /* Default width */
-        }
-        .sidebar-visible .top-navbar {
-            margin-left: 260px; /* Adjusted for wider sidebar */
-            left: 260px; /* Position next to sidebar */
-            width: calc(100% - 260px); /* Adjust width to fit remaining space */
-        }
-        .top-navbar .navbar-logo {
-            height: 36px; /* Slightly smaller logo */
-            width: auto;
-            margin-right: 0.75rem; /* More space */
-            transition: height 0.3s ease;
-        }
-        .top-navbar .bi {
-            color: var(--main-brand-color);
-            font-size: 1.15rem; /* Consistent icon size */
-            margin-left: 1rem;
-            transition: color 0.3s ease;
-        }
-        .top-navbar .ms-2 {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-color);
-            transition: color 0.3s ease;
-        }
-        .top-navbar .ms-2 small {
-            color: var(--text-color-secondary);
-            font-weight: 400; /* Regular weight for welcome text */
-            display: block; /* Ensure it's on its own line */
-            font-size: 0.85rem;
-        }
+    /* Base Body Styles */
+    body {
+      background-color: var(--body-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Professional font */
+      font-size: 0.95rem; /* Standard body font size */
+      line-height: 1.6;
+    }
 
-        /* Dark Mode Toggle specific styles */
-        .dark-mode-toggle {
-            background: none;
-            border: none;
-            color: var(--text-color-secondary); /* Neutral color for toggle */
-            font-size: 1.15rem;
-            margin-left: 1rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.25rem;
-        }
-        .dark-mode-toggle:hover {
-            color: var(--main-brand-color); /* Hover effect */
-        }
-        body.dark-mode .dark-mode-toggle {
-            background: none;
-        }
-        .dark-mode-toggle i {
-            font-size: 1.15rem;
-        }
-
-        /* Recruitment Page Specific Styles */
-        .recruitment-container {
-            max-width: 1500px; /* Wider container for more content */
-            background: var(--card-bg);
-            border-radius: 1.25rem; /* Softer, more modern rounded corners */
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* More prominent and softer shadow */
-            padding: 3.5rem; /* Generous padding */
-            margin-top: 2.5rem;
-            margin-bottom: 2.5rem;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
-            width: 100%; /* Ensure it takes full width within max-width */
-            border: 1px solid var(--border-color); /* Subtle border for definition */
-        }
-        .recruitment-container h4 {
-            color: var(--text-color);
-            font-weight: 600;
-            margin-bottom: 2rem;
-            font-size: 1.8rem;
-            transition: color 0.3s ease;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-        }
-        .table-responsive {
-            margin-top: 2.5rem;
-        }
-        /* Table Styling */
-        .table {
-            --bs-table-bg: var(--card-bg);
-            --bs-table-color: var(--text-color);
-            --bs-table-border-color: var(--border-color);
-            vertical-align: middle;
-            font-size: 0.9rem;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table-responsive {
-            border-radius: 0.85rem; /* Slightly more rounded to match container */
-            overflow: hidden;
-            box-shadow: 0 6px 15px var(--shadow-color); /* Softer shadow */
-            border: 1px solid var(--border-color); /* Maintain subtle border */
-            transition: border-radius 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .table th,
-        .table td {
-            padding: 1rem 1.2rem;
-            border-bottom: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-        }
-        .table thead th {
-            background-color: var(--body-bg);
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-color-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        .table tbody tr:last-child td {
-            border-bottom: none;
-        }
-        .table thead th:last-child,
-        .table tbody td:last-child {
-            border-right: none;
-        }
-
-        /* Striped rows for better readability */
-        .table tbody tr:nth-of-type(even) {
-            background-color: var(--main-brand-color-bg-hover);
-        }
-        .table tbody tr:hover {
-            background-color: var(--main-brand-color-light);
-            cursor: pointer;
-        }
-        body.dark-mode .table tbody tr:nth-of-type(even) {
-            background-color: rgba(255,107,107,0.05);
-        }
-        body.dark-mode .table tbody tr:hover {
-            background-color: var(--border-color); /* Changed to gray */
-            color: white; /* Changed to lighter white */
-        }
-
-        /* Remove default table borders */
-        .table-bordered {
-            border: none;
-        }
-        .table-bordered thead th {
-            border-bottom-width: 2px;
-            border-color: var(--border-color);
-        }
-        .table-bordered tbody td {
-            border-color: var(--border-color);
-        }
-
-        .table .bg-white {
-            background-color: transparent !important;
-            color: var(--text-color);
-        }
-        /* Adjusted badge colors and styles */
-        .table .badge {
-            font-weight: 600;
-            padding: 0.45em 0.8em;
-            border-radius: 0.35rem;
-            text-transform: capitalize;
-            min-width: 80px;
-            display: inline-block;
-            text-align: center;
-        }
-        .table .badge.bg-success { background-color: var(--status-success) !important;
-            color: white !important;}
-        .table .badge.bg-warning { background-color: var(--status-warning) !important;
-            color: black !important;}
-        .table .badge.bg-danger { background-color: var(--status-danger) !important;
-            color: white !important;}
-        .table .badge.bg-info { background-color: var(--status-info) !important;
-            color: white !important;}
-        .table .badge.bg-secondary { background-color: var(--status-secondary) !important;
-            color: white !important;}
+    /* Scrollbar Styling (subtle for professionalism) */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+    body::-webkit-scrollbar-track {
+        background: var(--body-bg);
+    }
+    body::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+    body::-webkit-scrollbar-thumb:hover {
+        background: var(--text-color-light);
+    }
 
 
-        /* Filter & Action Bar */
-        .filter-actions-bar {
-            background-color: var(--card-bg);
-            padding: 2.5rem 2.8rem; /* Slightly more generous padding */
-            border-radius: 1rem; /* Softer rounding */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Clearer, softer shadow */
-            margin-bottom: 2.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.25rem; /* Increased gap */
-            align-items: flex-start;
-            justify-content: flex-start;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-        .filter-actions-bar .form-control,
-        .filter-actions-bar .form-select {
-            flex: 1;
-            min-width: 220px;
-            border-color: var(--border-color);
-            background-color: var(--body-bg);
-            color: var(--text-color);
-            padding: 0.7rem 0.9rem;
-            border-radius: 0.4rem;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .filter-actions-bar .form-control::placeholder {
-            color: var(--text-color-light);
-        }
-        .filter-actions-bar .form-control:focus,
-        .filter-actions-bar .form-select:focus {
-            border-color: var(--main-brand-color);
-            box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
-            background-color: var(--card-bg);
-        }
-        /* Modern Button Styles */
-        .btn {
-            min-width: 140px;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            box-shadow: 0 2px 5px var(--shadow-color);
-            border-width: 1px;
-        }
+   /* Sidebar Styles */
+    .sidebar {
+      width: 260px; /* Slightly wider for content */
+      background-color: var(--sidebar-bg);
+      color: var(--main-brand-color);
+      position: fixed;
+      height: 100vh;
+      padding: 2rem 1.5rem; /* Increased padding */
+      left: -270px; /* Adjusted for wider sidebar */
+      top: 0;
+      transition: left 0.3s cubic-bezier(.77,0,.18,1), background-color 0.3s ease;
+      z-index: 1201; /* INCREASED Z-INDEX TO BE ABOVE NAVBAR */
+      box-shadow: 2px 0 10px var(--shadow-color); /* Softer shadow */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sidebar.show {
+      left: 0;
+    }
+    .sidebar img {
+      width: 80px; /* Adjusted logo size for balance */
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 1.5rem; /* More space */
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 50%; /* Ensure perfect circle */
+      border: 2px solid var(--main-brand-color-border); /* Subtle border around logo */
+    }
+    .sidebar h4 {
+      color: var(--main-brand-color);
+      transition: color 0.3s ease;
+      font-weight: 600; /* Bolder heading */
+      font-size: 1.15rem; /* Slightly smaller for sidebar */
+    }
+    .sidebar a {
+      color: var(--text-color-secondary); /* Muted link color */
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1.2rem; /* More padding */
+      border-radius: 0.6rem; /* More rounded */
+      font-size: 0.95rem;
+      width: 100%;
+      transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+      font-weight: 500;
+      gap: 0.75rem; /* Increased gap for icon and text */
+    }
+    .sidebar a:hover, .sidebar a.fw-bold {
+      background-color: var(--main-brand-color-bg-hover);
+      color: var(--main-brand-color);
+    }
+    .sidebar a.fw-bold { /* Ensure active link is clearly visible */
+        color: var(--main-brand-color);
+        font-weight: 600;
+    }
+    .sidebar .active-label {
+      text-align: center;
+      background-color: var(--main-brand-color);
+      color: #ffffff;
+      font-weight: bold;
+      padding: 0.6rem 1rem; /* Adjusted padding */
+      border-radius: 0.4rem; /* More rounded */
+      margin-bottom: 2rem; /* More space */
+      width: 100%;
+      letter-spacing: 0.8px; /* Slight letter spacing for enterprise feel */
+      font-size: 0.85rem;
+      text-transform: uppercase; /* Uppercase for formal look */
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .sidebar-backdrop.show {
+      display: block;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15); /* Softer backdrop */
+      z-index: 1049;
+    }
 
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px var(--shadow-color);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 3px var(--shadow-color);
-        }
-
-        .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color);
-        }
-
-        /* Specific Button Color Overrides */
-        .btn-danger {
-            background-color: var(--main-brand-color);
-            border-color: var(--main-brand-color);
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #a03024;
-            border-color: #a03024;
-        }
-        .btn-danger:focus {
-            box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
-        }
-
-        .btn-outline-danger {
-            color: var(--main-brand-color);
-            border-color: var(--main-brand-color);
-            background-color: transparent;
-        }
-        .btn-outline-danger:hover {
-            background-color: var(--main-brand-color);
-            color: white;
-        }
-        .btn-outline-danger:focus {
-            box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
-        }
-
-        .btn-primary {
-            background-color: var(--status-info);
-            border-color: var(--status-info);
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2a7cbd;
-            border-color: #2a7cbd;
-        }
-        .btn-primary:focus {
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-        }
-
-        .btn-info {
-            background-color: #1abc9c;
-            border-color: #1abc9c;
-            color: white;
-        }
-        .btn-info:hover {
-            background-color: #148f77;
-            border-color: #148f77;
-        }
-        .btn-info:focus {
-            box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
-        }
-
-        .btn-secondary {
-            background-color: var(--status-secondary);
-            border-color: var(--status-secondary);
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #6c7a7b;
-            border-color: #6c7a7b;
-        }
-        .btn-secondary:focus {
-            box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
-        }
-
-        .btn-success {
-            background-color: var(--status-success);
-            border-color: var(--status-success);
-            color: white;
-        }
-        .btn-success:hover {
-            background-color: #229954;
-            border-color: #229954;
-        }
-        .btn-success:focus {
-            box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
-        }
-
-        /* Table Actions Button - smaller and subtle */
-        .table .btn {
-            min-width: unset;
-            padding: 0.5rem 0.8rem;
-            font-size: 0.85rem;
-            box-shadow: none;
-            transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
-        }
-        .table .btn:hover {
-            transform: none;
-            box-shadow: none;
-        }
-        .table .btn-outline-secondary {
-            color: var(--text-color-secondary);
-            border-color: var(--border-color);
-            background-color: transparent;
-        }
-        .table .btn-outline-secondary:hover {
-            background-color: var(--border-color);
-            color: var(--text-color);
-        }
-        .table .btn-outline-secondary:focus {
-            box-shadow: 0 0 0 0.2rem var(--border-color);
-        }
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--main-brand-color);
+      font-size: 1.8rem; /* Adjusted size */
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1300;
+      transition: color 0.3s ease;
+      padding: 0.2rem; /* Small padding for click area */
+    }
+    .sidebar-toggle i {
+      font-size: 1.8rem;
+    }
 
 
-        .filter-actions-bar .dropdown-menu {
-            background-color: var(--card-bg);
-            border-color: var(--border-color);
-            border-radius: 0.75rem;
-            box-shadow: 0 6px 20px var(--shadow-color);
-            padding: 0.5rem 0;
-        }
-        .filter-actions-bar .dropdown-item {
-            color: var(--text-color);
-            padding: 0.7rem 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.9rem;
-        }
-        .filter-actions-bar .dropdown-item:hover {
-            background-color: var(--main-brand-color-bg-hover);
-            color: var(--main-brand-color);
-        }
+    /* Main Content Area */
+    .dashboard-content {
+      padding: 2rem; /* Uniform padding */
+      transition: margin-left 0.3s;
+      margin-left: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center content horizontally */
+    }
+    .sidebar-visible .dashboard-content {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+    }
 
-        /* Flatpickr Dark Mode adjustments */
-        body.dark-mode .flatpickr-calendar {
-            background: var(--card-bg) !important;
-            border-color: var(--border-color) !important;
-            color: var(--text-color) !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
-        }
-        body.dark-mode .flatpickr-day.selected,
-        body.dark-mode .flatpickr-day.startRange,
-        body.dark-mode .flatpickr-day.endRange {
-            background: var(--main-brand-color) !important;
-            border-color: var(--main-brand-color) !important;
-            color: white !important;
-        }
-        body.dark-mode .flatpickr-day.today:not(.selected) {
-            border-color: var(--main-brand-color) !important;
-            color: var(--text-color) !important;
-        }
-        body.dark-mode .flatpickr-day:hover,
-        body.dark-mode .flatpickr-day.inRange {
-            background: var(--main-brand-color-bg-hover) !important;
-            color: var(--text-color) !important;
-        }
-        body.dark-mode .flatpickr-month,
-        body.dark-mode .flatpickr-weekday,
-        body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
-        body.dark-mode .numInputWrapper span,
-        body.dark-mode .flatpickr-time input {
-            color: var(--text-color) !important;
-        }
-        body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
-        body.dark-mode .flatpickr-arrows .flatpickr-next-month {
-            color: var(--text-color) !important;
-        }
-        /* FIX: Style for the hovered number in Flatpickr time input */
-        body.dark-mode .flatpickr-time .numInput:hover {
-            background: var(--main-brand-color-bg-hover) !important;
-            color: var(--text-color) !important;
-        }
+    /* Top Navbar */
+    .top-navbar {
+      background-color: var(--top-navbar-bg);
+      padding: 0.8rem 2rem; /* Adjusted padding */
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky; /* Make it sticky */
+      top: 0;
+      z-index: 1200; /* KEPT AS IS, BUT NOW LOWER THAN SIDEBAR */
+      transition: margin-left 0.3s, background-color 0.3s ease, border-color 0.3s ease, left 0.3s ease, width 0.3s ease; /* Added left and width to transition */
+      margin-left: 0;
+      box-shadow: 0 2px 8px var(--shadow-color); /* Subtle shadow */
+      left: 0; /* Default position */
+      right: 0; /* Default width */
+    }
+    .sidebar-visible .top-navbar {
+      margin-left: 260px; /* Adjusted for wider sidebar */
+      left: 260px; /* Position next to sidebar */
+      width: calc(100% - 260px); /* Adjust width to fit remaining space */
+    }
+    .top-navbar .navbar-logo {
+        height: 36px; /* Slightly smaller logo */
+        width: auto;
+        margin-right: 0.75rem; /* More space */
+        transition: height 0.3s ease;
+    }
+    .top-navbar .bi {
+      color: var(--main-brand-color);
+      font-size: 1.15rem; /* Consistent icon size */
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .top-navbar .ms-2 small {
+        color: var(--text-color-secondary);
+        font-weight: 400; /* Regular weight for welcome text */
+        display: block; /* Ensure it's on its own line */
+        font-size: 0.85rem;
+    }
+
+    /* Dark Mode Toggle specific styles */
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      color: var(--text-color-secondary); /* Neutral color for toggle */
+      font-size: 1.15rem;
+      margin-left: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+    .dark-mode-toggle:hover {
+        color: var(--main-brand-color); /* Hover effect */
+    }
+    body.dark-mode .dark-mode-toggle {
+      background: none;
+    }
+    .dark-mode-toggle i {
+      font-size: 1.15rem;
+    }
+
+    /* Dashboard Page Specific Styles */
+    .dashboard-container {
+      max-width: 1500px; /* Wider container for more content */
+      background: var(--card-bg);
+      border-radius: 1rem; /* Standard rounded corners */
+      box-shadow: 0 8px 25px var(--card-shadow); /* More pronounced, soft shadow */
+      padding: 3rem; /* Generous padding */
+      margin-top: 2.5rem;
+      margin-bottom: 2.5rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%; /* Ensure it takes full width within max-width */
+    }
+    .dashboard-container h4 {
+      color: var(--text-color); /* Use general text color for headings */
+      font-weight: 600; /* Medium bold */
+      margin-bottom: 2rem; /* More space below heading */
+      font-size: 1.8rem; /* Prominent heading */
+      transition: color 0.3s ease;
+      border-bottom: 1px solid var(--border-color); /* Subtle line below heading */
+      padding-bottom: 1rem; /* Space for the line */
+    }
+    .table-responsive {
+      margin-top: 2.5rem; /* More space above table */
+    }
+    .table {
+        --bs-table-bg: var(--card-bg); /* Table background uses card background variable */
+        --bs-table-color: var(--text-color);
+        --bs-table-border-color: var(--border-color);
+        vertical-align: middle; /* Vertically align content in table cells */
+        font-size: 0.9rem; /* Slightly smaller text for tables */
+    }
+    .table-bordered {
+      border-color: var(--border-color);
+    }
+    .table-bordered thead th {
+      border-bottom-width: 2px;
+      border-color: var(--border-color);
+      font-weight: 600; /* Bolder headers */
+      font-size: 0.95rem;
+      padding: 1rem 0.8rem; /* Increased padding */
+      background-color: var(--body-bg); /* Match employee/Leave.html header color */
+      color: var(--text-color-secondary); /* Muted header text */
+      text-transform: uppercase; /* Uppercase for formal look */
+      letter-spacing: 0.5px;
+      background-color: var(--card-bg); /* Ensure header also uses card bg */
+    }
+    .table-bordered tbody td {
+        padding: 0.9rem 0.8rem; /* Increased padding for data cells */
+        background-color: var(--card-bg); /* Ensure cells also use card bg for consistency */
+    }
+
+    /* Table Row Hover Design */
+    .table tbody tr {
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: var(--table-hover-bg-light); /* Light mode hover */
+    }
+
+    body.dark-mode .table tbody tr:hover {
+        background-color: var(--table-hover-bg-dark); /* Dark mode hover */
+    }
 
 
-        /* Pagination styles */
-        .pagination .page-item .page-link {
-            background-color: var(--card-bg);
-            border-color: var(--border-color);
-            color: var(--text-color);
-            padding: 0.7rem 1rem;
-            border-radius: 0.4rem;
-            margin: 0 0.2rem;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-            font-size: 0.9rem;
-        }
-        .pagination .page-item.active .page-link {
-            background-color: var(--main-brand-color);
-            border-color: var(--main-brand-color);
-            color: white;
-        }
-        .pagination .page-item .page-link:hover {
-            background-color: var(--main-brand-color-bg-hover);
-            color: var(--main-brand-color);
-            border-color: var(--main-brand-color-light);
-        }
-        body.dark-mode .pagination .page-item .page-link:hover {
-            color: var(--text-color) !important;
-        }
+    /* Adjusted badge colors and styles */
+    .badge {
+        font-weight: 600;
+        padding: 0.45em 0.8em; /* Slightly larger badges */
+        border-radius: 0.35rem; /* More rounded */
+        text-transform: capitalize; /* Capitalize for status */
+        min-width: 80px; /* Minimum width for consistency */
+        display: inline-block;
+        text-align: center;
+    }
+    .badge.bg-success { background-color: var(--status-success) !important; color: white !important;}
+    .badge.bg-warning { background-color: var(--status-warning) !important; color: black !important;}
+    .badge.bg-danger { background-color: var(--status-danger) !important; color: white !important;}
+    .badge.bg-info { background-color: var(--status-info) !important; color: white !important;}
+    .badge.bg-secondary { background-color: var(--status-secondary) !important; color: white !important;}
+    /* Custom status for Job Postings */
+    .badge.bg-primary { background-color: #8e44ad !important; color: white !important; } /* For 'Draft' or similar */
+    .badge.bg-dark-blue { background-color: #2c3e50 !important; color: white !important; } /* For 'On Hold' or similar */
 
-        /* Specific styles for table action dropdowns */
-        .table .dropdown-toggle::after {
-            vertical-align: middle;
-            margin-left: 0.5rem;
-        }
-        .table .dropdown-menu {
-            min-width: 13rem;
-            background-color: var(--card-bg);
-            border-color: var(--border-color);
-            box-shadow: 0 4px 15px var(--shadow-color);
-            border-radius: 0.6rem;
-            padding: 0.5rem 0;
-        }
-        .table .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: var(--text-color);
-            padding: 0.65rem 1rem;
-            font-size: 0.9rem;
-        }
-        .table .dropdown-item:hover {
-            background-color: var(--main-brand-color-bg-hover);
-            color: var(--main-brand-color);
-        }
-        .table .dropdown-item.text-success { color: var(--status-success) !important;}
-        .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
-        .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
-        .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
-        .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
-        .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important;}
 
-        /* Modal styling */
-        .modal-content {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border-radius: 1.15rem; /* Slightly more rounded */
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18); /* Enhanced shadow for modals */
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
-        }
-        .modal-header {
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem; /* Adjusted padding */
-        }
-        .modal-header .modal-title {
-            color: var(--text-color);
-            font-weight: 600;
-            font-size: 1.15rem; /* Adjusted font size */
-        }
+    /* Summary Cards */
+    .summary-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem; /* Consistent rounding */
+        padding: 1.5rem; /* Adjusted: Smaller padding */
+        box-shadow: 0 4px 18px var(--card-shadow); /* Softer, larger shadow */
+        text-align: center;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+        height: 100%; /* Ensure cards are same height */
+    }
+    .summary-card .icon {
+        font-size: 2rem; /* Adjusted: Smaller icon */
+        color: var(--main-brand-color);
+        margin-bottom: 0.6rem; /* Adjusted: Less space */
+        display: block;
+    }
+    .summary-card .value {
+        font-size: 1.8rem; /* Adjusted: Smaller value */
+        font-weight: bold;
+        color: var(--text-color);
+        margin-bottom: 0.2rem;
+    }
+    .summary-card .label {
+        font-size: 0.85rem; /* Adjusted: Smaller label size */
+        color: var(--text-color-secondary);
+        font-weight: 500;
+    }
+    /* Specific status colors for cards */
+    .summary-card.open .icon { color: var(--status-success); }
+    .summary-card.closed .icon { color: var(--status-danger); }
+    .summary-card.draft .icon { color: var(--status-info); }
+    .summary-card.on-hold .icon { color: var(--status-warning); }
 
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100vh - 4rem); /* leave space for navbar */
-        }
 
-        @media (min-width: 576px) {
-            .modal-dialog {
-                margin-top: 5rem !important; /* extra space from top */
-                margin-bottom: 2.5rem !important;
-            }
-        }
+    /* Filter & Action Bar */
+    .filter-actions-bar {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Increased padding */
+        border-radius: 0.8rem; /* Consistent rounding */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* More space below bar */
+        display: flex;
+        flex-wrap: wrap; /* Allow items to wrap */
+        gap: 1rem; /* Consistent gap between elements */
+        align-items: flex-start; /* Align items to the top for multi-line inputs */
+        justify-content: flex-start; /* Align items to the start */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--border-color); /* Subtle border */
+    }
+    .filter-actions-bar .form-control,
+    .filter-actions-bar .form-select {
+        flex: 1;
+        min-width: 220px; /* Ensures inputs are not too small */
+        border-color: var(--border-color);
+        background-color: var(--body-bg); /* Use body bg for inputs */
+        color: var(--text-color);
+        padding: 0.7rem 0.9rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        font-size: 0.9rem;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .filter-actions-bar .form-control::placeholder {
+        color: var(--text-color-light);
+    }
+    .filter-actions-bar .form-control:focus,
+    .filter-actions-bar .form-select:focus {
+        border-color: var(--main-brand-color);
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+        background-color: var(--card-bg); /* White background on focus */
+    }
+    /* Modern Button Styles */
+    .btn {
+        min-width: 140px; /* Slightly larger min-width for buttons */
+        padding: 0.75rem 1.25rem; /* More padding */
+        border-radius: 0.5rem; /* More rounded for modern look */
+        font-weight: 600; /* Bolder text for prominence */
+        font-size: 0.95rem; /* Slightly larger font size */
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        display: inline-flex; /* For icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem; /* Space between icon and text */
+        box-shadow: 0 2px 5px var(--shadow-color); /* Subtle default shadow */
+        border-width: 1px; /* Thinner border */
+    }
 
-        .modal-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            background: none !important;
-            box-shadow: none !important;
+    .btn:hover {
+        transform: translateY(-1px); /* Slight lift on hover */
+        box-shadow: 0 4px 10px var(--shadow-color); /* Enhanced shadow on hover */
+    }
+
+    .btn:active {
+        transform: translateY(0); /* Press down effect */
+        box-shadow: 0 1px 3px var(--shadow-color);
+    }
+
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem var(--main-brand-color-light), 0 2px 5px var(--shadow-color); /* Focus ring with subtle shadow */
+    }
+
+    /* Specific Button Color Overrides */
+    .btn-danger {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #a03024; /* Darker red on hover */
+        border-color: #a03024;
+    }
+    .btn-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-outline-danger {
+        color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .btn-outline-danger:hover {
+        background-color: var(--main-brand-color);
+        color: white;
+    }
+    .btn-outline-danger:focus {
+        box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.25);
+    }
+
+    .btn-primary {
+        background-color: var(--status-info); /* Using info blue as primary for diversity */
+        border-color: var(--status-info);
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2a7cbd;
+        border-color: #2a7cbd;
+    }
+    .btn-primary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .btn-info {
+        background-color: #1abc9c; /* Consistent info color */
+        border-color: #1abc9c;
+        color: white;
+    }
+    .btn-info:hover {
+        background-color: #148f77;
+        border-color: #148f77;
+    }
+    .btn-info:focus {
+        box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.25);
+    }
+
+    .btn-secondary {
+        background-color: var(--status-secondary);
+        border-color: var(--status-secondary);
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #6c7a7b;
+        border-color: #6c7a7b;
+    }
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 165, 166, 0.25);
+    }
+
+    .btn-success {
+        background-color: var(--status-success);
+        border-color: var(--status-success);
+        color: white;
+    }
+    .btn-success:hover {
+        background-color: #229954;
+        border-color: #229954;
+    }
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+    }
+
+    /* Table Actions Button - smaller and subtle */
+    .table .btn {
+        min-width: unset; /* Remove min-width constraint for table buttons */
+        padding: 0.5rem 0.8rem; /* Smaller padding */
+        font-size: 0.85rem; /* Smaller font */
+        box-shadow: none; /* No shadow for table buttons */
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .table .btn:hover {
+        transform: none; /* No lift on hover for table buttons */
+        box-shadow: none;
+    }
+    .table .btn-outline-secondary {
+        color: var(--text-color-secondary);
+        border-color: var(--border-color);
+        background-color: transparent;
+    }
+    .table .btn-outline-secondary:hover {
+        background-color: var(--border-color);
+        color: var(--text-color);
+    }
+    .table .btn-outline-secondary:focus {
+        box-shadow: 0 0 0 0.2rem var(--border-color);
+    }
+
+
+    .filter-actions-bar .dropdown-menu {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        border-radius: 0.75rem; /* Consistent rounding */
+        box-shadow: 0 6px 20px var(--shadow-color); /* Softer shadow */
+        padding: 0.5rem 0; /* Adjusted padding */
+    }
+    .filter-actions-bar .dropdown-item {
+        color: var(--text-color);
+        padding: 0.7rem 1.2rem; /* More padding */
+        display: flex;
+        align-items: center;
+        gap: 0.8rem; /* More space for icons */
+        font-size: 0.9rem;
+    }
+    .filter-actions-bar .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+
+    /* Flatpickr Dark Mode adjustments */
+    body.dark-mode .flatpickr-calendar {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    }
+    body.dark-mode .flatpickr-day.selected,
+    body.dark-mode .flatpickr-day.startRange,
+    body.dark-mode .flatpickr-day.endRange {
+        background: var(--main-brand-color) !important;
+        border-color: var(--main-brand-color) !important;
+        color: white !important;
+    }
+    body.dark-mode .flatpickr-day.today:not(.selected) {
+        border-color: var(--main-brand-color) !important;
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-month,
+    body.dark-mode .flatpickr-weekday,
+    body.dark-mode .flatpickr-current-month .flatpickr-monthDropdown-months,
+    body.dark-mode .numInputWrapper span,
+    body.dark-mode .flatpickr-time input {
+        color: var(--text-color) !important;
+    }
+    body.dark-mode .flatpickr-arrows .flatpickr-prev-month,
+    body.dark-mode .flatpickr-arrows .flatpickr-next-month {
+        color: var(--text-color) !important;
+    }
+
+
+    /* Pagination styles */
+    .pagination .page-item .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        color: var(--text-color);
+        padding: 0.7rem 1rem; /* More padding */
+        border-radius: 0.4rem; /* More rounded */
+        margin: 0 0.2rem; /* Space between links */
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--main-brand-color);
+        border-color: var(--main-brand-color);
+        color: white;
+    }
+    .pagination .page-item .page-link:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color); /* Hover color for text */
+        border-color: var(--main-brand-color-light);
+    }
+    body.dark-mode .pagination .page-item .page-link:hover {
+        color: var(--text-color) !important; /* Ensure hover text color in dark mode */
+    }
+
+    /* Specific styles for table action dropdowns */
+    .table .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
+    }
+    .table .dropdown-menu {
+        min-width: 13rem; /* Ensure enough width for text and icons */
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+        box-shadow: 0 4px 15px var(--shadow-color);
+        border-radius: 0.6rem; /* Consistent rounding */
+        padding: 0.5rem 0;
+    }
+    .table .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--text-color);
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+    .table .dropdown-item:hover {
+        background-color: var(--main-brand-color-bg-hover);
+        color: var(--main-brand-color);
+    }
+    .table .dropdown-item.text-success { color: var(--status-success) !important;}
+    .table .dropdown-item.text-danger { color: var(--status-danger) !important;}
+    .table .dropdown-item.text-warning { color: var(--status-warning) !important;}
+    .table .dropdown-item.text-success:hover { background-color: rgba(39,174,96,0.1) !important;}
+    .table .dropdown-item.text-danger:hover { background-color: rgba(231,76,60,0.1) !important;}
+    .table .dropdown-item.text-warning:hover { background-color: rgba(243,156,18,0.1) !important;}
+
+    /* Modal styling */
+    .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 1rem;
+      box-shadow: 0 8px 30px var(--card-shadow);
+      border: 1px solid var(--border-color);
+    }
+    .modal-header {
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem 2rem;
+    }
+    .modal-header .modal-title {
+      color: var(--text-color);
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    .modal-body {
+      padding: 2rem;
+    }
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+    }
+    .modal .form-label {
+      font-weight: 500;
+      color: var(--text-color-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+    .modal .form-control, .modal .form-select, .modal textarea.form-control {
+      border-color: var(--border-color);
+      background-color: var(--body-bg);
+      color: var(--text-color);
+      padding: 0.75rem 1rem;
+      border-radius: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .modal .form-control:focus, .modal .form-select:focus, .modal textarea.form-control:focus {
+      border-color: var(--main-brand-color);
+      box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
+      background-color: var(--card-bg);
+    }
+    /* Adjusted to give more distance from top navbar for all modals */
+    .modal-dialog {
+      margin-top: 5.5rem; /* More space from the navbar */
+    }
+    /* Add space between the navbar and the main dashboard container */
+    .dashboard-container {
+      margin-top: 5.5rem !important;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        justify-content: space-between;
+      }
+      .top-navbar .sidebar-toggle {
+        display: flex;
+      }
+      .dashboard-content, .top-navbar {
+        margin-left: 0 !important;
+      }
+      .sidebar-toggle {
+        display: flex !important;
+      }
+      .dashboard-container {
+        padding: 1.5rem 1rem;
+      }
+      .filter-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-actions-bar .form-control, .filter-actions-bar .form-select, .filter-actions-bar .btn, .filter-actions-bar .dropdown, .filter-actions-bar .btn-group { /* Target btn-group for full width */
+        min-width: unset;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 {
+        flex-direction: column;
+        width: 100%;
+      }
+      .filter-actions-bar .d-flex.gap-2 button {
+        width: 100%;
+      }
+      /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
+      .table-responsive .table thead th, .table-responsive .table tbody td {
+        white-space: nowrap; /* Keep text on one line */
+      }
+    }
+    /* Modal Adjustments for Landscape Mode on Smaller Devices */
+    @media (max-width: 991.98px) and (orientation: landscape) {
+      .modal-dialog {
+        max-width: 95vw; /* Make modals wider in landscape */
+        margin: 0.5rem auto; /* Adjust margin to center and give slight space */
+      }
+      .modal-content {
+        height: auto; /* Allow content to dictate height */
+        max-height: 95vh; /* Max height to prevent overflow off screen */
+        overflow-y: hidden; /* Hide overflow initially, let modal-body handle scroll */
+        display: flex; /* Use flex to allow body to scroll independently */
+        flex-direction: column;
+      }
+      .modal-body {
+        flex-grow: 1; /* Allow body to take available space */
+        max-height: calc(95vh - 120px); /* Calculate max height for body considering header/footer */
+        overflow-y: auto; /* Enable scrolling for modal body content */
+        padding-top: 1rem; /* Adjust padding if needed */
+        padding-bottom: 1rem; /* Adjust padding if needed */
+      }
+      .modal-header, .modal-footer {
+        flex-shrink: 0; /* Prevent header/footer from shrinking */
+      }
+    }
+    /* Highlight table rows and cells on hover */
+    table tr:hover td {
+        background-color: var(--table-hover-bg-light) !important; /* Light blue background on hover */
+        transition: background 0.2s;
+    }
+    table td:hover {
+        background-color: var(--table-hover-cell-light) !important; /* Slightly darker on cell hover */
+        transition: background 0.2s;
+    }
+    body.dark-mode table tr:hover td {
+        background-color: var(--table-hover-bg-dark) !important;
+    }
+    body.dark-mode table td:hover {
+        background-color: var(--table-hover-cell-dark) !important;
+    }
+    /* Custom Message Box Styles */
+    .custom-alert-modal .modal-content {
+      border-radius: 0.75rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .custom-alert-modal .modal-header {
+      background-color: var(--main-brand-color);
+      color: white;
+      border-top-left-radius: 0.75rem;
+      border-top-right-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      border-bottom: none;
+    }
+    .custom-alert-modal .modal-title {
+      color: white;
+      font-weight: 600;
+    }
+    .custom-alert-modal .btn-close {
+      filter: invert(1); /* Make close button white */
+    }
+    .custom-alert-modal .modal-body {
+      padding: 1.5rem;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+    .custom-alert-modal .modal-footer {
+      border-top: none;
+      padding: 0.75rem 1.5rem 1.5rem;
+      justify-content: flex-end;
+    }
+    .custom-alert-modal .btn-ok {
+      background-color: var(--main-brand-color);
+      border-color: var(--main-brand-color);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 0.3rem;
+      font-weight: 500;
+    }
+    .custom-alert-modal .btn-ok:hover {
+      background-color: #a03024;
+      border-color: #a03024;
+    }
+    .custom-alert-modal .btn-cancel {
+      background-color: var(--status-secondary);
+      border-color: var(--status-secondary);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 0.3rem;
+      font-weight: 500;
+    }
+    .custom-alert-modal .btn-cancel:hover {
+      background-color: #6c7a7b;
+      border-color: #6c7a7b;
+    }
+
+    /* Styles for tab-like navigation within the dashboard content */
+    .content-tabs {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .content-tabs .nav-link {
+        color: var(--text-color-secondary);
+        font-weight: 500;
+        padding: 0.8rem 1.2rem;
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .content-tabs .nav-link.active {
+        color: var(--main-brand-color);
+        border-bottom-color: var(--main-brand-color);
+        background-color: transparent;
+    }
+    .content-tabs .nav-link:hover {
+        color: var(--main-brand-color);
+        border-bottom-color: var(--main-brand-color-light);
+    }
+
+    /* LinkedIn-style Job Card Styles */
+    .job-cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+        gap: 1.5rem; /* Space between cards */
+        margin-top: 2.5rem; /* Space above cards */
+    }
+
+    .job-card {
+        background-color: var(--card-bg);
+        border-radius: 0.8rem;
+        box-shadow: 0 4px 15px var(--card-shadow);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Pushes footer to bottom */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px var(--card-shadow);
+    }
+
+    .job-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .job-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
+    }
+
+    .job-card-department {
+        font-size: 0.95rem;
+        color: var(--text-color-secondary);
+        margin-bottom: 0.75rem;
+    }
+
+    .job-card-meta {
+        font-size: 0.85rem;
+        color: var(--text-color-secondary);
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .job-card-meta i {
+        margin-right: 0.5rem;
+        color: var(--text-color-light);
+    }
+
+    .job-card-applicants {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-color);
+        margin-top: 0.75rem;
+    }
+
+    .job-card-actions .dropdown-toggle {
+        min-width: unset;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+        box-shadow: none;
+        border-color: var(--border-color); /* Use general border color */
+        color: var(--text-color-secondary); /* Use secondary text color */
+    }
+
+    .job-card-actions .dropdown-toggle:hover {
+        background-color: var(--border-color); /* Light hover background */
+        color: var(--text-color); /* Darker text on hover */
+    }
+
+    body.dark-mode .job-card-actions .dropdown-toggle:hover {
+        background-color: var(--border-color); /* Dark mode hover */
+        color: var(--text-color);
+    }
+
+    .job-card-actions .dropdown-menu {
+        min-width: 12rem;
+    }
+
+    .job-card-actions .dropdown-item {
+        font-size: 0.875rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .job-card-actions .dropdown-item i {
+        font-size: 0.9rem;
+    }
+
+    /* Responsive adjustments for job cards */
+    @media (max-width: 768px) {
+        .job-cards-container {
+            grid-template-columns: 1fr; /* Single column on smaller screens */
         }
-        .modal-body {
-            padding: 1.5rem 2rem; /* Adjusted padding */
-        }
-        .modal-footer {
-            border-top: 1px solid var(--border-color);
-            padding: 0.75rem 2rem; /* Adjusted padding */
-        }
-        .modal .form-label {
-            font-weight: 500;
-            color: var(--text-color-secondary);
-            font-size: 0.85rem; /* Adjusted font size */
-            margin-bottom: 0.2rem; /* Adjusted margin */
-        }
-        /* IMPROVED: Specific modal input styling for dark mode */
-        .modal .form-control,
-        .modal .form-select,
-        .modal textarea.form-control {
-            background-color: var(--body-bg);
-            color: var(--text-color);
-            border-color: var(--border-color);
-            padding: 0.6rem 0.9rem;
-            border-radius: 0.4rem;
-            font-size: 0.9rem;
-        }
-        .modal .form-control:focus,
-        .modal .form-select:focus,
-        .modal textarea.form-control:focus {
-            border-color: var(--main-brand-color);
-            box-shadow: 0 0 0 0.2rem var(--main-brand-color-light);
-            background-color: var(--card-bg);
-        }
-        /* ENSURE dark mode select arrow is visible */
-        body.dark-mode .form-select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bdc3c7' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-        }
-        /* Responsive adjustments */
-        @media (max-width: 991.98px) {
-            .top-navbar {
-                justify-content: space-between;
-                left: 0 !important; /* Override desktop styles for mobile */
-                width: 100% !important; /* Override desktop styles for mobile */
-            }
-            .top-navbar .sidebar-toggle {
-                display: flex;
-            }
-            .recruitment-content, .top-navbar {
-                margin-left: 0 !important;
-            }
-            .sidebar-toggle {
-                display: flex !important;
-            }
-            .recruitment-container {
-                padding: 1.5rem 1rem;
-            }
-            .filter-actions-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-actions-bar .form-control,
-            .filter-actions-bar .form-select,
-            .filter-actions-bar .btn,
-            .filter-actions-bar .dropdown,
-            .filter-actions-bar .btn-group { /* Target btn-group for full width */
-                min-width: unset;
-                width: 100%;
-            }
-            .filter-actions-bar .d-flex.gap-2 {
-                flex-direction: column;
-                width: 100%;
-            }
-            .filter-actions-bar .d-flex.gap-2 button {
-                width: 100%;
-            }
-            /* Prevent text wrapping in table headers/cells on smaller screens if they become too narrow */
-            .table-responsive .table thead th,
-            .table-responsive .table tbody td {
-                white-space: nowrap; /* Keep text on one line */
-            }
-            .table .btn-group { /* Ensure button group is not too wide */
-                flex-wrap: nowrap;
-            }
-        }
-    </style>
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="w-100 d-flex justify-content-center align-items-center mb-3">
-            <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
-        </div>
-        <h4 class="mb-3 recruitment-section-title text-center">
-            RecruitEase Management System
-        </h4>
-        <div class="active-label">RECRUITER PORTAL</div>
-        <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
-        <a href="jobs.html"><i class="bi bi-briefcase-fill me-2"></i> Jobs</a>
-        <a href="Recruitment.html" class="fw-bold active"><i class="bi bi-person-workspace me-2"></i> Recruitment</a>
-        <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
-        <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
-        <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
-        <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="w-100 d-flex justify-content-center align-items-center mb-3">
+      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
     </div>
+    <h4 class="mb-3 dashboard-section-title text-center">
+      RecruitEase HR Management System
+    </h4>
+    <div class="active-label">HR RECRUITER PORTAL</div>
+    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="recruiter_dashboard.html" class="fw-bold active"><i class="bi bi-briefcase-fill me-2"></i> Jobs & Recruitment</a>
+    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
+    <a href="Leave.html"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
+    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+    <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+  </div>
 
-    <div class="top-navbar" id="topNavbar">
-        <div class="d-flex align-items-center">
-            <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
-            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-                <i class="bi bi-list"></i>
+  <!-- Top Navbar -->
+  <div class="top-navbar" id="topNavbar">
+    <div class="d-flex align-items-center">
+      <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <i class="bi bi-moon-fill"></i>
+      </button>
+      <a href="Notifications.html" style="text-decoration:none;">
+        <i class="bi bi-bell-fill"></i>
+      </a>
+      <a href="Profile.html" style="text-decoration:none;">
+        <i class="bi bi-person-circle"></i>
+      </a>
+      <span class="ms-2">Recruiter<br><small>Welcome!</small></span>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-content" id="dashboardContent">
+    <div class="dashboard-container">
+      <h4 class="mb-4">Jobs & Recruitment Overview</h4>
+      <ul class="nav nav-tabs content-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="job-postings-tab" data-bs-toggle="tab" data-bs-target="#job-postings" type="button" role="tab" aria-controls="job-postings" aria-selected="true">
+            <i class="bi bi-briefcase me-2"></i> Job Postings
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="applicant-management-tab" data-bs-toggle="tab" data-bs-target="#applicant-management" type="button" role="tab" aria-controls="applicant-management" aria-selected="false">
+            <i class="bi bi-person-workspace me-2"></i> Applicant Management
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="job-postings" role="tabpanel" aria-labelledby="job-postings-tab">
+          <div class="filter-actions-bar">
+            <input type="text" class="form-control" id="jobSearchInput" placeholder="Search job titles or departments..." />
+            <select class="form-select" id="jobStatusFilter">
+              <option value="">All Statuses</option>
+              <option value="Open">Open</option>
+              <option value="Closed">Closed</option>
+              <option value="Draft">Draft</option>
+              <option value="On Hold">On Hold</option>
+            </select>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addJobModal">
+              <i class="bi bi-plus-circle me-2"></i> Add New Job
             </button>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+            <div class="col">
+              <div class="summary-card open">
+                <i class="icon bi bi-briefcase-fill"></i>
+                <div class="value">12</div>
+                <div class="label">Open Jobs</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="summary-card closed">
+                <i class="icon bi bi-archive-fill"></i>
+                <div class="value">5</div>
+                <div class="label">Closed Jobs</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="summary-card draft">
+                <i class="icon bi bi-file-earmark-text-fill"></i>
+                <div class="value">3</div>
+                <div class="label">Drafts</div>
+              </div>
+            </div>
+            <div class="col">
+                <div class="summary-card on-hold">
+                    <i class="icon bi bi-hourglass-split"></i>
+                    <div class="value">2</div>
+                    <div class="label">On Hold</div>
+                </div>
+            </div>
+          </div>
+
+          <!-- Job Postings Cards Container -->
+          <div class="job-cards-container" id="jobListContainer">
+            <!-- Job cards will be rendered here by JavaScript -->
+          </div>
+          <nav aria-label="Job Postings Pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+          </nav>
         </div>
-        <div class="d-flex align-items-center ms-auto">
-            <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
-                <i class="bi bi-moon-fill"></i>
+
+        <!-- Applicant Management Tab -->
+        <div class="tab-pane fade" id="applicant-management" role="tabpanel" aria-labelledby="applicant-management-tab">
+          <div class="filter-actions-bar">
+            <input type="text" class="form-control" id="applicantSearchInput" placeholder="Search by name, ID, or position..." />
+            <select class="form-select" id="statusFilter">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Hired">Hired</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+            <input type="text" class="form-control" id="dateFilter" placeholder="Filter by application date" />
+            <button class="btn btn-secondary" id="resetFilters">
+              <i class="bi bi-x-circle me-2"></i> Reset
             </button>
-            <a href="Notifications.html" style="text-decoration:none;">
-                <i class="bi bi-bell-fill"></i>
-            </a>
-            <a href="Profile.html" style="text-decoration:none;">
-                <i class="bi bi-person-circle"></i>
-            </a>
-            <span class="ms-2">Recruiter<br><small>Welcome!</small></span>
-        </div>
-    </div>
+          </div>
 
-    <div class="recruitment-content" id="mainContent">
-        <div class="container recruitment-container">
-            <h4 class="mb-4">Applicant Tracking</h4>
-
-            <div class="filter-actions-bar mb-5">
-                <input type="text" id="applicantSearch" class="form-control" placeholder="Search by Applicant Name">
-                <select id="statusFilter" class="form-select">
-                    <option value="All Statuses">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Interviewing">Interviewing</option>
-                    <option value="Hired">Hired</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-                <select id="positionFilter" class="form-select">
-                    <option value="All Positions">All Positions</option>
-                    <option value="Software Engineer">Software Engineer</option>
-                    <option value="HR Manager">HR Manager</option>
-                    <option value="Sales Representative">Sales Representative</option>
-                    <option value="Marketing Specialist">Marketing Specialist</option>
-                    <option value="Accountant">Accountant</option>
-                </select>
-                <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#addApplicantModal"><i class="bi bi-plus-circle me-2"></i>Add Applicant</button>
+          <!-- Summary Cards for Applicants -->
+          <div class="row row-cols-1 row-cols-md-4 g-4 mb-4">
+            <div class="col">
+              <div class="summary-card open">
+                <i class="icon bi bi-people-fill"></i>
+                <div class="value">120</div>
+                <div class="label">Total Applicants</div>
+              </div>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table-hover" id="applicantsTable">
-                    <thead>
-                        <tr>
-                            <th>Applicant ID</th>
-                            <th>Date Applied</th>
-                            <th>Name</th>
-                            <th>Position Applied</th>
-                            <th>Contact</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-applicant-id="APP001">
-                            <td>APP001</td>
-                            <td>2024-06-25</td>
-                            <td>Alice Wonderland</td>
-                            <td>Software Engineer</td>
-                            <td>alice@example.com</td>
-                            <td><span class="badge bg-warning">Pending</span></td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Manage
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item view-applicant" href="#" data-bs-toggle="modal" data-bs-target="#viewApplicantModal"><i class="bi bi-eye me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item edit-applicant" href="#" data-bs-toggle="modal" data-bs-target="#editApplicantModal"><i class="bi bi-pencil me-2"></i> Edit</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item reject-applicant text-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-x me-2"></i> Reject</a></li>
-                                        <li><a class="dropdown-item hire-applicant text-success" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-check me-2"></i> Hire</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-applicant-id="APP002">
-                            <td>APP002</td>
-                            <td>2024-06-20</td>
-                            <td>Bob Thebuilder</td>
-                            <td>HR Manager</td>
-                            <td>bob@example.com</td>
-                            <td><span class="badge bg-info">Interviewing</span></td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Manage
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item view-applicant" href="#" data-bs-toggle="modal" data-bs-target="#viewApplicantModal"><i class="bi bi-eye me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item edit-applicant" href="#" data-bs-toggle="modal" data-bs-target="#editApplicantModal"><i class="bi bi-pencil me-2"></i> Edit</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item reject-applicant text-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-x me-2"></i> Reject</a></li>
-                                        <li><a class="dropdown-item hire-applicant text-success" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-check me-2"></i> Hire</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-applicant-id="APP003">
-                            <td>APP003</td>
-                            <td>2024-06-18</td>
-                            <td>Charlie Chaplin</td>
-                            <td>Sales Representative</td>
-                            <td>charlie@example.com</td>
-                            <td><span class="badge bg-success">Hired</span></td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Manage
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item view-applicant" href="#" data-bs-toggle="modal" data-bs-target="#viewApplicantModal"><i class="bi bi-eye me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item edit-applicant" href="#" data-bs-toggle="modal" data-bs-target="#editApplicantModal"><i class="bi bi-pencil me-2"></i> Edit</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item reject-applicant text-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-x me-2"></i> Reject</a></li>
-                                        <li><a class="dropdown-item hire-applicant text-success" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-check me-2"></i> Hire</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-applicant-id="APP004">
-                            <td>APP004</td>
-                            <td>2024-06-10</td>
-                            <td>Diana Prince</td>
-                            <td>Marketing Specialist</td>
-                            <td>diana@example.com</td>
-                            <td><span class="badge bg-danger">Rejected</span></td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Manage
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item view-applicant" href="#" data-bs-toggle="modal" data-bs-target="#viewApplicantModal"><i class="bi bi-eye me-2"></i> View Details</a></li>
-                                        <li><a class="dropdown-item edit-applicant" href="#" data-bs-toggle="modal" data-bs-target="#editApplicantModal"><i class="bi bi-pencil me-2"></i> Edit</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item reject-applicant text-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-x me-2"></i> Reject</a></li>
-                                        <li><a class="dropdown-item hire-applicant text-success" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-check me-2"></i> Hire</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col">
+              <div class="summary-card draft">
+                <i class="icon bi bi-hourglass-split"></i>
+                <div class="value">45</div>
+                <div class="label">Pending</div>
+              </div>
             </div>
-
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mt-4">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-
-    <div class="modal fade" id="addApplicantModal" tabindex="-1" aria-labelledby="addApplicantModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addApplicantModalLabel"><i class="bi bi-person-plus-fill me-2"></i>Add New Applicant</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addApplicantForm">
-                        <div class="mb-3">
-                            <label for="newApplicantId" class="form-label">Applicant ID</label>
-                            <input type="text" class="form-control" id="newApplicantId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newDateApplied" class="form-label">Date Applied</label>
-                            <input type="text" class="form-control datepicker" id="newDateApplied" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newApplicantName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="newApplicantName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newPositionApplied" class="form-label">Position Applied</label>
-                            <input type="text" class="form-control" id="newPositionApplied" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newContact" class="form-label">Contact</label>
-                            <input type="text" class="form-control" id="newContact" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newStatus" class="form-label">Status</label>
-                            <select class="form-select" id="newStatus" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Interviewing">Interviewing</option>
-                                <option value="Hired">Hired</option>
-                                <option value="Rejected">Rejected</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Applicant</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="col">
+              <div class="summary-card on-hold">
+                <i class="icon bi bi-person-lines-fill"></i>
+                <div class="value">30</div>
+                <div class="label">Interviewing</div>
+              </div>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="viewApplicantModal" tabindex="-1" aria-labelledby="viewApplicantModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewApplicantModalLabel"><i class="bi bi-person-vcard-fill me-2"></i>Applicant Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Applicant ID:</strong> <span id="viewApplicantId"></span></p>
-                    <p><strong>Date Applied:</strong> <span id="viewDateApplied"></span></p>
-                    <p><strong>Name:</strong> <span id="viewApplicantName"></span></p>
-                    <p><strong>Position Applied:</strong> <span id="viewPositionApplied"></span></p>
-                    <p><strong>Contact:</strong> <span id="viewContact"></span></p>
-                    <p><strong>Status:</strong> <span id="viewStatus" class="badge"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            <div class="col">
+              <div class="summary-card closed">
+                <i class="icon bi bi-check-circle-fill"></i>
+                <div class="value">25</div>
+                <div class="label">Hired</div>
+              </div>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <div class="modal fade" id="editApplicantModal" tabindex="-1" aria-labelledby="editApplicantModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editApplicantModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit Applicant</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editApplicantForm">
-                        <input type="hidden" id="editOriginalApplicantId">
-                        <div class="mb-3">
-                            <label for="editApplicantId" class="form-label">Applicant ID</label>
-                            <input type="text" class="form-control" id="editApplicantId" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDateApplied" class="form-label">Date Applied</label>
-                            <input type="text" class="form-control datepicker" id="editDateApplied" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editApplicantName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="editApplicantName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editPositionApplied" class="form-label">Position Applied</label>
-                            <input type="text" class="form-control" id="editPositionApplied" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editContact" class="form-label">Contact</label>
-                            <input type="text" class="form-control" id="editContact" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editStatus" class="form-label">Status</label>
-                            <select class="form-select" id="editStatus" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Interviewing">Interviewing</option>
-                                <option value="Hired">Hired</option>
-                                <option value="Rejected">Rejected</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
+          <!-- Applicant List Table -->
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th>Applicant ID</th>
+                  <th>Name</th>
+                  <th>Position Applied</th>
+                  <th>Application Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="applicantListBody">
+                <!-- Applicant rows will be rendered here by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          <nav aria-label="Applicant Pagination">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal (Existing) -->
+  <div class="modal fade custom-alert-modal" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Action</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmationMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn" id="confirmActionButton">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Job Modal (Existing) -->
+  <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addJobModalLabel"><i class="bi bi-plus-circle-fill me-2"></i>Add New Job Posting</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addJobForm">
+            <div class="mb-3">
+              <label for="jobTitle" class="form-label">Job Title</label>
+              <input type="text" class="form-control" id="jobTitle" required>
             </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Confirm Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="confirmationMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
-                </div>
+            <div class="mb-3">
+              <label for="jobDepartment" class="form-label">Department</label>
+              <select class="form-select" id="jobDepartment" required>
+                <option value="">Select Department</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Product">Product</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Human Resources">Human Resources</option>
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+                <option value="Customer Support">Customer Support</option>
+                <option value="IT">IT</option>
+                <option value="Legal">Legal</option>
+                <option value="Operations">Operations</option>
+              </select>
             </div>
+            <div class="mb-3">
+              <label for="jobDescription" class="form-label">Job Description</label>
+              <textarea class="form-control" id="jobDescription" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="jobStatus" class="form-label">Status</label>
+              <select class="form-select" id="jobStatus" required>
+                <option value="Draft">Draft</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="On Hold">On Hold</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="jobFile" class="form-label">Attach Job Description File (optional)</label>
+              <div id="jobFileDropArea" class="file-drop-area p-3 mb-2 text-center border border-2 border-dashed rounded-3" style="cursor:pointer; transition: border-color 0.2s;">
+                <i class="bi bi-cloud-arrow-up fs-1 text-secondary mb-2"></i>
+                <div class="mb-1"><strong>Drag & drop a file here</strong> or <span class="text-primary" style="text-decoration:underline; cursor:pointer;">browse</span></div>
+                <div class="small text-muted">Accepted: PDF, DOC, DOCX, TXT. Max size: 5MB.</div>
+                <input class="form-control d-none" type="file" id="jobFile" accept=".pdf,.doc,.docx,.txt">
+                <div id="jobFileName" class="mt-2 text-success small"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Create Job</button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
+
+  <!-- View Job Details Modal (Existing) -->
+  <div class="modal fade" id="viewJobDetailsModal" tabindex="-1" aria-labelledby="viewJobDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewJobDetailsModalLabel"><i class="bi bi-briefcase-fill me-2"></i>Job Details: <span id="viewJobTitle"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Job ID:</strong> <span id="viewJobId"></span></p>
+          <p><strong>Department:</strong> <span id="viewJobDepartment"></span></p>
+          <p><strong>Status:</strong> <span id="viewJobStatus"></span></p>
+          <p><strong>Posted Date:</strong> <span id="viewJobPostedDate"></span></p>
+          <p><strong>Applicants:</strong> <span id="viewJobApplicants"></span></p>
+          <hr>
+          <h6>Job Description:</h6>
+          <p id="viewJobDescription"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Job Modal (Existing) -->
+  <div class="modal fade" id="editJobModal" tabindex="-1" aria-labelledby="editJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editJobModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit Job Posting: <span id="editJobTitleDisplay"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editJobForm">
+            <input type="hidden" id="editJobId">
+            <div class="mb-3">
+              <label for="editJobTitle" class="form-label">Job Title</label>
+              <input type="text" class="form-control" id="editJobTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="editJobDepartment" class="form-label">Department</label>
+              <select class="form-select" id="editJobDepartment" required>
+                <option value="">Select Department</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Product">Product</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Human Resources">Human Resources</option>
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+                <option value="Customer Support">Customer Support</option>
+                <option value="IT">IT</option>
+                <option value="Legal">Legal</option>
+                <option value="Operations">Operations</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="editJobDescription" class="form-label">Job Description</label>
+              <textarea class="form-control" id="editJobDescription" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editJobStatus" class="form-label">Status</label>
+              <select class="form-select" id="editJobStatus" required>
+                <option value="Draft">Draft</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="On Hold">On Hold</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Job Confirmation Modal (Existing) -->
+  <div class="modal fade custom-alert-modal" id="deleteJobModal" tabindex="-1" aria-labelledby="deleteJobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteJobModalLabel"><i class="bi bi-trash-fill me-2"></i>Confirm Deletion</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete the job posting: <strong id="deleteJobTitleConfirm"></strong>?</p>
+          <p class="text-danger small">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteJobButton">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Applicant Profile Modal (New) -->
+  <div class="modal fade" id="viewApplicantProfileModal" tabindex="-1" aria-labelledby="viewApplicantProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewApplicantProfileModalLabel"><i class="bi bi-person-circle me-2"></i>Applicant Profile: <span id="viewApplicantName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Applicant ID:</strong> <span id="viewApplicantId"></span></p>
+          <p><strong>Position Applied:</strong> <span id="viewApplicantPosition"></span></p>
+          <p><strong>Application Date:</strong> <span id="viewApplicantDate"></span></p>
+          <p><strong>Status:</strong> <span id="viewApplicantStatus"></span></p>
+          <hr>
+          <h6>Contact Information:</h6>
+          <p><strong>Email:</strong> <span id="viewApplicantEmail"></span></p>
+          <p><strong>Phone:</strong> <span id="viewApplicantPhone"></span></p>
+          <hr>
+          <h6>Resume:</h6>
+          <p id="viewApplicantResumeLink">
+            <!-- Link to resume will be inserted here -->
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Interview Modal (New) -->
+  <div class="modal fade" id="scheduleInterviewModal" tabindex="-1" aria-labelledby="scheduleInterviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scheduleInterviewModalLabel"><i class="bi bi-calendar-check-fill me-2"></i>Schedule Interview for <span id="scheduleApplicantName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="scheduleInterviewForm">
+            <input type="hidden" id="scheduleApplicantId">
+            <div class="mb-3">
+              <label for="interviewDate" class="form-label">Interview Date</label>
+              <input type="text" class="form-control" id="interviewDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="interviewTime" class="form-label">Interview Time</label>
+              <input type="time" class="form-control" id="interviewTime" required>
+            </div>
+            <div class="mb-3">
+              <label for="interviewType" class="form-label">Interview Type</label>
+              <select class="form-select" id="interviewType" required>
+                <option value="Virtual">Virtual</option>
+                <option value="In-person">In-person</option>
+                <option value="Phone">Phone</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="interviewer" class="form-label">Interviewer(s)</label>
+              <input type="text" class="form-control" id="interviewer" placeholder="e.g., John Doe, Jane Smith" required>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Schedule</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Applicant Modal (New) -->
+  <div class="modal fade" id="editApplicantModal" tabindex="-1" aria-labelledby="editApplicantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editApplicantModalLabel"><i class="bi bi-person-fill me-2"></i>Edit Applicant: <span id="editApplicantNameDisplay"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editApplicantForm">
+            <input type="hidden" id="editApplicantId">
+            <div class="mb-3">
+              <label for="editApplicantName" class="form-label">Applicant Name</label>
+              <input type="text" class="form-control" id="editApplicantName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editApplicantPosition" class="form-label">Position Applied</label>
+              <input type="text" class="form-control" id="editApplicantPosition" required>
+            </div>
+            <div class="mb-3">
+              <label for="editApplicantDate" class="form-label">Application Date</label>
+              <input type="text" class="form-control" id="editApplicantDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="editApplicantStatus" class="form-label">Status</label>
+              <select class="form-select" id="editApplicantStatus" required>
+                <option value="Pending">Pending</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Hired">Hired</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebarBackdrop = document.getElementById('sidebarBackdrop');
-            const mainContent = document.getElementById('mainContent');
+            const dashboardContent = document.getElementById('dashboardContent');
             const topNavbar = document.getElementById('topNavbar');
 
-            sidebarToggle.addEventListener('click', function() {
+            sidebarToggle.addEventListener('click', function () {
                 sidebar.classList.toggle('show');
                 sidebarBackdrop.classList.toggle('show');
-                mainContent.classList.toggle('sidebar-visible');
+                dashboardContent.classList.toggle('sidebar-visible');
                 topNavbar.classList.toggle('sidebar-visible');
             });
 
-            sidebarBackdrop.addEventListener('click', function() {
+            sidebarBackdrop.addEventListener('click', function () {
                 sidebar.classList.remove('show');
                 sidebarBackdrop.classList.remove('show');
-                mainContent.classList.remove('sidebar-visible');
+                dashboardContent.classList.remove('sidebar-visible');
                 topNavbar.classList.remove('sidebar-visible');
             });
 
@@ -1169,221 +1544,605 @@
             const darkModeToggle = document.getElementById('darkModeToggle');
             darkModeToggle.addEventListener('click', function() {
                 document.body.classList.toggle('dark-mode');
-                // Save user preference
+                // Save preference (optional, using localStorage)
                 if (document.body.classList.contains('dark-mode')) {
-                    localStorage.setItem('theme', 'dark');
+                    localStorage.setItem('darkMode', 'enabled');
+                    darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
                 } else {
-                    localStorage.setItem('theme', 'light');
+                    localStorage.setItem('darkMode', 'disabled');
+                    darkModeToggle.querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
                 }
             });
 
-            // Apply saved theme preference
-            if (localStorage.getItem('theme') === 'dark') {
+            // Apply dark mode preference on load
+            if (localStorage.getItem('darkMode') === 'enabled') {
                 document.body.classList.add('dark-mode');
+                darkModeToggle.querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
             }
 
-            // Flatpickr initialization for date inputs
-            flatpickr(".datepicker", {
+            // Flatpickr for date filtering
+            flatpickr("#dateFilter", {
                 dateFormat: "Y-m-d",
+                mode: "range" // Allows selecting a date range
             });
 
-            // Sample applicant data (can be replaced with API calls)
+            // Sample Data for Applicants (can be fetched from an API in a real app)
             let applicants = [
-                { id: "APP001", dateApplied: "2024-06-25", name: "Alice Wonderland", positionApplied: "Software Engineer", contact: "alice@example.com", status: "Pending" },
-                { id: "APP002", dateApplied: "2024-06-20", name: "Bob Thebuilder", positionApplied: "HR Manager", contact: "bob@example.com", status: "Interviewing" },
-                { id: "APP003", dateApplied: "2024-06-18", name: "Charlie Chaplin", positionApplied: "Sales Representative", contact: "charlie@example.com", status: "Hired" },
-                { id: "APP004", dateApplied: "2024-06-10", name: "Diana Prince", positionApplied: "Marketing Specialist", contact: "diana@example.com", status: "Rejected" },
+                { id: 'APP001', name: 'John Doe', position: 'Software Engineer', date: '2024-07-10', status: 'Pending', email: 'john.doe@example.com', phone: '123-456-7890', resume: 'john_doe_resume.pdf' },
+                { id: 'APP002', name: 'Jane Smith', position: 'UI/UX Designer', date: '2024-07-05', status: 'Interviewing', email: 'jane.smith@example.com', phone: '098-765-4321', resume: 'jane_smith_resume.pdf' },
+                { id: 'APP003', name: 'Peter Jones', position: 'Marketing Specialist', date: '2024-06-28', status: 'Hired', email: 'peter.jones@example.com', phone: '111-222-3333', resume: 'peter_jones_resume.pdf' },
+                { id: 'APP004', name: 'Alice Brown', position: 'Data Scientist', date: '2024-07-12', status: 'Pending', email: 'alice.brown@example.com', phone: '444-555-6666', resume: 'alice_brown_resume.pdf' },
+                { id: 'APP005', name: 'Bob White', position: 'HR Assistant', date: '2024-06-20', status: 'Rejected', email: 'bob.white@example.com', phone: '777-888-9999', resume: 'bob_white_resume.pdf' }
             ];
 
-            const applicantsTableBody = document.querySelector('#applicantsTable tbody');
-            const applicantSearchInput = document.getElementById('applicantSearch');
+            const applicantListBody = document.getElementById('applicantListBody');
+            const applicantSearchInput = document.getElementById('applicantSearchInput');
             const statusFilter = document.getElementById('statusFilter');
-            const positionFilter = document.getElementById('positionFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const resetFiltersButton = document.getElementById('resetFilters');
 
-            function filterApplicants() {
-                applicantsTableBody.innerHTML = ''; // Clear existing rows
-                const searchTerm = applicantSearchInput.value.toLowerCase();
-                const selectedStatus = statusFilter.value;
-                const selectedPosition = positionFilter.value;
+            // Modals for Applicant Actions
+            const viewApplicantProfileModal = new bootstrap.Modal(document.getElementById('viewApplicantProfileModal'));
+            const scheduleInterviewModal = new bootstrap.Modal(document.getElementById('scheduleInterviewModal'));
+            const editApplicantModal = new bootstrap.Modal(document.getElementById('editApplicantModal'));
 
-                const filteredApplicants = applicants.filter(applicant => {
-                    const nameMatch = applicant.name.toLowerCase().includes(searchTerm);
-                    const statusMatch = selectedStatus === 'All Statuses' || applicant.status === selectedStatus;
-                    const positionMatch = selectedPosition === 'All Positions' || applicant.positionApplied === selectedPosition;
+            // Elements for View Applicant Profile Modal
+            const viewApplicantName = document.getElementById('viewApplicantName');
+            const viewApplicantId = document.getElementById('viewApplicantId');
+            const viewApplicantPosition = document.getElementById('viewApplicantPosition');
+            const viewApplicantDate = document.getElementById('viewApplicantDate');
+            const viewApplicantStatus = document.getElementById('viewApplicantStatus');
+            const viewApplicantEmail = document.getElementById('viewApplicantEmail');
+            const viewApplicantPhone = document.getElementById('viewApplicantPhone');
+            const viewApplicantResumeLink = document.getElementById('viewApplicantResumeLink');
 
-                    return nameMatch && statusMatch && positionMatch;
-                });
+            // Elements for Schedule Interview Modal
+            const scheduleApplicantName = document.getElementById('scheduleApplicantName');
+            const scheduleApplicantId = document.getElementById('scheduleApplicantId');
+            const interviewDateInput = document.getElementById('interviewDate');
+            const interviewTimeInput = document.getElementById('interviewTime');
+            const interviewTypeSelect = document.getElementById('interviewType');
+            const interviewerInput = document.getElementById('interviewer');
+            const scheduleInterviewForm = document.getElementById('scheduleInterviewForm');
 
+            // Elements for Edit Applicant Modal
+            const editApplicantNameDisplay = document.getElementById('editApplicantNameDisplay');
+            const editApplicantId = document.getElementById('editApplicantId');
+            const editApplicantName = document.getElementById('editApplicantName');
+            const editApplicantPosition = document.getElementById('editApplicantPosition');
+            const editApplicantDate = document.getElementById('editApplicantDate');
+            const editApplicantStatus = document.getElementById('editApplicantStatus');
+            const editApplicantForm = document.getElementById('editApplicantForm');
+
+
+            function renderApplicants(filteredApplicants) {
+                applicantListBody.innerHTML = '';
+                if (filteredApplicants.length === 0) {
+                    applicantListBody.innerHTML = '<tr><td colspan="6" class="text-center">No applicants found.</td></tr>';
+                    return;
+                }
                 filteredApplicants.forEach(applicant => {
                     const row = document.createElement('tr');
-                    row.dataset.applicantId = applicant.id; // Store ID on the row
-
-                    let statusBadgeClass = '';
-                    if (applicant.status === 'Pending') {
-                        statusBadgeClass = 'bg-warning';
-                    } else if (applicant.status === 'Interviewing') {
-                        statusBadgeClass = 'bg-info';
-                    } else if (applicant.status === 'Hired') {
-                        statusBadgeClass = 'bg-success';
-                    } else if (applicant.status === 'Rejected') {
-                        statusBadgeClass = 'bg-danger';
-                    } else {
-                        statusBadgeClass = 'bg-secondary'; // Default or other statuses
+                    let statusBadgeClass;
+                    switch (applicant.status) {
+                        case 'Pending':
+                            statusBadgeClass = 'bg-warning';
+                            break;
+                        case 'Interviewing':
+                            statusBadgeClass = 'bg-info';
+                            break;
+                        case 'Hired':
+                            statusBadgeClass = 'bg-success';
+                            break;
+                        case 'Rejected':
+                            statusBadgeClass = 'bg-danger';
+                            break;
+                        default:
+                            statusBadgeClass = 'bg-secondary';
                     }
 
                     row.innerHTML = `
                         <td>${applicant.id}</td>
-                        <td>${applicant.dateApplied}</td>
                         <td>${applicant.name}</td>
-                        <td>${applicant.positionApplied}</td>
-                        <td>${applicant.contact}</td>
+                        <td>${applicant.position}</td>
+                        <td>${applicant.date}</td>
                         <td><span class="badge ${statusBadgeClass}">${applicant.status}</span></td>
-                        <td class="text-center">
+                        <td>
                             <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Manage
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton${applicant.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item view-applicant" href="#" data-bs-toggle="modal" data-bs-target="#viewApplicantModal"><i class="bi bi-eye me-2"></i> View Details</a></li>
-                                    <li><a class="dropdown-item edit-applicant" href="#" data-bs-toggle="modal" data-bs-target="#editApplicantModal"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${applicant.id}">
+                                    <li><a class="dropdown-item view-applicant-profile" href="#" data-applicant-id="${applicant.id}"><i class="bi bi-eye me-2"></i> View Profile</a></li>
+                                    <li><a class="dropdown-item text-primary schedule-interview" href="#" data-applicant-id="${applicant.id}"><i class="bi bi-calendar-check me-2"></i> Schedule Interview</a></li>
+                                    <li><a class="dropdown-item text-info edit-applicant" href="#" data-applicant-id="${applicant.id}"><i class="bi bi-pencil me-2"></i> Edit Applicant</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item reject-applicant text-danger" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-x me-2"></i> Reject</a></li>
-                                    <li><a class="dropdown-item hire-applicant text-success" href="#" data-bs-toggle="modal" data-bs-target="#confirmationModal" data-applicant-id="${applicant.id}"><i class="bi bi-person-check me-2"></i> Hire</a></li>
+                                    ${applicant.status === 'Pending' || applicant.status === 'Interviewing' ?
+                                        `<li><a class="dropdown-item text-success hire-applicant" data-applicant-id="${applicant.id}" href="#"><i class="bi bi-person-check me-2"></i> Hire</a></li>
+                                        <li><a class="dropdown-item text-danger reject-applicant" data-applicant-id="${applicant.id}" href="#"><i class="bi bi-person-x me-2"></i> Reject</a></li>`
+                                        : applicant.status === 'Hired' || applicant.status === 'Rejected' ?
+                                        `<li><a class="dropdown-item text-secondary archive-applicant" data-applicant-id="${applicant.id}" href="#"><i class="bi bi-archive me-2"></i> Archive</a></li>`
+                                        : ''
+                                    }
                                 </ul>
                             </div>
                         </td>
                     `;
-                    applicantsTableBody.appendChild(row);
+                    applicantListBody.appendChild(row);
+                });
+
+                // Attach event listeners for applicant action buttons
+                document.querySelectorAll('.view-applicant-profile').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const applicantId = this.dataset.applicantId;
+                        const applicant = applicants.find(app => app.id === applicantId);
+                        if (applicant) {
+                            viewApplicantName.textContent = applicant.name;
+                            viewApplicantId.textContent = applicant.id;
+                            viewApplicantPosition.textContent = applicant.position;
+                            viewApplicantDate.textContent = applicant.date;
+                            viewApplicantStatus.textContent = applicant.status;
+                            viewApplicantEmail.textContent = applicant.email || 'N/A';
+                            viewApplicantPhone.textContent = applicant.phone || 'N/A';
+                            viewApplicantResumeLink.innerHTML = applicant.resume ? `<a href="/resumes/${applicant.resume}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-arrow-down me-2"></i> Download Resume</a>` : 'No resume uploaded.';
+                            viewApplicantProfileModal.show();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.schedule-interview').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const applicantId = this.dataset.applicantId;
+                        const applicant = applicants.find(app => app.id === applicantId);
+                        if (applicant) {
+                            scheduleApplicantName.textContent = applicant.name;
+                            scheduleApplicantId.value = applicant.id;
+                            // Optionally pre-fill date/time if available in applicant data
+                            interviewDateInput.value = '';
+                            interviewTimeInput.value = '';
+                            interviewerInput.value = '';
+                            scheduleInterviewModal.show();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.edit-applicant').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const applicantId = this.dataset.applicantId;
+                        const applicant = applicants.find(app => app.id === applicantId);
+                        if (applicant) {
+                            editApplicantId.value = applicant.id;
+                            editApplicantNameDisplay.textContent = applicant.name;
+                            editApplicantName.value = applicant.name;
+                            editApplicantPosition.value = applicant.position;
+                            editApplicantDate.value = applicant.date;
+                            editApplicantStatus.value = applicant.status;
+                            editApplicantModal.show();
+                        }
+                    });
+                });
+
+                // Re-attach existing hire/reject listeners (using event delegation for efficiency)
+                document.querySelectorAll('.hire-applicant').forEach(button => {
+                    button.onclick = function() {
+                        const applicantId = this.dataset.applicantId;
+                        targetApplicantId = applicantId; // Set for the generic confirmation modal
+                        applicantActionType = 'hire';
+                        confirmationMessage.textContent = `Are you sure you want to hire applicant ID: ${targetApplicantId}?`;
+                        confirmActionButton.className = 'btn btn-success';
+                        confirmActionButton.textContent = 'Hire';
+                        bootstrap.Modal.getInstance(confirmationModal).show();
+                    };
+                });
+
+                document.querySelectorAll('.reject-applicant').forEach(button => {
+                    button.onclick = function() {
+                        const applicantId = this.dataset.applicantId;
+                        targetApplicantId = applicantId; // Set for the generic confirmation modal
+                        applicantActionType = 'reject';
+                        confirmationMessage.textContent = `Are you sure you want to reject applicant ID: ${targetApplicantId}?`;
+                        confirmActionButton.className = 'btn btn-danger';
+                        confirmActionButton.textContent = 'Reject';
+                        bootstrap.Modal.getInstance(confirmationModal).show();
+                    };
                 });
             }
 
-            // Event listeners for filters
+            function filterApplicants() {
+                const searchTerm = applicantSearchInput.value.toLowerCase();
+                const status = statusFilter.value;
+                const dateRange = dateFilter.value.split(' to '); // For flatpickr range
+
+                let filtered = applicants.filter(applicant => {
+                    const matchesSearch = applicant.name.toLowerCase().includes(searchTerm) ||
+                                          applicant.id.toLowerCase().includes(searchTerm) ||
+                                          applicant.position.toLowerCase().includes(searchTerm);
+                    const matchesStatus = status === '' || applicant.status === status;
+                    
+                    let matchesDate = true;
+                    if (dateRange.length === 2 && dateRange[0] && dateRange[1]) {
+                        const appDate = new Date(applicant.date);
+                        const startDate = new Date(dateRange[0]);
+                        const endDate = new Date(dateRange[1]);
+                        matchesDate = appDate >= startDate && appDate <= endDate;
+                    } else if (dateRange.length === 1 && dateRange[0]) {
+                        const appDate = new Date(applicant.date);
+                        const singleDate = new Date(dateRange[0]);
+                        matchesDate = appDate.toDateString() === singleDate.toDateString();
+                    }
+
+                    return matchesSearch && matchesStatus && matchesDate;
+                });
+                renderApplicants(filtered);
+            }
+
             applicantSearchInput.addEventListener('input', filterApplicants);
             statusFilter.addEventListener('change', filterApplicants);
-            positionFilter.addEventListener('change', filterApplicants);
+            dateFilter.addEventListener('change', filterApplicants); // Listen for date changes
 
-            // Add Applicant
-            const addApplicantForm = document.getElementById('addApplicantForm');
-            addApplicantForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const newApplicant = {
-                    id: document.getElementById('newApplicantId').value,
-                    dateApplied: document.getElementById('newDateApplied').value,
-                    name: document.getElementById('newApplicantName').value,
-                    positionApplied: document.getElementById('newPositionApplied').value,
-                    contact: document.getElementById('newContact').value,
-                    status: document.getElementById('newStatus').value
-                };
-                applicants.push(newApplicant);
+            resetFiltersButton.addEventListener('click', function() {
+                applicantSearchInput.value = '';
+                statusFilter.value = '';
+                dateFilter._flatpickr.clear(); // Clear flatpickr selection
                 filterApplicants();
-                bootstrap.Modal.getInstance(document.getElementById('addApplicantModal')).hide();
-                addApplicantForm.reset();
             });
 
-            // View Applicant
-            const viewApplicantModal = document.getElementById('viewApplicantModal');
-            viewApplicantModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget; // Button that triggered the modal
-                const applicantId = button.closest('tr').dataset.applicantId;
-                const applicant = applicants.find(app => app.id === applicantId);
-
-                if (applicant) {
-                    document.getElementById('viewApplicantId').textContent = applicant.id;
-                    document.getElementById('viewDateApplied').textContent = applicant.dateApplied;
-                    document.getElementById('viewApplicantName').textContent = applicant.name;
-                    document.getElementById('viewPositionApplied').textContent = applicant.positionApplied;
-                    document.getElementById('viewContact').textContent = applicant.contact;
-
-                    const statusSpan = document.getElementById('viewStatus');
-                    statusSpan.textContent = applicant.status;
-                    statusSpan.className = 'badge ' +
-                        (applicant.status === 'Pending' ? 'bg-warning' :
-                         applicant.status === 'Interviewing' ? 'bg-info' :
-                         applicant.status === 'Hired' ? 'bg-success' :
-                         applicant.status === 'Rejected' ? 'bg-danger' : 'bg-secondary');
-                }
-            });
-
-            // Edit Applicant
-            const editApplicantModal = document.getElementById('editApplicantModal');
-            const editApplicantForm = document.getElementById('editApplicantForm');
-            let currentEditApplicantId = null;
-
-            editApplicantModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                currentEditApplicantId = button.closest('tr').dataset.applicantId;
-                const applicant = applicants.find(app => app.id === currentEditApplicantId);
-
-                if (applicant) {
-                    document.getElementById('editOriginalApplicantId').value = applicant.id; // Store original ID
-                    document.getElementById('editApplicantId').value = applicant.id;
-                    document.getElementById('editDateApplied').value = applicant.dateApplied;
-                    document.getElementById('editApplicantName').value = applicant.name;
-                    document.getElementById('editPositionApplied').value = applicant.positionApplied;
-                    document.getElementById('editContact').value = applicant.contact;
-                    document.getElementById('editStatus').value = applicant.status;
-                }
-            });
-
-            editApplicantForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const originalId = document.getElementById('editOriginalApplicantId').value;
-                const applicantIndex = applicants.findIndex(app => app.id === originalId);
-
-                if (applicantIndex > -1) {
-                    applicants[applicantIndex] = {
-                        id: document.getElementById('editApplicantId').value,
-                        dateApplied: document.getElementById('editDateApplied').value,
-                        name: document.getElementById('editApplicantName').value,
-                        positionApplied: document.getElementById('editPositionApplied').value,
-                        contact: document.getElementById('editContact').value,
-                        status: document.getElementById('editStatus').value
-                    };
-                    filterApplicants();
-                    bootstrap.Modal.getInstance(document.getElementById('editApplicantModal')).hide();
-                }
-            });
-
-            // Confirmation Modal for Reject/Hire actions
+            // Confirmation Modal Logic (for applicants)
             const confirmationModal = document.getElementById('confirmationModal');
-            const confirmationMessage = document.getElementById('confirmationMessage');
             const confirmActionButton = document.getElementById('confirmActionButton');
-            let actionType = ''; // 'reject' or 'hire'
-            let targetApplicantId = '';
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            let targetApplicantId = null;
+            let applicantActionType = ''; // 'hire' or 'reject'
 
             confirmationModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
-                targetApplicantId = button.dataset.applicantId;
+                // Check if the button is for applicant actions
+                if (button.dataset.applicantId) {
+                    targetApplicantId = button.dataset.applicantId;
 
-                if (button.classList.contains('reject-applicant')) {
-                    actionType = 'reject';
-                    confirmationMessage.textContent = `Are you sure you want to reject applicant ID: ${targetApplicantId}?`;
-                    confirmActionButton.className = 'btn btn-danger';
-                    confirmActionButton.textContent = 'Reject';
-                } else if (button.classList.contains('hire-applicant')) {
-                    actionType = 'hire';
-                    confirmationMessage.textContent = `Are you sure you want to hire applicant ID: ${targetApplicantId}?`;
-                    confirmActionButton.className = 'btn btn-success';
-                    confirmActionButton.textContent = 'Hire';
+                    if (button.classList.contains('reject-applicant')) {
+                        applicantActionType = 'reject';
+                        confirmationMessage.textContent = `Are you sure you want to reject applicant ID: ${targetApplicantId}?`;
+                        confirmActionButton.className = 'btn btn-danger';
+                        confirmActionButton.textContent = 'Reject';
+                    } else if (button.classList.contains('hire-applicant')) {
+                        applicantActionType = 'hire';
+                        confirmationMessage.textContent = `Are you sure you want to hire applicant ID: ${targetApplicantId}?`;
+                        confirmActionButton.className = 'btn btn-success';
+                        confirmActionButton.textContent = 'Hire';
+                    }
                 }
             });
 
             confirmActionButton.addEventListener('click', function () {
-                const applicantIndex = applicants.findIndex(app => app.id === targetApplicantId);
-                if (applicantIndex > -1) {
-                    if (actionType === 'reject') {
-                        applicants[applicantIndex].status = 'Rejected';
-                    } else if (actionType === 'hire') {
-                        applicants[applicantIndex].status = 'Hired';
+                if (targetApplicantId && (applicantActionType === 'hire' || applicantActionType === 'reject')) {
+                    const applicantIndex = applicants.findIndex(app => app.id === targetApplicantId);
+                    if (applicantIndex > -1) {
+                        if (applicantActionType === 'reject') {
+                            applicants[applicantIndex].status = 'Rejected';
+                        } else if (applicantActionType === 'hire') {
+                            applicants[applicantIndex].status = 'Hired';
+                        }
+                        filterApplicants(); // Re-render table after status change
+                        bootstrap.Modal.getInstance(confirmationModal).hide(); // Correct way to hide modal
                     }
-                    filterApplicants();
-                    bootstrap.Modal.getInstance(document.getElementById('confirmationModal')).hide();
+                    targetApplicantId = null; // Reset
+                    applicantActionType = ''; // Reset
                 }
             });
 
-            // Initial filter application
+            // Schedule Interview Form Submission
+            scheduleInterviewForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const applicantId = scheduleApplicantId.value;
+                const interviewDate = interviewDateInput.value;
+                const interviewTime = interviewTimeInput.value;
+                const interviewType = interviewTypeSelect.value;
+                const interviewer = interviewerInput.value;
+
+                // In a real app, you would send this data to a backend
+                console.log(`Scheduling interview for ${applicantId}: Date: ${interviewDate}, Time: ${interviewTime}, Type: ${interviewType}, Interviewer: ${interviewer}`);
+
+                // Update applicant status to 'Interviewing' if it's currently 'Pending'
+                const applicantIndex = applicants.findIndex(app => app.id === applicantId);
+                if (applicantIndex > -1 && applicants[applicantIndex].status === 'Pending') {
+                    applicants[applicantIndex].status = 'Interviewing';
+                }
+                filterApplicants(); // Re-render table
+
+                scheduleInterviewModal.hide();
+                scheduleInterviewForm.reset();
+            });
+
+            // Edit Applicant Form Submission
+            editApplicantForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const applicantIdToEdit = editApplicantId.value;
+                const applicantIndex = applicants.findIndex(app => app.id === applicantIdToEdit);
+
+                if (applicantIndex > -1) {
+                    applicants[applicantIndex].name = editApplicantName.value;
+                    applicants[applicantIndex].position = editApplicantPosition.value;
+                    applicants[applicantIndex].date = editApplicantDate.value;
+                    applicants[applicantIndex].status = editApplicantStatus.value;
+                    filterApplicants(); // Re-render the applicant list with updated data
+                    editApplicantModal.hide(); // Hide modal
+                }
+            });
+
+            // Initial filter application for applicants
             filterApplicants();
+
+            // --- Job Postings Specific JavaScript ---
+            // Sample Data for Jobs (can be fetched from an API)
+            let jobs = [
+                { id: 'J001', title: 'Senior Software Engineer', department: 'Engineering', description: 'We are seeking a highly skilled Senior Software Engineer to join our dynamic team. The ideal candidate will have extensive experience in full-stack development, with a strong focus on scalable and robust applications. Responsibilities include designing, developing, and maintaining software solutions, collaborating with cross-functional teams, and mentoring junior engineers. Proficiency in modern web frameworks (e.g., React, Angular, Vue), backend technologies (e.g., Node.js, Python, Java), and database systems (e.g., PostgreSQL, MongoDB) is required. Experience with cloud platforms (AWS, Azure, GCP) and CI/CD pipelines is a plus. Strong problem-solving skills and a passion for building high-quality software are essential.', status: 'Open', postedDate: '2024-06-15', applicants: 45 },
+                { id: 'J002', title: 'UI/UX Designer', department: 'Product', description: 'We are looking for a talented UI/UX Designer to create intuitive and visually appealing user experiences for our products. You will be responsible for the entire design process, from user research and wireframing to prototyping and final UI design. A strong portfolio showcasing your design skills, understanding of user-centered design principles, and proficiency in design tools (e.g., Figma, Sketch, Adobe XD) is a must. Experience with responsive design, accessibility standards, and collaborating with development teams is highly valued. Excellent communication and presentation skills are also important.', status: 'Draft', postedDate: '2024-07-01', applicants: 0 },
+                { id: 'J003', title: 'Marketing Specialist', department: 'Marketing', description: 'Join our marketing team as a Marketing Specialist to help drive our brand presence and lead generation efforts. You will be involved in developing and executing marketing campaigns across various channels, including digital, social media, and content marketing. Experience with SEO/SEM, email marketing, social media management, and content creation is preferred. Strong analytical skills to track campaign performance and identify areas for improvement are essential. A creative mindset and ability to work independently as well as part of a team are key.', status: 'Open', postedDate: '2024-06-20', applicants: 20 },
+                { id: 'J004', title: 'HR Manager', department: 'Human Resources', description: 'We are seeking an experienced HR Manager to oversee all aspects of human resources practices and processes. Responsibilities include recruitment, onboarding, performance management, employee relations, compensation and benefits, and compliance with labor laws. The ideal candidate will have a strong understanding of HR best practices, excellent interpersonal and communication skills, and a proven ability to build positive employee relationships. Experience with HRIS systems and a relevant HR certification (e.g., SHRM-CP, PHR) are highly desirable.', status: 'Closed', postedDate: '2024-05-01', applicants: 15 },
+                { id: 'J005', title: 'Product Manager', department: 'Product', description: 'As a Product Manager, you will be responsible for the product lifecycle from conception to launch. This includes market research, defining product vision and strategy, gathering requirements, and working closely with engineering, design, and marketing teams. We are looking for someone with a strong technical background, excellent communication skills, and a proven track record of successfully launching products. Experience in Agile methodologies and a passion for creating innovative solutions are essential.', status: 'On Hold', postedDate: '2024-07-08', applicants: 5 }
+            ];
+
+            const jobListContainer = document.getElementById('jobListContainer');
+            const jobSearchInput = document.getElementById('jobSearchInput');
+            const jobStatusFilter = document.getElementById('jobStatusFilter');
+            const addJobForm = document.getElementById('addJobForm');
+            const addJobModal = document.getElementById('addJobModal');
+
+            // Modals for Job Actions
+            const viewJobDetailsModal = new bootstrap.Modal(document.getElementById('viewJobDetailsModal'));
+            const editJobModal = new bootstrap.Modal(document.getElementById('editJobModal'));
+            const deleteJobModal = new bootstrap.Modal(document.getElementById('deleteJobModal'));
+
+            // Elements for View Job Details Modal
+            const viewJobTitle = document.getElementById('viewJobTitle');
+            const viewJobId = document.getElementById('viewJobId');
+            const viewJobDepartment = document.getElementById('viewJobDepartment');
+            const viewJobStatus = document.getElementById('viewJobStatus');
+            const viewJobPostedDate = document.getElementById('viewJobPostedDate');
+            const viewJobApplicants = document.getElementById('viewJobApplicants');
+            const viewJobDescription = document.getElementById('viewJobDescription');
+
+            // Elements for Edit Job Modal
+            const editJobForm = document.getElementById('editJobForm');
+            const editJobId = document.getElementById('editJobId');
+            const editJobTitleDisplay = document.getElementById('editJobTitleDisplay'); // Title in modal header
+            const editJobTitle = document.getElementById('editJobTitle');
+            const editJobDepartment = document.getElementById('editJobDepartment');
+            const editJobDescription = document.getElementById('editJobDescription');
+            const editJobStatus = document.getElementById('editJobStatus');
+
+            // Elements for Delete Job Modal
+            const deleteJobTitleConfirm = document.getElementById('deleteJobTitleConfirm');
+            const confirmDeleteJobButton = document.getElementById('confirmDeleteJobButton');
+            let jobToDeleteId = null; // To store the ID of the job to be deleted
+
+            function renderJobs(filteredJobs) {
+                jobListContainer.innerHTML = ''; // Clear previous cards
+                if (filteredJobs.length === 0) {
+                    jobListContainer.innerHTML = '<div class="col-12 text-center text-muted py-4">No job postings found.</div>';
+                    return;
+                }
+                filteredJobs.forEach(job => {
+                    let statusBadgeClass;
+                    switch (job.status) {
+                        case 'Open':
+                            statusBadgeClass = 'bg-success';
+                            break;
+                        case 'Closed':
+                            statusBadgeClass = 'bg-danger';
+                            break;
+                        case 'Draft':
+                            statusBadgeClass = 'bg-warning';
+                            break;
+                        case 'On Hold':
+                            statusBadgeClass = 'bg-info';
+                            break;
+                        default:
+                            statusBadgeClass = 'bg-secondary';
+                    }
+
+                    const jobCardHtml = `
+                        <div class="job-card">
+                            <div class="job-card-header">
+                                <h5 class="job-card-title">${job.title}</h5>
+                                <span class="badge ${statusBadgeClass}">${job.status}</span>
+                            </div>
+                            <div class="job-card-department">${job.department}</div>
+                            <div class="job-card-meta">
+                                <i class="bi bi-calendar-event"></i> Posted: ${job.postedDate}
+                            </div>
+                            <div class="job-card-applicants">
+                                <i class="bi bi-people-fill"></i> Applicants: ${job.applicants}
+                            </div>
+                            <div class="job-card-actions mt-3">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton${job.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${job.id}">
+                                        <li><a class="dropdown-item view-job-details" href="#" data-job-id="${job.id}"><i class="bi bi-eye me-2"></i> View Details</a></li>
+                                        <li><a class="dropdown-item text-primary edit-job" href="#" data-job-id="${job.id}"><i class="bi bi-pencil me-2"></i> Edit Job</a></li>
+                                        <li><a class="dropdown-item text-danger delete-job" href="#" data-job-id="${job.id}"><i class="bi bi-trash me-2"></i> Delete Job</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        ${job.status === 'Open' ?
+                                            `<li><a class="dropdown-item text-success change-job-status" href="#" data-job-id="${job.id}" data-action="close"><i class="bi bi-check-circle me-2"></i> Close Job</a></li>`
+                                            : job.status === 'Closed' ?
+                                            `<li><a class="dropdown-item text-info change-job-status" href="#" data-job-id="${job.id}" data-action="reopen"><i class="bi bi-arrow-clockwise me-2"></i> Reopen Job</a></li>`
+                                            : job.status === 'Draft' ?
+                                            `<li><a class="dropdown-item text-success change-job-status" href="#" data-job-id="${job.id}" data-action="publish"><i class="bi bi-upload me-2"></i> Publish Job</a></li>`
+                                            : ''
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    jobListContainer.insertAdjacentHTML('beforeend', jobCardHtml);
+                });
+
+                // Attach event listeners for the new buttons within the rendered cards
+                document.querySelectorAll('.view-job-details').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const jobId = this.dataset.jobId;
+                        const job = jobs.find(j => j.id === jobId);
+                        if (job) {
+                            viewJobTitle.textContent = job.title;
+                            viewJobId.textContent = job.id;
+                            viewJobDepartment.textContent = job.department;
+                            viewJobStatus.textContent = job.status;
+                            viewJobPostedDate.textContent = job.postedDate;
+                            viewJobApplicants.textContent = job.applicants;
+                            viewJobDescription.textContent = job.description;
+                            viewJobDetailsModal.show();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.edit-job').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const jobId = this.dataset.jobId;
+                        const job = jobs.find(j => j.id === jobId);
+                        if (job) {
+                            editJobId.value = job.id;
+                            editJobTitleDisplay.textContent = job.title; // Set title in modal header
+                            editJobTitle.value = job.title;
+                            editJobDepartment.value = job.department;
+                            editJobDescription.value = job.description;
+                            editJobStatus.value = job.status;
+                            editJobModal.show();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.delete-job').forEach(button => {
+                    button.addEventListener('click', function() {
+                        jobToDeleteId = this.dataset.jobId;
+                        const job = jobs.find(j => j.id === jobToDeleteId);
+                        if (job) {
+                            deleteJobTitleConfirm.textContent = job.title;
+                            deleteJobModal.show();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.change-job-status').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const jobId = this.dataset.jobId;
+                        const action = this.dataset.action;
+                        const jobIndex = jobs.findIndex(j => j.id === jobId);
+                        if (jobIndex > -1) {
+                            if (action === 'close') {
+                                jobs[jobIndex].status = 'Closed';
+                            } else if (action === 'reopen') {
+                                jobs[jobIndex].status = 'Open';
+                            } else if (action === 'publish') {
+                                jobs[jobIndex].status = 'Open'; // Assuming publishing makes it 'Open'
+                            }
+                            filterJobs(); // Re-render to reflect status change
+                        }
+                    });
+                });
+            }
+
+            function filterJobs() {
+                const searchTerm = jobSearchInput.value.toLowerCase();
+                const status = jobStatusFilter.value;
+
+                let filtered = jobs.filter(job => {
+                    const matchesSearch = job.title.toLowerCase().includes(searchTerm) ||
+                                          job.department.toLowerCase().includes(searchTerm) ||
+                                          job.id.toLowerCase().includes(searchTerm);
+                    const matchesStatus = status === '' || job.status === status;
+                    return matchesSearch && matchesStatus;
+                });
+                renderJobs(filtered);
+            }
+
+            jobSearchInput.addEventListener('input', filterJobs);
+            jobStatusFilter.addEventListener('change', filterJobs);
+
+            // Add New Job submission
+            addJobForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const newJob = {
+                    id: 'J' + (jobs.length + 1).toString().padStart(3, '0'), // Simple ID generation
+                    title: document.getElementById('jobTitle').value,
+                    department: document.getElementById('jobDepartment').value,
+                    description: document.getElementById('jobDescription').value,
+                    status: document.getElementById('jobStatus').value,
+                    postedDate: new Date().toISOString().slice(0, 10), // Current date
+                    applicants: 0
+                };
+                jobs.push(newJob);
+                filterJobs(); // Re-render the job list
+                bootstrap.Modal.getInstance(addJobModal).hide(); // Hide modal
+                addJobForm.reset(); // Clear form
+            });
+
+            // Edit Job Form Submission
+            editJobForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const jobIdToEdit = editJobId.value;
+                const jobIndex = jobs.findIndex(j => j.id === jobIdToEdit);
+
+                if (jobIndex > -1) {
+                    jobs[jobIndex].title = editJobTitle.value;
+                    jobs[jobIndex].department = editJobDepartment.value;
+                    jobs[jobIndex].description = editJobDescription.value;
+                    jobs[jobIndex].status = editJobStatus.value;
+                    filterJobs(); // Re-render the job list with updated data
+                    editJobModal.hide(); // Hide modal
+                }
+            });
+
+            // Confirm Delete Job Button Click
+            confirmDeleteJobButton.addEventListener('click', function() {
+                if (jobToDeleteId) {
+                    jobs = jobs.filter(j => j.id !== jobToDeleteId);
+                    filterJobs(); // Re-render the job list
+                    deleteJobModal.hide(); // Hide modal
+                    jobToDeleteId = null; // Reset
+                }
+            });
+
+            // Initial render for jobs
+            filterJobs();
+
+            // File Drop Area Logic for Add New Job Modal
+            const jobFileDropArea = document.getElementById('jobFileDropArea');
+            const jobFileInput = document.getElementById('jobFile');
+            const jobFileNameDisplay = document.getElementById('jobFileName');
+
+            jobFileDropArea.addEventListener('click', () => jobFileInput.click());
+
+            jobFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    jobFileNameDisplay.textContent = `Selected file: ${this.files[0].name}`;
+                } else {
+                    jobFileNameDisplay.textContent = '';
+                }
+            });
+
+            jobFileDropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                jobFileDropArea.classList.add('border-primary');
+            });
+
+            jobFileDropArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                jobFileDropArea.classList.remove('border-primary');
+            });
+
+            jobFileDropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                jobFileDropArea.classList.remove('border-primary');
+                if (e.dataTransfer.files.length > 0) {
+                    jobFileInput.files = e.dataTransfer.files;
+                    jobFileNameDisplay.textContent = `Selected file: ${e.dataTransfer.files[0].name}`;
+                }
+            });
         });
-    </script>
+  </script>
 </body>
 </html>

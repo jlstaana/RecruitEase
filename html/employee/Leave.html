@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Leave | RecruitEase Recruiter</title>
+  <title>My Leave | J. Alcabasa HR Management System</title>
   <link rel="icon" type="image/png" href="/assets/logo.jpg"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
@@ -40,6 +40,7 @@
 
     /* Dark Mode Overrides */
     body.dark-mode {
+      color-scheme: dark; /* Helps with browser-native UI like scrollbars */
       --main-brand-color: #ff6b6b; /* Brighter red for dark mode contrast */
       --main-brand-color-light: #4a1a1a;
       --main-brand-color-bg-hover: rgba(255,107,107,0.15);
@@ -754,18 +755,18 @@
     }
 
     /* Specific adjustments for Add Leave Modal */
-    #addLeaveModal .modal-dialog {
+    #requestLeaveModal .modal-dialog {
         max-width: 950px; /* Wider */
         margin: 1.75rem auto; /* Vertical centering and reduced top/bottom margin */
     }
-    #addLeaveModal .modal-body .row {
+    #requestLeaveModal .modal-body .row {
         margin-bottom: 0.75rem; /* Reduce space between rows of inputs */
     }
-    #addLeaveModal .modal-body .mb-3 {
+    #requestLeaveModal .modal-body .mb-3 {
         margin-bottom: 0.75rem !important; /* Make form fields more compact */
     }
     /* Position modal lower and centered */
-    #addLeaveModal.fade .modal-dialog {
+    #requestLeaveModal.fade .modal-dialog {
         transform: translate(-50%, 20%); /* Shift down from perfect center */
         left: 50%; /* Ensure horizontal centering */
         top: 0; /* Reset top for transform to work relative to viewport */
@@ -816,6 +817,47 @@
           white-space: nowrap; /* Keep text on one line */
       }
     }
+
+    /* New/Modified CSS for smaller summary cards */
+    .summary-card-section {
+        background-color: var(--card-bg);
+        padding: 2.2rem 2.5rem; /* Consistent with filter-actions-bar */
+        border-radius: 0.8rem; /* Consistent with filter-actions-bar */
+        box-shadow: 0 4px 18px var(--shadow-color);
+        margin-bottom: 2.5rem; /* Space below this section */
+        border: 1px solid var(--border-color); /* Subtle border */
+        display: flex; /* For flexible alignment of inner row */
+        justify-content: center; /* Center the cards row */
+    }
+    .row.justify-content-center.g-4 {
+        max-width: 900px; /* Constrain the row width for centering */
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%; /* Ensure the row takes full width of its parent */
+    }
+    .summary-card-col {
+        max-width: 250px; /* Maximum width for each card column */
+        flex: 1 1 200px; /* Allow cards to grow/shrink but with a base of 200px */
+    }
+    @media (min-width: 768px) { /* On medium screens and up */
+        .summary-card-col {
+            flex: 0 0 30% !important; /* Forces 3 cards per row, approximately 30% width each */
+            max-width: 30% !important; /* Ensures consistent sizing */
+        }
+    }
+    @media (min-width: 992px) { /* On large screens and up */
+        .summary-card-col {
+            flex: 0 0 25% !important; /* Even smaller for more content on large screens */
+            max-width: 25% !important;
+        }
+    }
+    @media (max-width: 575.98px) { /* On extra small screens, stack them */
+        .summary-card-col {
+            flex: 1 1 100% !important; /* Stack vertically on small phones */
+            max-width: 100% !important;
+        }
+    }
+
   </style>
 </head>
 <body>
@@ -824,71 +866,67 @@
 
   <div class="sidebar" id="sidebar">
     <div class="w-100 d-flex justify-content-center align-items-center mb-3">
-      <img src="/assets/logo.jpg" alt="RecruitEase Logo" class="img-fluid rounded-circle mb-2">
+      <img src="/assets/logo.jpg" alt="Company Logo" class="img-fluid rounded-circle mb-2">
     </div>
-    <h4 class="mb-3 dashboard-section-title text-center">
-      RecruitEase Management System
-    </h4>
-    <div class="active-label">RECRUITER PORTAL</div>
-    <a href="Dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
-    <a href="Recruitment.html"><i class="bi bi-person-workspace me-2"></i> Recruitment</a>
-    <a href="Attendance.html"><i class="bi bi-clock-history me-2"></i> Attendance</a>
-    <a href="Leave.html" class="fw-bold active"><i class="bi bi-calendar2-check me-2"></i> Leave</a>
-    <a href="Payroll.html"><i class="bi bi-cash-coin me-2"></i> Payroll</a>
+    <h4 class="mb-3 dashboard-section-title text-center"> J. Alcabasa HR Management System </h4>
+    <div class="active-label">EMPLOYEE PORTAL</div>
+    <a href="dashboard.html"><i class="bi bi-house-door-fill me-2"></i> Dashboard</a>
+    <a href="attendance.html"><i class="bi bi-clock-history me-2"></i> My Attendance</a>
+    <a href="leave.html" class="fw-bold active"><i class="bi bi-calendar2-check me-2"></i> My Leave</a>
+    <a href="payroll.html"><i class="bi bi-cash-coin me-2"></i> My Payroll</a>
     <a href="/login/Login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
   </div>
 
-<div class="top-navbar" id="topNavbar">
+  <div class="top-navbar" id="topNavbar">
     <div class="d-flex align-items-center">
-        <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-            <i class="bi bi-list"></i>
-        </button>
+      <img src="/assets/logo.jpg" alt="Company Logo" class="navbar-logo rounded-circle">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+      </button>
     </div>
     <div class="d-flex align-items-center ms-auto">
-        <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
-            <i class="bi bi-moon-fill"></i>
-        </button>
-        <a href="Notifications.html" style="text-decoration:none;">
-            <i class="bi bi-bell-fill"></i>
-        </a>
-        <a href="Profile.html" style="text-decoration:none;">
-            <i class="bi bi-person-circle"></i>
-        </a>
-        <span class="ms-2">Recruiter<br><small>Welcome!</small></span>
+      <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <i class="bi bi-moon-fill"></i>
+      </button>
+      <a href="Notifications.html" style="text-decoration:none;">
+        <i class="bi bi-bell-fill"></i>
+      </a>
+      <a href="profile.html" style="text-decoration:none;">
+        <i class="bi bi-person-circle"></i>
+      </a>
+      <span class="ms-2" id="employeeNameDisplay">Employee Name<br><small>Welcome!</small></span>
     </div>
   </div>
 
   <div class="dashboard-content" id="mainContent">
     <div class="container dashboard-container">
-      <h4 class="mb-4">Employee Leave Requests</h4>
+      <h4 class="mb-4">My Leave Requests</h4>
 
       <div class="row mb-5 justify-content-center g-4">
         <div class="col-md-4 mb-3">
           <div class="summary-card pending">
             <i class="bi bi-hourglass-split icon"></i>
-            <div class="value" id="totalPending">5</div>
+            <div class="value" id="myPendingRequests">--</div>
             <div class="label">Pending Requests</div>
           </div>
         </div>
         <div class="col-md-4 mb-3">
           <div class="summary-card approved">
             <i class="bi bi-check-circle-fill icon"></i>
-            <div class="value" id="totalApproved">15</div>
-            <div class="label">Approved Leaves (Last 30 Days)</div>
+            <div class="value" id="myApprovedLeaves">--</div>
+            <div class="label">Approved Leaves This Year</div>
           </div>
         </div>
         <div class="col-md-4 mb-3">
           <div class="summary-card rejected">
             <i class="bi bi-x-circle-fill icon"></i>
-            <div class="value" id="totalRejected">2</div>
-            <div class="label">Rejected Requests (Last 30 Days)</div>
+            <div class="value" id="myRejectedRequests">--</div>
+            <div class="label">Rejected Requests This Year</div>
           </div>
         </div>
       </div>
 
       <div class="filter-actions-bar mb-5">
-        <input type="text" id="employeeFilter" class="form-control" placeholder="Search by Employee Name/ID">
         <input type="text" id="leaveTypeFilter" class="form-control" placeholder="Filter by Leave Type">
         <input type="text" id="dateRangePicker" class="form-control" placeholder="Select Date Range">
         <select id="statusFilter" class="form-select">
@@ -897,7 +935,7 @@
           <option value="Approved">Approved</option>
           <option value="Rejected">Rejected</option>
         </select>
-        <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#addLeaveModal"><i class="bi bi-plus-circle me-2"></i>Add Leave</button>
+        <button class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#requestLeaveModal"><i class="bi bi-plus-circle me-2"></i>Request New Leave</button>
       </div>
 
       <div class="table-responsive">
@@ -905,7 +943,6 @@
           <thead>
             <tr>
               <th>Request ID</th>
-              <th>Employee Name</th>
               <th>Leave Type</th>
               <th>Start Date</th>
               <th>End Date</th>
@@ -920,7 +957,7 @@
         </table>
       </div>
 
-      <nav aria-label="Page navigation example" class="mt-4">
+      <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
           <li class="page-item disabled">
             <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
@@ -937,25 +974,21 @@
     </div>
   </div>
 
-  <div class="modal fade" id="addLeaveModal" tabindex="-1" aria-labelledby="addLeaveModalLabel" aria-hidden="true">
+  <div class="modal fade" id="requestLeaveModal" tabindex="-1" aria-labelledby="requestLeaveModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title d-flex align-items-center gap-2" id="addLeaveModalLabel">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="requestLeaveModalLabel">
             <i class="bi bi-calendar-plus text-info"></i>
-            Add New Leave Request
+            Request New Leave
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="addLeaveForm">
+          <form id="requestLeaveForm">
             <div class="mb-3">
-              <label for="addEmployeeName" class="form-label">Employee Name</label>
-              <input type="text" class="form-control" id="addEmployeeName" required>
-            </div>
-            <div class="mb-3">
-              <label for="addLeaveType" class="form-label">Leave Type</label>
-              <select class="form-select" id="addLeaveType" required>
+              <label for="leaveType" class="form-label">Leave Type</label>
+              <select class="form-select" id="leaveType" required>
                 <option value="">Select Leave Type</option>
                 <option>Sick Leave</option>
                 <option>Vacation Leave</option>
@@ -967,51 +1000,65 @@
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="addStartDate" class="form-label">Start Date</label>
-                <input type="text" class="form-control flatpickr-input" id="addStartDate" placeholder="Select Start Date" required>
+                <label for="leaveStartDate" class="form-label">Start Date</label>
+                <input type="text" class="form-control flatpickr-input" id="leaveStartDate" placeholder="Select Start Date" required>
               </div>
               <div class="col-md-6 mb-3">
-                <label for="addEndDate" class="form-label">End Date</label>
-                <input type="text" class="form-control flatpickr-input" id="addEndDate" placeholder="Select End Date" required>
+                <label for="leaveEndDate" class="form-label">End Date</label>
+                <input type="text" class="form-control flatpickr-input" id="leaveEndDate" placeholder="Select End Date" required>
               </div>
             </div>
             <div class="mb-3">
-              <label for="addReason" class="form-label">Reason</label>
-              <textarea class="form-control" id="addReason" rows="3" required></textarea>
+              <label for="leaveReason" class="form-label">Reason</label>
+              <textarea class="form-control" id="leaveReason" rows="3" required></textarea>
             </div>
             <div class="mb-3">
-              <label for="addStatus" class="form-label">Status</label>
-              <select class="form-select" id="addStatus" required>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-              </select>
+              <label for="supportingDocument" class="form-label">Supporting Document (Optional)</label>
+              <input type="file" class="form-control" id="supportingDocument" accept=".pdf,.doc,.docx,.jpg,.png">
+              <div class="form-text text-muted">e.g., Medical certificate for sick leave.</div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary" form="addLeaveForm">Submit Request</button>
+          <button type="submit" class="btn btn-primary" form="requestLeaveForm">Submit Request</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
+  <div class="modal fade" id="viewReasonModal" tabindex="-1" aria-labelledby="viewReasonModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title d-flex align-items-center gap-2" id="reasonModalLabel">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="viewReasonModalLabel">
             <i class="bi bi-chat-left-text text-info"></i>
-            Reason for Leave Request: <span id="reasonRequestId"></span>
+            Reason for Leave Request: <span id="viewReasonRequestId"></span>
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p id="leaveReasonText"></p>
+          <p id="viewLeaveReasonText"></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel"><i class="bi bi-check-circle-fill me-2"></i>Success!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmationMessage"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
         </div>
       </div>
     </div>
@@ -1063,20 +1110,20 @@
         dateFormat: "Y-m-d",
       });
 
-      // Flatpickr for Add Leave Modal
-      const addStartDateFlatpickr = flatpickr("#addStartDate", {
+      // Flatpickr for Request Leave Modal
+      const leaveStartDateFlatpickr = flatpickr("#leaveStartDate", {
         dateFormat: "Y-m-d",
         onChange: function(selectedDates, dateStr, instance) {
-          if (selectedDates.length > 0 && addEndDateFlatpickr.selectedDates[0]) {
-            calculateDays(addStartDateFlatpickr, addEndDateFlatpickr);
+          if (selectedDates.length > 0 && leaveEndDateFlatpickr.selectedDates[0]) {
+            calculateDays(leaveStartDateFlatpickr, leaveEndDateFlatpickr);
           }
         }
       });
-      const addEndDateFlatpickr = flatpickr("#addEndDate", {
+      const leaveEndDateFlatpickr = flatpickr("#leaveEndDate", {
         dateFormat: "Y-m-d",
         onChange: function(selectedDates, dateStr, instance) {
-          if (selectedDates.length > 0 && addStartDateFlatpickr.selectedDates[0]) {
-            calculateDays(addStartDateFlatpickr, addEndDateFlatpickr);
+          if (selectedDates.length > 0 && leaveStartDateFlatpickr.selectedDates[0]) {
+            calculateDays(leaveStartDateFlatpickr, leaveEndDateFlatpickr);
           }
         }
       });
@@ -1090,15 +1137,11 @@
         }
       }
 
-      // --- Leave Request Table Action Modals ---
-      const leaveRequestsTable = document.getElementById('leaveRequestsTable');
-      const reasonModal = new bootstrap.Modal(document.getElementById('reasonModal'));
-
-      // --- Demo Data for Filtering ---
-      let leaveRequests = [
+      // --- Dummy Data for Employee's Leave Requests ---
+      // In a real application, this would be fetched from a backend for the logged-in employee
+      let myLeaveRequests = [
         {
           requestId: 'LR001',
-          employeeName: 'John Doe',
           leaveType: 'Sick Leave',
           startDate: '2025-06-15',
           endDate: '2025-06-16',
@@ -1108,7 +1151,6 @@
         },
         {
           requestId: 'LR002',
-          employeeName: 'Jane Smith',
           leaveType: 'Vacation Leave',
           startDate: '2025-07-01',
           endDate: '2025-07-05',
@@ -1118,175 +1160,183 @@
         },
         {
           requestId: 'LR003',
-          employeeName: 'Peter Jones',
-          leaveType: 'Maternity Leave',
+          leaveType: 'Emergency Leave',
           startDate: '2025-08-01',
-          endDate: '2025-09-30',
-          days: 61,
+          endDate: '2025-08-01',
+          days: 1,
           status: 'Rejected',
-          reason: 'Expecting child.'
+          reason: 'Urgent personal matter.'
         },
         {
           requestId: 'LR004',
-          employeeName: 'Alice Brown',
-          leaveType: 'Sick Leave',
-          startDate: '2025-06-20',
-          endDate: '2025-06-20',
-          days: 1,
+          leaveType: 'Vacation Leave',
+          startDate: '2025-09-10',
+          endDate: '2025-09-15',
+          days: 6,
           status: 'Pending',
-          reason: 'Flu symptoms.'
-        },
-        {
-          requestId: 'LR005',
-          employeeName: 'Robert Green',
-          leaveType: 'Emergency Leave',
-          startDate: '2025-06-18',
-          endDate: '2025-06-18',
-          days: 1,
-          status: 'Approved',
-          reason: 'Personal emergency, immediate family matter.'
+          reason: 'Trip to visit relatives.'
         }
       ];
 
-      // --- Automated Filtering Logic ---
-      const employeeFilter = document.getElementById('employeeFilter');
-      const leaveTypeFilter = document.getElementById('leaveTypeFilter');
-      const dateRangePicker = document.getElementById('dateRangePicker');
-      const statusFilter = document.getElementById('statusFilter');
+      const leaveRequestsTable = document.getElementById('leaveRequestsTable');
+      const viewReasonModal = new bootstrap.Modal(document.getElementById('viewReasonModal'));
+      const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
 
-      function renderTable(filteredRequests) {
+      function renderLeaveRequests() {
         const tbody = leaveRequestsTable.querySelector('tbody');
         tbody.innerHTML = '';
+
+        const leaveTypeFilter = document.getElementById('leaveTypeFilter').value.toLowerCase();
+        const dateRangeFilter = document.getElementById('dateRangePicker').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        let filteredRequests = myLeaveRequests.filter(req => {
+          const matchesType = leaveTypeFilter === '' || req.leaveType.toLowerCase().includes(leaveTypeFilter);
+          const matchesStatus = statusFilter === '' || req.status === statusFilter;
+
+          let matchesDateRange = true;
+          if (dateRangeFilter) {
+            const [start, end] = dateRangeFilter.split(' to ');
+            if (start && end) {
+              matchesDateRange = req.startDate >= start && req.endDate <= end;
+            }
+          }
+          return matchesType && matchesStatus && matchesDateRange;
+        });
+
         if (filteredRequests.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">No leave requests found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">No leave requests found matching your criteria.</td></tr>`;
+          updateSummaryCards(0, 0, 0); // Update summary cards to zero if no data
           return;
         }
+
+        let pendingCount = 0;
+        let approvedCount = 0;
+        let rejectedCount = 0;
+
         filteredRequests.forEach(req => {
-          tbody.insertAdjacentHTML('beforeend', `
-            <tr data-request-id="${req.requestId}" data-reason="${req.reason}">
-              <td>${req.requestId}</td>
-              <td>${req.employeeName}</td>
-              <td>${req.leaveType}</td>
-              <td>${req.startDate}</td>
-              <td>${req.endDate}</td>
-              <td>${req.days}</td>
-              <td><span class="badge bg-${req.status === 'Approved' ? 'success' : req.status === 'Pending' ? 'warning' : 'danger'}">${req.status}</span></td>
-              <td class="text-center">
-                <div class="dropdown">
-                  <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Manage</button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item view-reason" href="#" data-bs-toggle="modal" data-bs-target="#reasonModal"><i class="bi bi-card-text me-2"></i> Reason</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item approve-leave text-success" href="#" data-request-id="${req.requestId}"><i class="bi bi-check-lg me-2"></i> Approve</a></li>
-                    <li><a class="dropdown-item reject-leave text-danger" href="#" data-request-id="${req.requestId}"><i class="bi bi-x-lg me-2"></i> Reject</a></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          `);
-        });
-      }
-
-      function filterRequests() {
-        let filtered = leaveRequests.slice();
-        // Employee name/ID filter
-        const empVal = employeeFilter.value.trim().toLowerCase();
-        if (empVal) {
-          filtered = filtered.filter(r => r.employeeName.toLowerCase().includes(empVal) || r.requestId.toLowerCase().includes(empVal));
-        }
-        // Leave type filter
-        const leaveTypeVal = leaveTypeFilter.value.trim().toLowerCase();
-        if (leaveTypeVal) {
-          filtered = filtered.filter(r => r.leaveType.toLowerCase().includes(leaveTypeVal));
-        }
-        // Status filter
-        const statusVal = statusFilter.value;
-        if (statusVal) {
-          filtered = filtered.filter(r => r.status === statusVal);
-        }
-        // Date range filter
-        const dateRangeVal = dateRangePicker.value;
-        if (dateRangeVal) {
-          const [start, end] = dateRangeVal.split(' to ');
-          if (start && end) {
-            filtered = filtered.filter(r => {
-              return r.startDate >= start && r.endDate <= end;
-            });
+          const row = document.createElement('tr');
+          let statusBadgeClass;
+          switch (req.status) {
+            case 'Approved':
+              statusBadgeClass = 'success';
+              approvedCount++;
+              break;
+            case 'Pending':
+              statusBadgeClass = 'warning';
+              pendingCount++;
+              break;
+            case 'Rejected':
+              statusBadgeClass = 'danger';
+              rejectedCount++;
+              break;
+            default:
+              statusBadgeClass = 'secondary';
           }
-        }
-        renderTable(filtered);
+          row.innerHTML = `
+            <td>${req.requestId}</td>
+            <td>${req.leaveType}</td>
+            <td>${req.startDate}</td>
+            <td>${req.endDate}</td>
+            <td>${req.days}</td>
+            <td><span class="badge bg-${statusBadgeClass}">${req.status}</span></td>
+            <td class="text-center">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Manage</button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item view-reason" href="#" data-request-id="${req.requestId}"><i class="bi bi-card-text me-2"></i> View Reason</a></li>
+                  ${req.status === 'Pending' ? `
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item edit-leave" href="#" data-request-id="${req.requestId}"><i class="bi bi-pencil me-2"></i> Edit</a></li>
+                  <li><a class="dropdown-item cancel-leave text-danger" href="#" data-request-id="${req.requestId}"><i class="bi bi-x-lg me-2"></i> Cancel Request</a></li>
+                  ` : ''}
+                </ul>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+        updateSummaryCards(pendingCount, approvedCount, rejectedCount);
       }
 
-      // Initial render
-      renderTable(leaveRequests);
+      function updateSummaryCards(pending, approved, rejected) {
+        document.getElementById('myPendingRequests').textContent = pending;
+        document.getElementById('myApprovedLeaves').textContent = approved;
+        document.getElementById('myRejectedRequests').textContent = rejected;
+      }
 
-      // Attach filter listeners
-      employeeFilter.addEventListener('input', filterRequests);
-      leaveTypeFilter.addEventListener('input', filterRequests);
-      statusFilter.addEventListener('change', filterRequests);
-      dateRangePicker.addEventListener('change', filterRequests);
+      // Initial render and filter event listeners
+      renderLeaveRequests();
+      document.getElementById('leaveTypeFilter').addEventListener('input', renderLeaveRequests);
+      document.getElementById('dateRangePicker').addEventListener('change', renderLeaveRequests);
+      document.getElementById('statusFilter').addEventListener('change', renderLeaveRequests);
 
-      // Table action modals (unchanged)
+      // Table action listeners
       leaveRequestsTable.addEventListener('click', function(event) {
         const target = event.target.closest('.dropdown-item');
         if (!target) return;
-        const row = target.closest('tr');
-        if (!row) return;
-        const requestId = row.dataset.requestId;
+        const requestId = target.dataset.requestId;
+        const request = myLeaveRequests.find(req => req.requestId === requestId);
+
         if (target.classList.contains('view-reason')) {
-          event.preventDefault();
-          const reason = row.dataset.reason;
-          document.getElementById('reasonRequestId').textContent = requestId;
-          document.getElementById('leaveReasonText').textContent = reason;
-          reasonModal.show();
-        } else if (target.classList.contains('approve-leave')) {
-          event.preventDefault();
-          alert(`Approving leave request: ${requestId}`);
-          // Update status in data and re-filter
-          const req = leaveRequests.find(r => r.requestId === requestId);
-          if (req) req.status = 'Approved';
-          filterRequests();
-        } else if (target.classList.contains('reject-leave')) {
-          event.preventDefault();
-          alert(`Rejecting leave request: ${requestId}`);
-          // Update status in data and re-filter
-          const req = leaveRequests.find(r => r.requestId === requestId);
-          if (req) req.status = 'Rejected';
-          filterRequests();
+          if (request) {
+            document.getElementById('viewReasonRequestId').textContent = requestId;
+            document.getElementById('viewLeaveReasonText').textContent = request.reason;
+            viewReasonModal.show();
+          }
+        } else if (target.classList.contains('edit-leave')) {
+            // In a real app, populate an edit modal with request data
+            // For now, a simple alert
+            showConfirmationModal('Edit functionality not yet implemented. Request ID: ' + requestId);
+        } else if (target.classList.contains('cancel-leave')) {
+            // Confirm cancellation
+            if (confirm('Are you sure you want to cancel this leave request?')) {
+                myLeaveRequests = myLeaveRequests.filter(req => req.requestId !== requestId);
+                renderLeaveRequests();
+                showConfirmationModal('Leave request ' + requestId + ' has been cancelled.');
+            }
         }
       });
 
-      // Handle Submit Request in Add Leave Modal
-      document.getElementById('addLeaveForm').addEventListener('submit', function(event) {
+      // Handle Submit Request in Request Leave Modal
+      document.getElementById('requestLeaveForm').addEventListener('submit', function(event) {
         event.preventDefault();
-        const newEmployeeName = document.getElementById('addEmployeeName').value;
-        const newLeaveType = document.getElementById('addLeaveType').value;
-        const newStartDate = document.getElementById('addStartDate').value;
-        const newEndDate = document.getElementById('addEndDate').value;
-        const newReason = document.getElementById('addReason').value;
-        const newStatus = document.getElementById('addStatus').value;
-        const start = new Date(newStartDate);
-        const end = new Date(newEndDate);
+        const leaveType = document.getElementById('leaveType').value;
+        const leaveStartDate = document.getElementById('leaveStartDate').value;
+        const leaveEndDate = document.getElementById('leaveEndDate').value;
+        const leaveReason = document.getElementById('leaveReason').value;
+        // const supportingDocument = document.getElementById('supportingDocument').files[0]; // For future use
+
+        const start = new Date(leaveStartDate);
+        const end = new Date(leaveEndDate);
         const diffTime = Math.abs(end - start);
         const newDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        alert(`Adding new leave request:\nEmployee: ${newEmployeeName}\nType: ${newLeaveType}, Dates: ${newStartDate} to ${newEndDate} (${newDays} days)\nReason: ${newReason}\nStatus: ${newStatus}`);
-        const newRequestId = 'LR' + (leaveRequests.length + 1).toString().padStart(3, '0');
-        leaveRequests.push({
+
+        const newRequestId = 'LR' + (myLeaveRequests.length + 1).toString().padStart(3, '0');
+        myLeaveRequests.push({
           requestId: newRequestId,
-          employeeName: newEmployeeName,
-          leaveType: newLeaveType,
-          startDate: newStartDate,
-          endDate: newEndDate,
+          leaveType: leaveType,
+          startDate: leaveStartDate,
+          endDate: leaveEndDate,
           days: newDays,
-          status: newStatus,
-          reason: newReason
+          status: 'Pending', // New requests are always pending
+          reason: leaveReason
         });
-        filterRequests();
+        renderLeaveRequests();
         this.reset();
-        addStartDateFlatpickr.clear();
-        addEndDateFlatpickr.clear();
-        bootstrap.Modal.getInstance(document.getElementById('addLeaveModal')).hide();
+        leaveStartDateFlatpickr.clear();
+        leaveEndDateFlatpickr.clear();
+        bootstrap.Modal.getInstance(document.getElementById('requestLeaveModal')).hide();
+        showConfirmationModal('Your leave request (' + newRequestId + ') has been submitted successfully for approval!');
       });
+
+      function showConfirmationModal(message) {
+        document.getElementById('confirmationMessage').textContent = message;
+        confirmationModal.show();
+      }
+
+      // Dummy Employee Name for Navbar
+      document.getElementById('employeeNameDisplay').innerHTML = `John Doe<br><small>Welcome!</small>`;
 
     });
   </script>
